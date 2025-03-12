@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from '@remix-run/react';
 import type { MetaFunction } from '@remix-run/node';
 import { LoginForm } from '../components/LoginForm';
 import { isAuthenticated, setToken } from '../utils/auth';
-import { login } from '../lib/api/auth';
+import { authApi } from '../lib/api/auth';
 
 export const meta: MetaFunction = () => {
   return [
@@ -27,7 +27,7 @@ export default function Login() {
 
 
   const handleSubmit = async (email: string, password: string) => {
-    const data = await login(email, password);
+    const data = await authApi.login(email, password);
 
     if (data.jwt) {
       setToken(data.jwt);
