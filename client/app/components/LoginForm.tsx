@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Form, FormGroup, FormActions } from './Form';
-import {Input} from './Input';
+import { Form, FormGroup, FormActions } from './forms/Form';
+import {Input} from './forms/Input';
 import {Button} from './Button';
 
 interface LoginFormProps {

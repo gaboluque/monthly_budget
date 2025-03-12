@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from './Button';
-import { Input } from './Input';
-import { Form, FormGroup, FormActions } from './Form';
+import { Input } from './forms/Input';
+import { Form, FormGroup, FormActions } from './forms/Form';
 import type { CreateExpenseData, Expense } from '../lib/api/expenses';
 import { expensesApi } from '../lib/api/expenses';
 import { formatCurrency } from '../utils/currency';

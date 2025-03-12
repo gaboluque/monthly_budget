@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from './Button';
-import { Input } from './Input';
-import { Form, FormGroup, FormActions } from './Form';
+import { Input } from './forms/Input';
+import { Form, FormGroup, FormActions } from './forms/Form';
 import type { CreateIncomeData, Income } from '../lib/api/incomes';
 import { formatCurrency } from '../utils/currency';
 

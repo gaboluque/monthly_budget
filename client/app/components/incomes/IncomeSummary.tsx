@@ -1,5 +1,5 @@
 import { BarChart2, TrendingUp } from "lucide-react"
-import { formatCurrency } from "../../utils/currency"
+import { StatCard } from "../StatCard"
 
 interface IncomeSummaryProps {
   totalIncome: number
@@ -14,14 +14,14 @@ export function IncomeSummary({ totalIncome, incomeCount }: IncomeSummaryProps) 
         Income Summary
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-50 border border-green-100 rounded-lg p-4">
-          <div className="flex items-center justify-between">
-            <h4 className="text-sm font-medium text-green-700">Total Income</h4>
-            <TrendingUp className="w-4 h-4 text-green-500" />
-          </div>
-          <p className="text-2xl font-bold text-green-900 mt-2">{formatCurrency(totalIncome)}</p>
-          <p className="text-xs text-green-600 mt-1">{incomeCount} income sources</p>
-        </div>
+        <StatCard
+          title="Total Income"
+          amount={totalIncome}
+          description={`${incomeCount} income sources`}
+          icon={BarChart2}
+          iconSecondary={TrendingUp}
+          variant="green"
+        />
       </div>
     </div>
   )
