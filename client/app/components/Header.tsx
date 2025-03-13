@@ -6,6 +6,33 @@ import { logout } from "../lib/utils/auth"
 import { useState } from "react"
 import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight, PieChart } from "lucide-react"
 
+const navigationLinks = [
+  {
+    path: "/dashboard",
+    label: "Dashboard",
+    icon: Home,
+    activeClass: "bg-blue-50 text-blue-700",
+  },
+  {
+    path: "/incomes",
+    label: "Incomes",
+    icon: DollarSign,
+    activeClass: "bg-green-50 text-green-700",
+  },
+  {
+    path: "/expenses",
+    label: "Expenses",
+    icon: CreditCard,
+    activeClass: "bg-blue-50 text-blue-700",
+  },
+  {
+    path: "/insights",
+    label: "Insights",
+    icon: PieChart,
+    activeClass: "bg-purple-50 text-purple-700",
+  },
+]
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
@@ -32,50 +59,20 @@ export function Header() {
             </Link>
 
             <nav className="hidden md:flex ml-10 space-x-1">
-              <Link
-                to="/dashboard"
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive("/dashboard")
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Dashboard
-              </Link>
-              <Link
-                to="/incomes"
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive("/incomes")
-                    ? "bg-green-50 text-green-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <DollarSign className="w-4 h-4 mr-2" />
-                Incomes
-              </Link>
-              <Link
-                to="/expenses"
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive("/expenses")
-                    ? "bg-blue-50 text-blue-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <CreditCard className="w-4 h-4 mr-2" />
-                Expenses
-              </Link>
-              <Link
-                to="/insights"
-                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive("/insights")
-                    ? "bg-purple-50 text-purple-700"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <PieChart className="w-4 h-4 mr-2" />
-                Insights
-              </Link>
+              {navigationLinks.map(({ path, label, icon: Icon, activeClass }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive(path)
+                      ? activeClass
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  }`}
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {label}
+                </Link>
+              ))}
             </nav>
           </div>
 
@@ -114,66 +111,24 @@ export function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t border-gray-200 bg-white">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            <Link
-              to="/dashboard"
-              className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/dashboard")
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                <Home className="w-5 h-5 mr-3" />
-                Dashboard
-              </div>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/incomes"
-              className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/incomes")
-                  ? "bg-green-50 text-green-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                <DollarSign className="w-5 h-5 mr-3" />
-                Incomes
-              </div>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/expenses"
-              className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/expenses")
-                  ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                <CreditCard className="w-5 h-5 mr-3" />
-                Expenses
-              </div>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-            <Link
-              to="/insights"
-              className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
-                isActive("/insights")
-                  ? "bg-purple-50 text-purple-700"
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="flex items-center">
-                <PieChart className="w-5 h-5 mr-3" />
-                Insights
-              </div>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
+            {navigationLinks.map(({ path, label, icon: Icon, activeClass }) => (
+              <Link
+                key={path}
+                to={path}
+                className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
+                  isActive(path)
+                    ? activeClass
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <div className="flex items-center">
+                  <Icon className="w-5 h-5 mr-3" />
+                  {label}
+                </div>
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            ))}
             <div className="pt-2 px-3">
               <Button variant="outline" onClick={handleLogout} className="w-full justify-center gap-2 border-gray-300">
                 <LogOut className="w-4 h-4" />
