@@ -20,3 +20,5 @@ export interface CreateIncomeData {
   amount: number;
   frequency: IncomeFrequency;
 }
+
+export interface UpdateIncomeData extends Partial<CreateIncomeData> {}

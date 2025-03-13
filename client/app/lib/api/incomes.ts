@@ -1,27 +1,9 @@
 import { apiClient } from "./client";
-
-export interface Income {
-  id: string;
-  name: string;
-  amount: number;
-  frequency:
-    | "monthly"
-    | "bi-weekly"
-    | "weekly"
-    | "daily"
-    | "yearly"
-    | "quarterly";
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateIncomeData {
-  name: string;
-  amount: number;
-  frequency: Income["frequency"];
-}
-
-export interface UpdateIncomeData extends Partial<CreateIncomeData> {}
+import {
+  Income,
+  CreateIncomeData,
+  UpdateIncomeData,
+} from "../../types/incomes";
 
 export const incomesApi = {
   // Get all incomes

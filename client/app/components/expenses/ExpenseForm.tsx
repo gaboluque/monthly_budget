@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '../Button';
 import { Input } from '../forms/Input';
 import { Form, FormGroup, FormActions } from '../forms/Form';
-import type { CreateExpenseData, Expense } from '../../lib/api/expenses';
+import type { CreateExpenseData, Expense } from '../../types/expenses';
 import { expensesApi } from '../../lib/api/expenses';
 import { formatCurrency } from '../../utils/currency';
 

@@ -1,26 +1,9 @@
+import {
+  Expense,
+  CreateExpenseData,
+  UpdateExpenseData,
+} from "../../types/expenses";
 import { apiClient } from "./client";
-
-export interface Expense {
-  id: string;
-  name: string;
-  amount: number;
-  category: string;
-  destination: string;
-  frequency: "monthly" | "bi-weekly" | "weekly";
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CreateExpenseData {
-  name: string;
-  amount: number;
-  category: string;
-  destination: string;
-  frequency: Expense["frequency"];
-  other_expense_name?: string;
-}
-
-export interface UpdateExpenseData extends Partial<CreateExpenseData> {}
 
 export const expensesApi = {
   // Get all expenses

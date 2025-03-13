@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../forms/Input';
 import { Form, FormGroup, FormActions } from '../forms/Form';
-import type { CreateIncomeData, Income } from '../../lib/api/incomes';
+import type { CreateIncomeData, Income } from '../../types/incomes';
 import { formatCurrency } from '../../utils/currency';
 
 interface IncomeFormProps {
