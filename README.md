@@ -1,64 +1,100 @@
-This Web app is a simple monthly budget PWA.
+# Monthly Budget PWA 📊
 
-## Overview
+[![Rails](https://img.shields.io/badge/Rails-8.x-blue.svg)](https://rubyonrails.org/)
+[![Remix](https://img.shields.io/badge/Remix-1.x-blue.svg)](https://remix.run/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC.svg)](https://tailwindcss.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13.x-336791.svg)](https://www.postgresql.org/)
 
-This app is a simple monthly budget PWA that allows users to track their monthly income and expenses. The user can use this app to
-track their monthly income and expenses, and see how much money they have left over after all expenses are accounted for.
+## 📝 Overview
 
-The idea is for the user to be able to set up their monthly budget, and where all their money is going.
+A modern Progressive Web App (PWA) for managing your monthly budget effectively. Track your income sources and expenses, categorize your spending, and maintain a clear view of your financial health.
 
-## Features
+### 🎯 Purpose
 
-- Add, edit, and delete monthly income sources
-  - The user can add a name, amount, and frequency (monthly, bi-weekly, weekly, etc.) for each income source
-- Add, edit, and delete monthly expenses
-  - The user can add a name, amount, and frequency (monthly, bi-weekly, weekly, etc.) for each expense
-  - Each expense should be marked with a category (e.g. housing, transportation, food, etc.) for better organization
-    - Default categories should be: Needs, Wants, Savings, Debt, Investment
-    - The user should be able to add custom categories
-  - Each expense should have a "destination" where the user can specify where to pay or transfer the money
-- Reorder category percentages
-  - The user should be able to reorder the categories to see how it affects their budget
-  - Each category should have a percentage of the total budget
+This app helps you:
 
-## Technologies
+- Track monthly income and expenses
+- Monitor where your money is going
+- Calculate remaining budget after expenses
+- Manage recurring financial commitments
 
-- Remix
-- React
-- TypeScript
-- Tailwind CSS
-- Ruby on Rails
-- PostgreSQL
+## ✨ Features
 
-## Models
+### 💰 Income Management
 
-### User
+- **Add, Edit, and Delete Income Sources**
+  - Track income with name and amount
+  - Multiple frequency options:
+    - `Monthly`, `Bi-weekly`, `Weekly`, `Daily`, `Yearly`, `Quarterly`
+  - Smart monthly amount auto-calculation based on frequency
 
-- name: string
-- email: string
-- password: string
-- createdAt: Date
-- updatedAt: Date
-- auth:
-  - token: string
-  - expires: Date
+### 💸 Expense Management
 
-### Income
+- **Comprehensive Expense Tracking**
+  - Create, update, and remove expenses
+  - Flexible frequency options:
+    `Monthly`, `Bi-weekly`, `Weekly`
+  - Smart categorization system
+    ```
+    📊 Default Categories:
+    ├── Needs
+    ├── Wants
+    ├── Savings
+    ├── Debt
+    └── Investment
+    ```
+  - Destination tracking for payments
+  - Payment history with last_expensed_at tracking
 
-- user: ObjectId<User>
-- name: string
-- amount: number
-- frequency: string
-- createdAt: Date
-- updatedAt: Date
+### 📊 Analysis & Organization
 
-### Expense
+- **Smart Filtering & Views**
+  - Filter expenses by category
+  - Filter by frequency
+  - Track pending expenses for current month
 
-- user: ObjectId<User>
-- name: string
-- amount: number
-- category: string
-- destination: string
-- frequency: string
-- createdAt: Date
-- updatedAt: Date
+## 📚 Data Models
+
+### 👤 User
+
+```typescript
+User {
+  email: string           // unique, required
+  password_digest: string // required
+  createdAt: datetime
+  updatedAt: datetime
+
+  // Relationships
+  has_many: incomes
+  has_many: expenses
+}
+```
+
+### 💵 Income
+
+```typescript
+Income {
+  user_id: references    // required, foreign key
+  name: string          // required
+  amount: decimal       // required, precision: 10, scale: 2
+  frequency: string     // required, enum of supported frequencies
+  createdAt: datetime
+  updatedAt: datetime
+}
+```
+
+### 💳 Expense
+
+```typescript
+Expense {
+  user_id: references    // required, foreign key
+  name: string          // required
+  amount: decimal       // required, precision: 10, scale: 2
+  category: string      // required
+  destination: string   // required
+  frequency: string     // required, enum of supported frequencies
+  last_expensed_at: datetime  // nullable
+  createdAt: datetime
+  updatedAt: datetime
+}
+```
