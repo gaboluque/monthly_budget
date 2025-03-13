@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Button } from './Button';
-import { Input } from './forms/Input';
-import { Form, FormGroup, FormActions } from './forms/Form';
-import type { CreateExpenseData, Expense } from '../lib/api/expenses';
-import { expensesApi } from '../lib/api/expenses';
-import { formatCurrency } from '../utils/currency';
+import { Button } from '../Button';
+import { Input } from '../forms/Input';
+import { Form, FormGroup, FormActions } from '../forms/Form';
+import type { CreateExpenseData, Expense } from '../../lib/api/expenses';
+import { expensesApi } from '../../lib/api/expenses';
+import { formatCurrency } from '../../utils/currency';
 
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
@@ -201,7 +201,7 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : initialData ? 'Update' : 'Create'}
+          {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
         </Button>
       </FormActions>
     </Form>
