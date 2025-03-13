@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from '@remix-run/react';
-import { isAuthenticated } from '../utils/auth';
+import { isAuthenticated } from '../lib/utils/auth';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

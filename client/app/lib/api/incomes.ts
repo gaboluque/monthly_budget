@@ -1,9 +1,5 @@
 import { apiClient } from "./client";
-import {
-  Income,
-  CreateIncomeData,
-  UpdateIncomeData,
-} from "../../types/incomes";
+import { Income, CreateIncomeData, UpdateIncomeData } from "../types/incomes";
 
 export const incomesApi = {
   // Get all incomes

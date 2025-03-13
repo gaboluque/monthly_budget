@@ -18,7 +18,6 @@ export interface CreateExpenseData {
   category: string;
   destination: string;
   frequency: Expense["frequency"];
-  other_expense_name?: string;
 }
 
 export interface UpdateExpenseData extends Partial<CreateExpenseData> {}

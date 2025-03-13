@@ -8,7 +8,7 @@ import { ExpenseHeader } from "../components/expenses/ExpenseHeader"
 import { ExpenseSummary } from "../components/expenses/ExpenseSummary"
 import { ExpenseCategory } from "../components/expenses/ExpenseCategory"
 import { useExpenses } from "../hooks/useExpenses"
-import type { Expense, CreateExpenseData } from "../types/expenses"
+import type { Expense, CreateExpenseData } from "../lib/types/expenses"
 import { Loader2, AlertCircle, PlusCircle } from "lucide-react"
 
 export const meta: MetaFunction = () => {

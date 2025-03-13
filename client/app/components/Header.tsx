@@ -2,7 +2,7 @@
 
 import { Link, useLocation } from "@remix-run/react"
 import { Button } from "./Button"
-import { logout } from "../utils/auth"
+import { logout } from "../lib/utils/auth"
 import { useState } from "react"
 import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight } from "lucide-react"
 

@@ -1,6 +1,6 @@
 import { Edit2, Trash2, DollarSign } from "lucide-react"
-import { formatCurrency } from "../../utils/currency"
-import type { Income } from "../../types/incomes"
+import { formatCurrency } from "../../lib/utils/currency"
+import type { Income } from "../../lib/types/incomes"
 
 interface IncomeItemProps {
   income: Income

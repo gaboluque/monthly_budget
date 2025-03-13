@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { Button } from '../Button';
 import { Input } from '../forms/Input';
 import { Form, FormGroup, FormActions } from '../forms/Form';
-import type { CreateExpenseData, Expense } from '../../types/expenses';
+import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
 import { expensesApi } from '../../lib/api/expenses';
-import { formatCurrency } from '../../utils/currency';
+import { formatCurrency } from '../../lib/utils/currency';
+import { Autocomplete } from '../forms/Autocomplete';
 
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
@@ -29,7 +30,6 @@ const EXPENSE_NAME_OPTIONS = [
   { value: 'Savings', label: 'Savings' },
   { value: 'Investments', label: 'Investments' },
   { value: 'Debt Payment', label: 'Debt Payment' },
-  { value: 'Other', label: 'Other' },
 ];
 
 const FREQUENCY_OPTIONS = [
@@ -99,18 +99,9 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError(null);
-
-    if (formData.name === 'Other' && !formData.other_expense_name) {
-      setError('Expense name is required');
-      setIsSubmitting(false);
-      return;
-    }
     
     try {
-      await onSubmit({
-        ...formData,
-        name: formData.name === 'Other' ? formData.other_expense_name! : formData.name,
-      });
+      await onSubmit(formData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
     } finally {
@@ -121,30 +112,16 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
   return (
     <Form onSubmit={handleSubmit} error={error ?? undefined}>
       <FormGroup>
-        <Input
-          type="select"
+        <Autocomplete
           label="Expense Name"
           id="name"
           value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          options={EXPENSE_NAME_OPTIONS}
+          onChange={(value) => setFormData({ ...formData, name: value })}
+          options={EXPENSE_NAME_OPTIONS.map(option => option.label)}
           required
           fullWidth
-          helperText="Select the type of expense you want to add"
+          helperText="Select or type the expense you want to add"
         />
-
-        {!EXPENSE_NAME_OPTIONS.find(option => option.value === formData.name && formData.name !== 'Other') && (
-          <Input
-            type='text'
-            label='Other Expense Name'
-            id='other_expense_name'
-            value={formData.other_expense_name}
-            onChange={(e) => setFormData({ ...formData, other_expense_name: e.target.value })}
-            required
-            fullWidth
-            helperText="Enter the name of the expense"
-          />
-        )}
 
         <Input
           label="Amount"

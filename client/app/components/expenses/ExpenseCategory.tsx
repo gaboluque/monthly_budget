@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronRight, PlusCircle } from "lucide-react"
-import { formatCurrency } from "../../utils/currency"
+import { formatCurrency } from "../../lib/utils/currency"
 import { ExpenseItem } from "./ExpenseItem"
-import type { Expense } from "../../types/expenses"
+import type { Expense } from "../../lib/types/expenses"
 
 interface ExpenseCategoryProps {
   category: string

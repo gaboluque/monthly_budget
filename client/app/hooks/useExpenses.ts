@@ -4,7 +4,7 @@ import type {
   Expense,
   CreateExpenseData,
   ExpensesByCategory,
-} from "../types/expenses";
+} from "../lib/types/expenses";
 
 export function useExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);

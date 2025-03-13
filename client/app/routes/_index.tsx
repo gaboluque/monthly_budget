@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from '@remix-run/react';
 import type { MetaFunction } from '@remix-run/node';
-import { isAuthenticated } from '../utils/auth';
+import { isAuthenticated } from '../lib/utils/auth';
 
 export const meta: MetaFunction = () => {
   return [

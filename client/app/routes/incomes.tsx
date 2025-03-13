@@ -7,7 +7,7 @@ import { IncomeHeader } from "../components/incomes/IncomeHeader"
 import { IncomeSummary } from "../components/incomes/IncomeSummary"
 import { IncomeItem } from "../components/incomes/IncomeItem"
 import { useIncomes } from "../hooks/useIncomes"
-import type { Income, CreateIncomeData } from "../types/incomes"
+import type { Income, CreateIncomeData } from "../lib/types/incomes"
 import { Loader2, AlertCircle, DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/Button"
 

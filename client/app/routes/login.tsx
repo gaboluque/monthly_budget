@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from '@remix-run/react';
 import type { MetaFunction } from '@remix-run/node';
 import { LoginForm } from '../components/LoginForm';
-import { isAuthenticated, setToken } from '../utils/auth';
+import { isAuthenticated, setToken } from '../lib/utils/auth';
 import { authApi } from '../lib/api/auth';
 
 export const meta: MetaFunction = () => {

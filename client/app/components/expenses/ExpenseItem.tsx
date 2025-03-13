@@ -1,6 +1,6 @@
 import { Edit2, Trash2 } from "lucide-react"
-import { formatCurrency } from "../../utils/currency"
-import type { Expense } from "../../types/expenses"
+import { formatCurrency } from "../../lib/utils/currency"
+import type { Expense } from "../../lib/types/expenses"
 
 interface ExpenseItemProps {
   expense: Expense

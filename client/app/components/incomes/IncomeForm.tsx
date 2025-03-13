@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Button } from '../Button';
 import { Input } from '../forms/Input';
 import { Form, FormGroup, FormActions } from '../forms/Form';
-import type { CreateIncomeData, Income } from '../../types/incomes';
-import { formatCurrency } from '../../utils/currency';
+import type { CreateIncomeData, Income } from '../../lib/types/incomes';
+import { formatCurrency } from '../../lib/utils/currency';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;

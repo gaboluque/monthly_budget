@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react"
-import { formatCurrency } from "../utils/currency"
+import { formatCurrency } from "../lib/utils/currency"
 
 interface StatCardProps {
   title: string

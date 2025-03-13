@@ -2,7 +2,7 @@ import {
   Expense,
   CreateExpenseData,
   UpdateExpenseData,
-} from "../../types/expenses";
+} from "../types/expenses";
 import { apiClient } from "./client";
 
 export const expensesApi = {
