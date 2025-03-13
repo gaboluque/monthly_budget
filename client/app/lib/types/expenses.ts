@@ -25,3 +25,11 @@ export interface UpdateExpenseData extends Partial<CreateExpenseData> {}
 export interface ExpensesByCategory {
   [key: string]: Expense[];
 }
+
+export const CATEGORY_COLORS: Record<string, string> = {
+  Needs: "#2563eb", // Blue
+  Wants: "#dc2626", // Red
+  Savings: "#16a34a", // Green
+  Debt: "#9333ea", // Purple
+  Investment: "#f59e0b", // Amber
+};

@@ -2,6 +2,7 @@ import { CreditCard, Check, Undo, Loader2 } from "lucide-react"
 import { Button } from "../Button"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Expense } from "../../lib/types/expenses"
+import { CATEGORY_COLORS } from "../../lib/types/expenses"
 
 interface ExpenseItemProps {
   expense: Expense
@@ -16,6 +17,7 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
   const buttonBgColor = isPending ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
   const ActionIcon = isPending ? Check : Undo
   const actionText = isPending ? "Mark as Paid" : "Unmark as Paid"
+  const categoryColor = CATEGORY_COLORS[expense.category] || "#6b7280"
 
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
@@ -28,7 +30,13 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
           <div>
             <h3 className="text-base font-medium text-gray-900">{expense.name}</h3>
             <div className="flex items-center mt-1">
-              <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              <span 
+                className="text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center"
+                style={{ 
+                  backgroundColor: `${categoryColor}20`,
+                  color: categoryColor
+                }}
+              >
                 {expense.category}
               </span>
             </div>
@@ -62,11 +70,17 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
             </div>
             <div>
               <h3 className="text-base font-medium text-gray-900">{expense.name}</h3>
-              <div className="flex items-center mt-1">
-                <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+              <div className="flex items-center mt-1 gap-4">
+                <span 
+                  className="text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center"
+                  style={{ 
+                    backgroundColor: `${categoryColor}20`,
+                    color: categoryColor
+                  }}
+                >
                   {expense.category}
                 </span>
-                {expense.destination && <span className="text-xs text-gray-500 ml-2">To: {expense.destination}</span>}
+                {expense.destination && <span className="text-xs text-gray-500 ml-2 w-24">{expense.destination}</span>}
               </div>
             </div>
           </div>

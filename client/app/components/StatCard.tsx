@@ -40,7 +40,7 @@ export function StatCard({
   const classes = variantClasses[variant]
 
   return (
-    <div className={`${classes.bg} border ${classes.border} rounded-lg p-4`}>
+    <div className={`${classes.bg} border ${classes.border} rounded-lg p-4 h-32`}>
       <div className="flex items-center justify-between">
         <h4 className={`text-sm font-medium ${classes.title}`}>{title}</h4>
         <IconSecondary className={`w-4 h-4 ${classes.icon}`} />

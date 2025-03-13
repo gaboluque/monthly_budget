@@ -88,7 +88,7 @@ export default function Expenses() {
           <ExpenseSummary
             totalExpenses={totalExpenses}
             expenseCount={expenses.length}
-            categoryCount={categories.length}
+            expensesByCategory={expensesByCategory}
           />
         )}
 

@@ -20,6 +20,7 @@ export function useDashboard() {
     expenseCategories: 0,
     incomeCount: 0,
     pendingExpensesCount: 0,
+    expensesByCategory: {} as Record<string, number>,
   });
 
   // Sorting state
@@ -65,6 +66,15 @@ export function useDashboard() {
         0
       );
 
+      // Calculate expenses by category
+      const expensesByCategory = expenses.reduce((acc, expense) => {
+        if (!acc[expense.category]) {
+          acc[expense.category] = 0;
+        }
+        acc[expense.category] += Number(expense.amount);
+        return acc;
+      }, {} as Record<string, number>);
+
       // Get unique categories
       const categories = [
         ...new Set(expenses.map((expense) => expense.category)),
@@ -78,6 +88,7 @@ export function useDashboard() {
         expenseCategories: categories.length,
         incomeCount: incomes.length,
         pendingExpensesCount: pendingExpenses.length,
+        expensesByCategory,
       });
     } catch (err) {
       console.error("Error fetching summary data:", err);
