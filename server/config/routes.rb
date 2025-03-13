@@ -7,14 +7,20 @@ Rails.application.routes.draw do
       post "login", to: "authentication#login"
       post "signup", to: "authentication#signup"
 
-      resources :incomes
-      resources :expenses do
-        member do
-          post :mark_as_expensed
+      resources :incomes do
+        collection do
+          get :categories
         end
+      end
+      resources :expenses do
         collection do
           get :categories
           get :pending
+          get :expensed
+        end
+        member do
+          post :mark_as_expensed
+          post :unmark_as_expensed
         end
       end
     end

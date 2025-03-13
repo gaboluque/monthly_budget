@@ -49,9 +49,21 @@ export const expensesApi = {
     return response.data;
   },
 
+  // Get expensed expenses
+  getExpensed: async (): Promise<Expense[]> => {
+    const response = await apiClient.get("/expenses/expensed");
+    return response.data;
+  },
+
   // Mark expense as expensed
   markAsExpensed: async (id: string): Promise<Expense> => {
     const response = await apiClient.post(`/expenses/${id}/mark_as_expensed`);
+    return response.data;
+  },
+
+  // Unmark expense as expensed
+  unmarkAsExpensed: async (id: string): Promise<Expense> => {
+    const response = await apiClient.post(`/expenses/${id}/unmark_as_expensed`);
     return response.data;
   },
 };

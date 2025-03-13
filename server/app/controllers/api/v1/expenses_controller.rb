@@ -2,7 +2,7 @@ module Api
   module V1
     class ExpensesController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_expense, only: [ :show, :update, :destroy, :mark_as_expensed ]
+      before_action :set_expense, only: [:show, :update, :destroy, :mark_as_expensed, :unmark_as_expensed]
 
       def index
         @expenses = current_user.expenses
@@ -52,8 +52,29 @@ module Api
         }
       end
 
+      def expensed
+        current_month_start = Time.current.beginning_of_month
+        current_month_end = Time.current.end_of_month
+        @expensed_expenses = current_user.expenses.where(
+          'last_expensed_at BETWEEN ? AND ?',
+          current_month_start,
+          current_month_end
+        )
+        render json: {
+          data: @expensed_expenses
+        }
+      end
+
       def mark_as_expensed
         if @expense.update(last_expensed_at: Time.current)
+          render json: @expense
+        else
+          render json: { errors: @expense.errors }, status: :unprocessable_entity
+        end
+      end
+
+      def unmark_as_expensed
+        if @expense.update(last_expensed_at: nil)
           render json: @expense
         else
           render json: { errors: @expense.errors }, status: :unprocessable_entity
