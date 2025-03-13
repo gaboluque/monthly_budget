@@ -4,7 +4,7 @@ import { Link, useLocation } from "@remix-run/react"
 import { Button } from "./Button"
 import { logout } from "../lib/utils/auth"
 import { useState } from "react"
-import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight } from "lucide-react"
+import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight, PieChart } from "lucide-react"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -64,6 +64,17 @@ export function Header() {
               >
                 <CreditCard className="w-4 h-4 mr-2" />
                 Expenses
+              </Link>
+              <Link
+                to="/insights"
+                className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isActive("/insights")
+                    ? "bg-purple-50 text-purple-700"
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`}
+              >
+                <PieChart className="w-4 h-4 mr-2" />
+                Insights
               </Link>
             </nav>
           </div>
@@ -145,6 +156,21 @@ export function Header() {
               <div className="flex items-center">
                 <CreditCard className="w-5 h-5 mr-3" />
                 Expenses
+              </div>
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/insights"
+              className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
+                isActive("/insights")
+                  ? "bg-purple-50 text-purple-700"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <div className="flex items-center">
+                <PieChart className="w-5 h-5 mr-3" />
+                Insights
               </div>
               <ChevronRight className="w-4 h-4" />
             </Link>
