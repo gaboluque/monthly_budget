@@ -2,7 +2,7 @@ module Api
   module V1
     class ExpensesController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_expense, only: [ :show, :update, :destroy ]
+      before_action :set_expense, only: [ :show, :update, :destroy, :mark_as_expensed ]
 
       def index
         @expenses = current_user.expenses
@@ -45,6 +45,21 @@ module Api
         render json: { data: Expense::DEFAULT_CATEGORIES }
       end
 
+      def pending
+        @pending_expenses = current_user.expenses.pending
+        render json: {
+          data: @pending_expenses
+        }
+      end
+
+      def mark_as_expensed
+        if @expense.update(last_expensed_at: Time.current)
+          render json: @expense
+        else
+          render json: { errors: @expense.errors }, status: :unprocessable_entity
+        end
+      end
+
       private
 
       def set_expense
@@ -52,7 +67,7 @@ module Api
       end
 
       def expense_params
-        params.require(:expense).permit(:name, :amount, :category, :destination, :frequency)
+        params.require(:expense).permit(:name, :amount, :category, :destination, :frequency, :last_expensed_at)
       end
     end
   end

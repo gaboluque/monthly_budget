@@ -42,4 +42,16 @@ export const expensesApi = {
     const response = await apiClient.get("/expenses/categories");
     return response.data;
   },
+
+  // Get pending expenses
+  getPending: async (): Promise<Expense[]> => {
+    const response = await apiClient.get("/expenses/pending");
+    return response.data;
+  },
+
+  // Mark expense as expensed
+  markAsExpensed: async (id: string): Promise<Expense> => {
+    const response = await apiClient.post(`/expenses/${id}/mark_as_expensed`);
+    return response.data;
+  },
 };

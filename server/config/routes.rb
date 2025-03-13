@@ -9,8 +9,12 @@ Rails.application.routes.draw do
 
       resources :incomes
       resources :expenses do
+        member do
+          post :mark_as_expensed
+        end
         collection do
           get :categories
+          get :pending
         end
       end
     end

@@ -29,7 +29,7 @@ const request = async (url: string, options?: RequestInit) => {
 export const apiClient = {
   get: async (url: string) => request(url),
 
-  post: async <T>(url: string, data: T) =>
+  post: async <T>(url: string, data?: T) =>
     request(url, {
       method: "POST",
       body: JSON.stringify(data),
