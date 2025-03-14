@@ -10,6 +10,7 @@ import { ExpenseCategory } from "../components/expenses/ExpenseCategory"
 import { useExpenses } from "../hooks/useExpenses"
 import type { Expense, CreateExpenseData } from "../lib/types/expenses"
 import { Loader2, AlertCircle, PlusCircle } from "lucide-react"
+import { ui } from "../lib/ui"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Expenses | Monthly Budget" }, { name: "description", content: "Manage your monthly expenses" }]
@@ -89,6 +90,22 @@ export default function Expenses() {
     setIsModalOpen(true)
   }
 
+  const handleDeleteExpense = (id: string) => {
+    const expense = expenses.find(e => e.id === id)
+    if (!expense) return
+
+    ui.confirm({
+      title: "Delete Expense",
+      message: `Are you sure you want to delete "${expense.name}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      confirmVariant: "danger",
+      onConfirm: async () => {
+        await deleteExpense(id)
+      }
+    })
+  }
+
   return (
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
@@ -144,7 +161,7 @@ export default function Expenses() {
                   setSelectedExpense(expense)
                   setIsModalOpen(true)
                 }}
-                onDeleteExpense={deleteExpense}
+                onDeleteExpense={handleDeleteExpense}
               />
             ))}
           </div>
