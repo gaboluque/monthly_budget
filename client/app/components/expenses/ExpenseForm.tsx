@@ -5,7 +5,6 @@ import { Form, FormGroup, FormActions } from '../forms/Form';
 import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
 import { expensesApi } from '../../lib/api/expenses';
 import { formatCurrency } from '../../lib/utils/currency';
-import { Autocomplete } from '../forms/Autocomplete';
 import { ui } from '../../lib/ui/manager';
 
 interface ExpenseFormProps {
@@ -14,25 +13,6 @@ interface ExpenseFormProps {
   initialData?: Expense;
   onCreateAnother?: () => void;
 }
-
-const EXPENSE_NAME_OPTIONS = [
-  { value: 'Rent', label: 'Rent' },
-  { value: 'Mortgage', label: 'Mortgage' },
-  { value: 'Utilities', label: 'Utilities' },
-  { value: 'Phone', label: 'Phone' },
-  { value: 'Internet', label: 'Internet' },
-  { value: 'Insurance', label: 'Insurance' },
-  { value: 'Groceries', label: 'Groceries' },
-  { value: 'Transportation', label: 'Transportation' },
-  { value: 'Gas', label: 'Gas' },
-  { value: 'Car Payment', label: 'Car Payment' },
-  { value: 'Entertainment', label: 'Entertainment' },
-  { value: 'Dining Out', label: 'Dining Out' },
-  { value: 'Healthcare', label: 'Healthcare' },
-  { value: 'Savings', label: 'Savings' },
-  { value: 'Investments', label: 'Investments' },
-  { value: 'Debt Payment', label: 'Debt Payment' },
-];
 
 const FREQUENCY_OPTIONS = [
   { value: 'monthly', label: 'Monthly' },
@@ -129,15 +109,16 @@ export function ExpenseForm({ onSubmit, onCancel, initialData, onCreateAnother }
   return (
     <Form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} error={error ?? undefined}>
       <FormGroup>
-        <Autocomplete
+        <Input
+          type="text"
           label="Expense Name"
           id="name"
           value={formData.name}
-          onChange={(value) => setFormData({ ...formData, name: value })}
-          options={EXPENSE_NAME_OPTIONS.map(option => option.label)}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           required
           fullWidth
-          helperText="Select or type the expense you want to add"
+          helperText="Enter the name of the expense"
+          autoComplete='off'
         />
 
         <Input
