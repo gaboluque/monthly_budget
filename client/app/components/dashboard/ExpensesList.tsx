@@ -1,6 +1,8 @@
-import { Loader2, Check, Calendar, ArrowUpDown, ChevronDown, ChevronUp, Filter } from "lucide-react"
+import { Loader2, Check, Calendar, ArrowUpDown, ChevronDown, ChevronUp, Filter, Building2, ChevronRight } from "lucide-react"
 import type { Expense } from "../../lib/types/expenses"
 import { ExpenseItem } from "./ExpenseItem"
+import { formatCurrency } from "../../lib/utils/currency"
+import { useState } from "react"
 
 type SortField = "category" | "amount"
 type SortDirection = "asc" | "desc"
@@ -19,6 +21,64 @@ interface ExpensesListProps {
   isPending: boolean
 }
 
+interface ExpenseDestinationGroupProps {
+  destination: string
+  expenses: Expense[]
+  markingExpensed: string | null
+  isPending: boolean
+  onAction: (id: string) => Promise<void>
+  isExpanded: boolean
+  onToggle: () => void
+}
+
+function ExpenseDestinationGroup({ 
+  destination, 
+  expenses, 
+  markingExpensed, 
+  isPending, 
+  onAction,
+  isExpanded,
+  onToggle 
+}: ExpenseDestinationGroupProps) {
+  const totalAmount = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+
+  return (
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <button 
+        onClick={onToggle}
+        className="w-full bg-gray-50 px-4 py-3 flex items-center justify-between hover:bg-gray-100 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          {isExpanded ? (
+            <ChevronDown className="w-4 h-4 text-gray-500" />
+          ) : (
+            <ChevronRight className="w-4 h-4 text-gray-500" />
+          )}
+          <Building2 className="w-4 h-4 text-gray-500" />
+          <h3 className="text-sm font-medium text-gray-900">{destination}</h3>
+          <span className="text-xs text-gray-500 ml-2">
+            {expenses.length} {expenses.length === 1 ? 'expense' : 'expenses'}
+          </span>
+        </div>
+        <div className="text-sm font-semibold text-gray-900">{formatCurrency(totalAmount)}</div>
+      </button>
+      {isExpanded && (
+        <div className="divide-y divide-gray-100">
+          {expenses.map((expense) => (
+            <ExpenseItem
+              key={expense.id}
+              expense={expense}
+              isMarking={markingExpensed === expense.id}
+              isPending={isPending}
+              onAction={onAction}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function ExpensesList({
   expenses,
   isLoading,
@@ -32,6 +92,41 @@ export function ExpensesList({
   getSortDescription,
   isPending,
 }: ExpensesListProps) {
+  // State to track expanded destinations
+  const [expandedDestinations, setExpandedDestinations] = useState<Set<string>>(new Set())
+
+  // Toggle destination expansion
+  const toggleDestination = (destination: string) => {
+    setExpandedDestinations((prev) => {
+      const next = new Set(prev)
+      if (next.has(destination)) {
+        next.delete(destination)
+      } else {
+        next.add(destination)
+      }
+      return next
+    })
+  }
+
+  // Group expenses by destination
+  const expensesByDestination = expenses.reduce<Record<string, Expense[]>>((groups, expense) => {
+    const destination = expense.destination || "Other"
+    if (!groups[destination]) {
+      groups[destination] = []
+    }
+    groups[destination].push(expense)
+    return groups
+  }, {})
+
+  // Sort destinations by total amount
+  const sortedDestinations = Object.entries(expensesByDestination)
+    .sort(([, expensesA], [, expensesB]) => {
+      const totalA = expensesA.reduce((sum, exp) => sum + exp.amount, 0)
+      const totalB = expensesB.reduce((sum, exp) => sum + exp.amount, 0)
+      return totalB - totalA
+    })
+    .map(([destination]) => destination)
+
   return (
     <div>
       <div className="flex flex-col mb-6 pb-6 border-b">
@@ -146,14 +241,17 @@ export function ExpensesList({
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {expenses.map((expense) => (
-            <ExpenseItem
-              key={expense.id}
-              expense={expense}
-              isMarking={markingExpensed === expense.id}
+        <div className="space-y-6">
+          {sortedDestinations.map((destination) => (
+            <ExpenseDestinationGroup
+              key={destination}
+              destination={destination}
+              expenses={expensesByDestination[destination]}
+              markingExpensed={markingExpensed}
               isPending={isPending}
               onAction={onAction}
+              isExpanded={expandedDestinations.has(destination)}
+              onToggle={() => toggleDestination(destination)}
             />
           ))}
         </div>
