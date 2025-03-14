@@ -15,6 +15,7 @@ export interface Account {
   account_type: AccountType;
   currency: Currency;
   description?: string;
+  is_owned: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -25,6 +26,7 @@ export interface CreateAccountData {
   account_type: AccountType;
   currency: Currency;
   description?: string;
+  is_owned?: boolean;
 }
 
 export interface UpdateAccountData extends Partial<CreateAccountData> {}

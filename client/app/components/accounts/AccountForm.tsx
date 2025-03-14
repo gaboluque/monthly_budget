@@ -23,9 +23,10 @@ export function AccountForm({
   const [formData, setFormData] = useState<CreateAccountData>({
     name: initialData?.name ?? '',
     balance: initialData?.balance ?? 0,
-    account_type: initialData?.account_type ?? 'Checking',
-    currency: initialData?.currency ?? 'USD',
+    account_type: initialData?.account_type ?? accountTypes[0],
+    currency: initialData?.currency ?? currencies[0],
     description: initialData?.description ?? '',
+    is_owned: initialData?.is_owned ?? true,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -135,6 +136,18 @@ export function AccountForm({
             Optional description for this account
           </p>
         </div>
+
+        <FormGroup>
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={formData.is_owned}
+              onChange={(e) => setFormData({ ...formData, is_owned: e.target.checked })}
+              className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            />
+            <span className="text-sm text-gray-700">I own this account</span>
+          </label>
+        </FormGroup>
       </FormGroup>
 
       <FormActions>

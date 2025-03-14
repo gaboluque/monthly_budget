@@ -61,7 +61,7 @@ module Api
       end
 
       def account_params
-        params.require(:account).permit(:name, :balance, :account_type, :currency, :description)
+        params.require(:account).permit(:name, :balance, :account_type, :currency, :description, :is_owned)
       end
     end
   end
