@@ -11,6 +11,7 @@ interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
   onCancel: () => void;
   initialData?: Expense;
+  onCreateAnother?: () => void;
 }
 
 const EXPENSE_NAME_OPTIONS = [
@@ -54,11 +55,11 @@ const parseCurrencyInput = (value: string): number => {
   return Number(parts.join('.')) || 0;
 };
 
-export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProps) {
+export function ExpenseForm({ onSubmit, onCancel, initialData, onCreateAnother }: ExpenseFormProps) {
   const [formData, setFormData] = useState<CreateExpenseData>({
-    name: initialData?.name ?? 'Rent',
+    name: initialData?.name ?? '',
     amount: initialData?.amount ?? 0,
-    category: initialData?.category ?? 'Needs',
+    category: initialData?.category ?? '',
     destination: initialData?.destination ?? '',
     frequency: initialData?.frequency ?? 'monthly',
   });
@@ -96,12 +97,24 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
     setDisplayAmount(formatCurrency(formData.amount));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (createAnother: boolean = false) => {
     setIsSubmitting(true);
     setError(null);
     
     try {
       await onSubmit(formData);
+      if (createAnother && onCreateAnother) {
+        onCreateAnother();
+        // Reset form data
+        setFormData({
+          name: '',
+          amount: 0,
+          category: '',
+          destination: '',
+          frequency: 'monthly',
+        });
+        setDisplayAmount(formatCurrency(0));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
     } finally {
@@ -110,7 +123,7 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
   };
 
   return (
-    <Form onSubmit={handleSubmit} error={error ?? undefined}>
+    <Form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} error={error ?? undefined}>
       <FormGroup>
         <Autocomplete
           label="Expense Name"
@@ -177,6 +190,15 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
+        {!initialData?.id && onCreateAnother && (
+          <Button 
+            type="button" 
+            disabled={isSubmitting}
+            onClick={() => handleSubmit(true)}
+          >
+            {isSubmitting ? 'Saving...' : 'Create & Add Another'}
+          </Button>
+        )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
         </Button>

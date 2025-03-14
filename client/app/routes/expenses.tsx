@@ -39,14 +39,33 @@ export default function Expenses() {
     try {
       if (selectedExpense?.id) {
         await updateExpense(selectedExpense.id, data)
+        setIsModalOpen(false)
+        setSelectedExpense(null)
       } else {
         await createExpense(data)
+        // Don't close the modal if we're creating another
+        if (!isModalOpen) {
+          setIsModalOpen(false)
+          setSelectedExpense(null)
+        }
       }
-      setIsModalOpen(false)
-      setSelectedExpense(null)
     } catch (error) {
       console.error("Failed to save expense:", error)
     }
+  }
+
+  const handleCreateAnother = () => {
+    // Reset the form with a new empty expense
+    setSelectedExpense({
+      id: "",
+      name: "",
+      amount: 0,
+      category: "",
+      destination: "",
+      frequency: "monthly",
+      created_at: "",
+      updated_at: "",
+    })
   }
 
   const toggleCategory = (category: string) => {
@@ -147,6 +166,7 @@ export default function Expenses() {
             setIsModalOpen(false)
             setSelectedExpense(null)
           }}
+          onCreateAnother={handleCreateAnother}
         />
       </Modal>
     </Layout>
