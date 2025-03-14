@@ -40,16 +40,16 @@ export function FinancialSummary({ summaryData }: FinancialSummaryProps) {
             <TrendingUp className={`w-5 h-5 ${summaryData.balance >= 0 ? "text-green-500" : "text-red-500"}`} />
           </div>
           <p className={`text-2xl font-bold ${summaryData.balance >= 0 ? "text-green-900" : "text-red-900"}`}>
-            {formatCurrency(summaryData.balance)}
+            {formatCurrency(summaryData.balance, false)}
           </p>
           <div className="mt-4 pt-4 border-t border-dashed border-gray-200 flex justify-between md:justify-start gap-4">
             <div>
               <p className="text-xs text-gray-500">Income</p>
-              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalIncome)}</p>
+              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalIncome, false)}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Expenses</p>
-              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalExpenses)}</p>
+              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalExpenses, false)}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Pending</p>
