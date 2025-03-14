@@ -16,7 +16,7 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
   const iconColor = isPending ? "text-blue-600" : "text-green-600"
   const buttonBgColor = isPending ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
   const ActionIcon = isPending ? Check : Undo
-  const actionText = isPending ? "Mark as Paid" : "Unmark as Paid"
+  const actionText = isPending ? "Mark as Paid" : "Mark as Pending"
   const categoryColor = CATEGORY_COLORS[expense.category] || "#6b7280"
 
   return (
@@ -80,7 +80,6 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
                 >
                   {expense.category}
                 </span>
-                {expense.destination && <span className="text-xs text-gray-500 ml-2 w-24">{expense.destination}</span>}
               </div>
             </div>
           </div>

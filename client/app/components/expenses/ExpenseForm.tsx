@@ -5,32 +5,14 @@ import { Form, FormGroup, FormActions } from '../forms/Form';
 import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
 import { expensesApi } from '../../lib/api/expenses';
 import { formatCurrency } from '../../lib/utils/currency';
-import { Autocomplete } from '../forms/Autocomplete';
+import { ui } from '../../lib/ui/manager';
 
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
   onCancel: () => void;
   initialData?: Expense;
+  onCreateAnother?: () => void;
 }
-
-const EXPENSE_NAME_OPTIONS = [
-  { value: 'Rent', label: 'Rent' },
-  { value: 'Mortgage', label: 'Mortgage' },
-  { value: 'Utilities', label: 'Utilities' },
-  { value: 'Phone', label: 'Phone' },
-  { value: 'Internet', label: 'Internet' },
-  { value: 'Insurance', label: 'Insurance' },
-  { value: 'Groceries', label: 'Groceries' },
-  { value: 'Transportation', label: 'Transportation' },
-  { value: 'Gas', label: 'Gas' },
-  { value: 'Car Payment', label: 'Car Payment' },
-  { value: 'Entertainment', label: 'Entertainment' },
-  { value: 'Dining Out', label: 'Dining Out' },
-  { value: 'Healthcare', label: 'Healthcare' },
-  { value: 'Savings', label: 'Savings' },
-  { value: 'Investments', label: 'Investments' },
-  { value: 'Debt Payment', label: 'Debt Payment' },
-];
 
 const FREQUENCY_OPTIONS = [
   { value: 'monthly', label: 'Monthly' },
@@ -54,11 +36,11 @@ const parseCurrencyInput = (value: string): number => {
   return Number(parts.join('.')) || 0;
 };
 
-export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProps) {
+export function ExpenseForm({ onSubmit, onCancel, initialData, onCreateAnother }: ExpenseFormProps) {
   const [formData, setFormData] = useState<CreateExpenseData>({
-    name: initialData?.name ?? 'Rent',
+    name: initialData?.name ?? '',
     amount: initialData?.amount ?? 0,
-    category: initialData?.category ?? 'Needs',
+    category: initialData?.category ?? '',
     destination: initialData?.destination ?? '',
     frequency: initialData?.frequency ?? 'monthly',
   });
@@ -73,7 +55,10 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
         const data = await expensesApi.getCategories();
         setCategories(data);
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
+        ui.notify({
+          message: 'Failed to fetch categories',
+          type: 'error',
+        });
       }
     };
     fetchCategories();
@@ -96,12 +81,24 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
     setDisplayAmount(formatCurrency(formData.amount));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (createAnother: boolean = false) => {
     setIsSubmitting(true);
     setError(null);
     
     try {
       await onSubmit(formData);
+      if (createAnother && onCreateAnother) {
+        onCreateAnother();
+        // Reset form data
+        setFormData({
+          name: '',
+          amount: 0,
+          category: '',
+          destination: '',
+          frequency: 'monthly',
+        });
+        setDisplayAmount(formatCurrency(0));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
     } finally {
@@ -110,17 +107,18 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
   };
 
   return (
-    <Form onSubmit={handleSubmit} error={error ?? undefined}>
+    <Form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} error={error ?? undefined}>
       <FormGroup>
-        <Autocomplete
+        <Input
+          type="text"
           label="Expense Name"
           id="name"
           value={formData.name}
-          onChange={(value) => setFormData({ ...formData, name: value })}
-          options={EXPENSE_NAME_OPTIONS.map(option => option.label)}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           required
           fullWidth
-          helperText="Select or type the expense you want to add"
+          helperText="Enter the name of the expense"
+          autoComplete='off'
         />
 
         <Input
@@ -177,6 +175,15 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
+        {!initialData?.id && onCreateAnother && (
+          <Button 
+            type="button" 
+            disabled={isSubmitting}
+            onClick={() => handleSubmit(true)}
+          >
+            {isSubmitting ? 'Saving...' : 'Create & Add Another'}
+          </Button>
+        )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
         </Button>

@@ -9,7 +9,8 @@ import { ExpenseSummary } from "../components/expenses/ExpenseSummary"
 import { ExpenseCategory } from "../components/expenses/ExpenseCategory"
 import { useExpenses } from "../hooks/useExpenses"
 import type { Expense, CreateExpenseData } from "../lib/types/expenses"
-import { Loader2, AlertCircle, PlusCircle } from "lucide-react"
+import { Loader2, PlusCircle } from "lucide-react"
+import { ui } from "../lib/ui/manager"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Expenses | Monthly Budget" }, { name: "description", content: "Manage your monthly expenses" }]
@@ -19,7 +20,7 @@ export default function Expenses() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
-  const { expenses, categories, error, isLoading, totalExpenses, expensesByCategory, createExpense, updateExpense, deleteExpense } = useExpenses()
+  const { expenses, categories, isLoading, totalExpenses, expensesByCategory, createExpense, updateExpense, deleteExpense } = useExpenses()
 
   // Initialize all categories as collapsed when they're loaded
   useEffect(() => {
@@ -39,14 +40,36 @@ export default function Expenses() {
     try {
       if (selectedExpense?.id) {
         await updateExpense(selectedExpense.id, data)
+        setIsModalOpen(false)
+        setSelectedExpense(null)
       } else {
         await createExpense(data)
+        // Don't close the modal if we're creating another
+        if (!isModalOpen) {
+          setIsModalOpen(false)
+          setSelectedExpense(null)
+        }
       }
-      setIsModalOpen(false)
-      setSelectedExpense(null)
     } catch (error) {
-      console.error("Failed to save expense:", error)
+      ui.notify({
+        message: "Failed to save expense",
+        type: "error",
+      });
     }
+  }
+
+  const handleCreateAnother = () => {
+    // Reset the form with a new empty expense
+    setSelectedExpense({
+      id: "",
+      name: "",
+      amount: 0,
+      category: "",
+      destination: "",
+      frequency: "monthly",
+      created_at: "",
+      updated_at: "",
+    })
   }
 
   const toggleCategory = (category: string) => {
@@ -70,18 +93,30 @@ export default function Expenses() {
     setIsModalOpen(true)
   }
 
+  const handleDeleteExpense = (id: string) => {
+    const expense = expenses.find(e => e.id === id)
+    if (!expense) return
+
+    ui.confirm({
+      title: "Delete Expense",
+      message: `Are you sure you want to delete "${expense.name}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      confirmVariant: "danger",
+      onConfirm: async () => {
+        await deleteExpense(id)
+        ui.notify({
+          type: "success",
+          message: `"${expense.name}" has been deleted successfully`
+        })
+      }
+    })
+  }
+
   return (
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
         <ExpenseHeader onAddExpense={() => handleAddExpense()} />
-
-        {/* Error message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
 
         {/* Summary Cards */}
         {!isLoading && expenses.length > 0 && (
@@ -125,7 +160,7 @@ export default function Expenses() {
                   setSelectedExpense(expense)
                   setIsModalOpen(true)
                 }}
-                onDeleteExpense={deleteExpense}
+                onDeleteExpense={handleDeleteExpense}
               />
             ))}
           </div>
@@ -147,6 +182,7 @@ export default function Expenses() {
             setIsModalOpen(false)
             setSelectedExpense(null)
           }}
+          onCreateAnother={handleCreateAnother}
         />
       </Modal>
     </Layout>

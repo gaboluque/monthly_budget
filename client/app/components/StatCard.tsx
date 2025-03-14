@@ -46,7 +46,7 @@ export function StatCard({
         <IconSecondary className={`w-4 h-4 ${classes.icon}`} />
       </div>
       <p className={`text-2xl font-bold ${classes.amount} mt-2`}>
-        {formatCurrency(amount)}
+        {formatCurrency(amount, false)}
       </p>
       <p className={`text-xs ${classes.description} mt-1`}>{description}</p>
     </div>

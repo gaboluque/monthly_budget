@@ -8,9 +8,9 @@ import { IncomeSummary } from "../components/incomes/IncomeSummary"
 import { IncomeItem } from "../components/incomes/IncomeItem"
 import { useIncomes } from "../hooks/useIncomes"
 import type { Income, CreateIncomeData } from "../lib/types/incomes"
-import { Loader2, AlertCircle, DollarSign, PlusCircle } from "lucide-react"
+import { Loader2, DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/Button"
-
+import { ui } from "../lib/ui/manager"
 export const meta: MetaFunction = () => {
   return [{ title: "Incomes | Monthly Budget" }, { name: "description", content: "Manage your income sources" }]
 }
@@ -18,7 +18,7 @@ export const meta: MetaFunction = () => {
 export default function Incomes() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedIncome, setSelectedIncome] = useState<Income | null>(null)
-  const { incomes, error, isLoading, totalIncome, createIncome, updateIncome, deleteIncome } = useIncomes()
+  const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome } = useIncomes()
 
   const handleSubmit = async (data: CreateIncomeData) => {
     try {
@@ -30,7 +30,10 @@ export default function Incomes() {
       setIsModalOpen(false)
       setSelectedIncome(null)
     } catch (error) {
-      console.error("Failed to save income:", error)
+      ui.notify({
+        message: "Failed to save income",
+        type: "error",
+      });
     }
   }
 
@@ -43,14 +46,6 @@ export default function Incomes() {
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
         <IncomeHeader onAddIncome={handleAddIncome} />
-
-        {/* Error message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
 
         {/* Summary Cards */}
         {!isLoading && incomes.length > 0 && (

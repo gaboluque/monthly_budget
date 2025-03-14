@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node"
 import { Layout } from "../components/Layout"
 import { FinancialSummary } from "../components/dashboard/FinancialSummary"
-import { ExpensesTabs } from "../components/dashboard/ExpensesTabs"
+import { ExpensesList } from "../components/dashboard/ExpensesList"
 import { useDashboard } from "../hooks/useDashboard"
 
 export const meta: MetaFunction = () => {
@@ -13,7 +13,6 @@ export default function Dashboard() {
     pendingExpenses,
     expensedExpenses,
     isLoading,
-    error,
     markingExpensed,
     summaryData,
     sortField,
@@ -31,12 +30,11 @@ export default function Dashboard() {
       {/* Financial Summary Section */}
       <FinancialSummary summaryData={summaryData} />
 
-      {/* Expenses Tabs Section */}
-      <ExpensesTabs
+      {/* Expenses List Section */}
+      <ExpensesList
         pendingExpenses={pendingExpenses}
         expensedExpenses={expensedExpenses}
         isLoading={isLoading}
-        error={error}
         markingExpensed={markingExpensed}
         sortField={sortField}
         sortDirection={sortDirection}
