@@ -5,11 +5,11 @@ import type {
   CreateExpenseData,
   ExpensesByCategory,
 } from "../lib/types/expenses";
+import { ui } from "../lib/ui/manager";
 
 export function useExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const totalExpenses = useMemo(() => {
@@ -32,7 +32,10 @@ export function useExpenses() {
       const data = await expensesApi.getAll();
       setExpenses(data);
     } catch (error) {
-      setError("Failed to fetch expenses");
+      ui.notify({
+        message: "Failed to fetch expenses",
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -43,7 +46,10 @@ export function useExpenses() {
       const data = await expensesApi.getCategories();
       setCategories(data);
     } catch (error) {
-      console.error("Failed to fetch categories:", error);
+      ui.notify({
+        message: "Failed to fetch categories",
+        type: "error",
+      });
     }
   };
 
@@ -53,7 +59,10 @@ export function useExpenses() {
       await fetchExpenses();
       return true;
     } catch (error) {
-      setError("Failed to create expense");
+      ui.notify({
+        message: "Failed to create expense",
+        type: "error",
+      });
       return false;
     }
   };
@@ -64,7 +73,10 @@ export function useExpenses() {
       await fetchExpenses();
       return true;
     } catch (error) {
-      setError("Failed to update expense");
+      ui.notify({
+        message: "Failed to update expense",
+        type: "error",
+      });
       return false;
     }
   };
@@ -75,7 +87,10 @@ export function useExpenses() {
       await fetchExpenses();
       return true;
     } catch (error) {
-      setError("Failed to delete expense");
+      ui.notify({
+        message: "Failed to delete expense",
+        type: "error",
+      });
       return false;
     }
   };
@@ -88,13 +103,11 @@ export function useExpenses() {
   return {
     expenses,
     categories,
-    error,
     isLoading,
     totalExpenses,
     expensesByCategory,
     createExpense,
     updateExpense,
     deleteExpense,
-    clearError: () => setError(null),
   };
 }

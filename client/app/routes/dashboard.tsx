@@ -13,7 +13,6 @@ export default function Dashboard() {
     pendingExpenses,
     expensedExpenses,
     isLoading,
-    error,
     markingExpensed,
     summaryData,
     sortField,
@@ -36,7 +35,6 @@ export default function Dashboard() {
         pendingExpenses={pendingExpenses}
         expensedExpenses={expensedExpenses}
         isLoading={isLoading}
-        error={error}
         markingExpensed={markingExpensed}
         sortField={sortField}
         sortDirection={sortDirection}

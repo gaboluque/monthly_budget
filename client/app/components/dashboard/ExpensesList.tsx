@@ -1,4 +1,4 @@
-import { Loader2, AlertCircle, Check, Calendar, ArrowUpDown, ChevronDown, ChevronUp, Filter } from "lucide-react"
+import { Loader2, Check, Calendar, ArrowUpDown, ChevronDown, ChevronUp, Filter } from "lucide-react"
 import type { Expense } from "../../lib/types/expenses"
 import { ExpenseItem } from "./ExpenseItem"
 
@@ -8,7 +8,6 @@ type SortDirection = "asc" | "desc"
 interface ExpensesListProps {
   expenses: Expense[]
   isLoading: boolean
-  error: string | null
   markingExpensed: string | null
   sortField: SortField
   sortDirection: SortDirection
@@ -23,7 +22,6 @@ interface ExpensesListProps {
 export function ExpensesList({
   expenses,
   isLoading,
-  error,
   markingExpensed,
   sortField,
   sortDirection,
@@ -129,13 +127,6 @@ export function ExpensesList({
           </div>
         )}
       </div>
-
-      {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-700">{error}</p>
-        </div>
-      )}
 
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">

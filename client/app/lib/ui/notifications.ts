@@ -20,6 +20,11 @@ export class NotificationsManager {
     const id = `notification-${++this.counter}`;
     this.notifications = [...this.notifications, { ...options, id }];
     this.notifySubscribers();
+
+    if (options.type === "error") {
+      console.error(options.message);
+    }
+
     return id;
   }
 

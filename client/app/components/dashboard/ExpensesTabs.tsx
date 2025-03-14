@@ -7,7 +7,6 @@ interface ExpensesTabsProps {
   pendingExpenses: Expense[]
   expensedExpenses: Expense[]
   isLoading: boolean
-  error: string | null
   markingExpensed: string | null
   sortField: "category" | "amount"
   sortDirection: "asc" | "desc"
@@ -23,7 +22,6 @@ export function ExpensesTabs({
   pendingExpenses,
   expensedExpenses,
   isLoading,
-  error,
   markingExpensed,
   sortField,
   sortDirection,
@@ -62,7 +60,6 @@ export function ExpensesTabs({
           <ExpensesList
             expenses={pendingExpenses}
             isLoading={isLoading}
-            error={error}
             markingExpensed={markingExpensed}
             sortField={sortField}
             sortDirection={sortDirection}
@@ -77,7 +74,6 @@ export function ExpensesTabs({
           <ExpensesList
             expenses={expensedExpenses}
             isLoading={isLoading}
-            error={error}
             markingExpensed={markingExpensed}
             sortField={sortField}
             sortDirection={sortDirection}

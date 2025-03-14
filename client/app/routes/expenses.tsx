@@ -9,8 +9,8 @@ import { ExpenseSummary } from "../components/expenses/ExpenseSummary"
 import { ExpenseCategory } from "../components/expenses/ExpenseCategory"
 import { useExpenses } from "../hooks/useExpenses"
 import type { Expense, CreateExpenseData } from "../lib/types/expenses"
-import { Loader2, AlertCircle, PlusCircle } from "lucide-react"
-import { ui } from "../lib/ui"
+import { Loader2, PlusCircle } from "lucide-react"
+import { ui } from "../lib/ui/manager"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Expenses | Monthly Budget" }, { name: "description", content: "Manage your monthly expenses" }]
@@ -20,7 +20,7 @@ export default function Expenses() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
-  const { expenses, categories, error, isLoading, totalExpenses, expensesByCategory, createExpense, updateExpense, deleteExpense } = useExpenses()
+  const { expenses, categories, isLoading, totalExpenses, expensesByCategory, createExpense, updateExpense, deleteExpense } = useExpenses()
 
   // Initialize all categories as collapsed when they're loaded
   useEffect(() => {
@@ -51,7 +51,10 @@ export default function Expenses() {
         }
       }
     } catch (error) {
-      console.error("Failed to save expense:", error)
+      ui.notify({
+        message: "Failed to save expense",
+        type: "error",
+      });
     }
   }
 
@@ -114,14 +117,6 @@ export default function Expenses() {
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
         <ExpenseHeader onAddExpense={() => handleAddExpense()} />
-
-        {/* Error message */}
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 p-4 rounded-lg flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-red-700">{error}</p>
-          </div>
-        )}
 
         {/* Summary Cards */}
         {!isLoading && expenses.length > 0 && (

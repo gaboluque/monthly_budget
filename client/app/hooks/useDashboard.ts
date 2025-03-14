@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { expensesApi } from "../lib/api/expenses";
 import { incomesApi } from "../lib/api/incomes";
 import type { Expense } from "../lib/types/expenses";
-
+import { ui } from "../lib/ui/manager";
 type SortField = "category" | "amount";
 type SortDirection = "asc" | "desc";
 
@@ -10,7 +10,6 @@ export function useDashboard() {
   const [pendingExpenses, setPendingExpenses] = useState<Expense[]>([]);
   const [expensedExpenses, setExpensedExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [markingExpensed, setMarkingExpensed] = useState<string | null>(null);
   const [summaryData, setSummaryData] = useState({
     totalIncome: 0,
@@ -37,8 +36,10 @@ export function useDashboard() {
       setPendingExpenses(pending);
       setExpensedExpenses(expensed);
     } catch (err) {
-      setError("Failed to load expenses");
-      console.error("Error fetching expenses:", err);
+      ui.notify({
+        message: "Failed to load expenses",
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +92,10 @@ export function useDashboard() {
         expensesByCategory,
       });
     } catch (err) {
-      console.error("Error fetching summary data:", err);
+      ui.notify({
+        message: "Failed to fetch summary data",
+        type: "error",
+      });
     }
   };
 
@@ -102,8 +106,10 @@ export function useDashboard() {
       await fetchExpenses(); // Refresh both lists
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
-      setError("Failed to mark expense as expensed");
-      console.error("Error marking expense as expensed:", err);
+      ui.notify({
+        message: "Failed to mark expense as expensed",
+        type: "error",
+      });
     } finally {
       setMarkingExpensed(null);
     }
@@ -116,8 +122,10 @@ export function useDashboard() {
       await fetchExpenses(); // Refresh both lists
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
-      setError("Failed to unmark expense");
-      console.error("Error unmarking expense:", err);
+      ui.notify({
+        message: "Failed to unmark expense",
+        type: "error",
+      });
     } finally {
       setMarkingExpensed(null);
     }
@@ -168,7 +176,6 @@ export function useDashboard() {
     pendingExpenses: sortExpenses(pendingExpenses),
     expensedExpenses: sortExpenses(expensedExpenses),
     isLoading,
-    error,
     markingExpensed,
     summaryData,
     sortField,

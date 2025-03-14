@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from '@remix-run/react';
 import type { MetaFunction } from '@remix-run/node';
 import { LoginForm } from '../components/LoginForm';
 import { isAuthenticated, setToken } from '../lib/utils/auth';
 import { authApi } from '../lib/api/auth';
+import { ui } from '../lib/ui/manager';
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,7 +17,6 @@ export default function Login() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const returnUrl = searchParams.get('returnUrl') || '/dashboard';
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
@@ -33,7 +33,10 @@ export default function Login() {
       setToken(data.jwt);
       navigate(returnUrl);
     } else {
-      setLoginError(data.error || 'Something went wrong');
+      ui.notify({
+        message: data.error || 'Something went wrong',
+        type: 'error',
+      });
     }
   };
 
@@ -50,13 +53,6 @@ export default function Login() {
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white p-8 rounded-lg shadow-md">
             <LoginForm onSubmit={handleSubmit} />
-
-
-            {loginError && (
-              <div className="mt-4 text-center text-sm text-red-600">
-                {loginError}
-              </div>
-            )}
           </div>
         </div>
       </div>

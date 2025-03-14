@@ -1,10 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { incomesApi } from "../lib/api/incomes";
 import type { Income, CreateIncomeData } from "../lib/types/incomes";
+import { ui } from "../lib/ui/manager";
 
 export function useIncomes() {
   const [incomes, setIncomes] = useState<Income[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const totalIncome = useMemo(() => {
@@ -17,7 +17,10 @@ export function useIncomes() {
       const data = await incomesApi.getAll();
       setIncomes(data);
     } catch (error) {
-      setError("Failed to fetch incomes");
+      ui.notify({
+        message: "Failed to fetch incomes",
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -29,7 +32,10 @@ export function useIncomes() {
       await fetchIncomes();
       return true;
     } catch (error) {
-      setError("Failed to create income");
+      ui.notify({
+        message: "Failed to create income",
+        type: "error",
+      });
       return false;
     }
   };
@@ -40,7 +46,10 @@ export function useIncomes() {
       await fetchIncomes();
       return true;
     } catch (error) {
-      setError("Failed to update income");
+      ui.notify({
+        message: "Failed to update income",
+        type: "error",
+      });
       return false;
     }
   };
@@ -51,7 +60,10 @@ export function useIncomes() {
       await fetchIncomes();
       return true;
     } catch (error) {
-      setError("Failed to delete income");
+      ui.notify({
+        message: "Failed to delete income",
+        type: "error",
+      });
       return false;
     }
   };
@@ -62,12 +74,10 @@ export function useIncomes() {
 
   return {
     incomes,
-    error,
     isLoading,
     totalIncome,
     createIncome,
     updateIncome,
     deleteIncome,
-    clearError: () => setError(null),
   };
 }

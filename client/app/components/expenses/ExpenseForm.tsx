@@ -6,6 +6,7 @@ import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
 import { expensesApi } from '../../lib/api/expenses';
 import { formatCurrency } from '../../lib/utils/currency';
 import { Autocomplete } from '../forms/Autocomplete';
+import { ui } from '../../lib/ui/manager';
 
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
@@ -74,7 +75,10 @@ export function ExpenseForm({ onSubmit, onCancel, initialData, onCreateAnother }
         const data = await expensesApi.getCategories();
         setCategories(data);
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
+        ui.notify({
+          message: 'Failed to fetch categories',
+          type: 'error',
+        });
       }
     };
     fetchCategories();
