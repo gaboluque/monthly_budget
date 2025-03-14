@@ -102,6 +102,10 @@ export default function Expenses() {
       confirmVariant: "danger",
       onConfirm: async () => {
         await deleteExpense(id)
+        ui.notify({
+          type: "success",
+          message: `"${expense.name}" has been deleted successfully`
+        })
       }
     })
   }

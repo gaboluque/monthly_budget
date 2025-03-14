@@ -4,10 +4,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  LiveReload,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
-import { ConfirmationRoot } from "./lib/ui";
+import { UIRoot } from "./lib/ui/components/UIRoot";
 
 import "./tailwind.css";
 
@@ -35,10 +34,9 @@ export default function App() {
       </head>
       <body>
         <Outlet />
-        <ConfirmationRoot />
+        <UIRoot />
         <ScrollRestoration />
         <Scripts />
-        <LiveReload />
       </body>
     </html>
   );
