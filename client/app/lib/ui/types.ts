@@ -13,6 +13,7 @@ export interface ConfirmOptions {
 export interface NotifyOptions {
   message: string;
   type?: "success" | "error" | "info" | "warning";
+  error?: Error;
 }
 
 export interface NotificationItem extends NotifyOptions {

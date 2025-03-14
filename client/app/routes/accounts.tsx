@@ -1,0 +1,137 @@
+import { useState } from "react";
+import type { MetaFunction } from "@remix-run/node";
+import { Layout } from "../components/Layout";
+import { Modal } from "../components/Modal";
+import { Loader2 } from "lucide-react";
+import { AccountHeader } from "../components/accounts/AccountHeader";
+import { AccountSummary } from "../components/accounts/AccountSummary";
+import { AccountList } from "../components/accounts/AccountList";
+import { EmptyAccountState } from "../components/accounts/EmptyAccountState";
+import { AccountForm } from "../components/accounts/AccountForm";
+import { useAccounts } from "../hooks/useAccounts";
+import { ui } from "../lib/ui/manager";
+import type { Account, CreateAccountData } from "../lib/types/accounts";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Accounts | Monthly Budget" },
+    { name: "description", content: "Manage your accounts" }
+  ];
+};
+
+export default function AccountsPage() {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
+  
+  const { 
+    accounts, 
+    accountTypes, 
+    currencies, 
+    isLoading, 
+    totalBalance, 
+    accountsByType,
+    createAccount,
+    updateAccount,
+    deleteAccount
+  } = useAccounts();
+
+  const handleAddAccount = async (data: CreateAccountData) => {
+    await createAccount(data);
+    setIsAddModalOpen(false);
+  };
+
+  const handleEditAccount = async (data: CreateAccountData) => {
+    if (!selectedAccount) return;
+
+    await updateAccount(selectedAccount.id, data);
+    setIsEditModalOpen(false);
+    setSelectedAccount(null);
+  };
+
+  const handleDeleteAccount = (account: Account) => {
+    ui.confirm({
+      title: "Delete Account",
+      message: `Are you sure you want to delete "${account.name}"? This action cannot be undone.`,
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      confirmVariant: "danger",
+      onConfirm: async () => {
+        await deleteAccount(account.id);
+      }
+    });
+  };
+
+  const openEditModal = (account: Account) => {
+    setSelectedAccount(account);
+    setIsEditModalOpen(true);
+  };
+
+  return (
+    <Layout>
+      <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+        <AccountHeader onAddAccount={() => setIsAddModalOpen(true)} />
+
+        {/* Account Summary */}
+        {!isLoading && accounts.length > 0 && (
+          <AccountSummary
+            totalBalance={totalBalance}
+            accountCount={accounts.length}
+            accountsByType={accountsByType}
+          />
+        )}
+
+        {/* Loading state */}
+        {isLoading ? (
+          <div className="py-12 flex justify-center items-center text-gray-500">
+            <Loader2 className="w-6 h-6 animate-spin mr-2" />
+            <span>Loading accounts...</span>
+          </div>
+        ) : accounts.length === 0 ? (
+          <EmptyAccountState onAddAccount={() => setIsAddModalOpen(true)} />
+        ) : (
+          <AccountList
+            accounts={accounts}
+            onEditAccount={openEditModal}
+            onDeleteAccount={handleDeleteAccount}
+          />
+        )}
+
+        {/* Add Account Modal */}
+        <Modal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          title="Add New Account"
+        >
+          <AccountForm
+            onSubmit={handleAddAccount}
+            onCancel={() => setIsAddModalOpen(false)}
+            accountTypes={accountTypes}
+            currencies={currencies}
+          />
+        </Modal>
+
+        {/* Edit Account Modal */}
+        <Modal
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            setSelectedAccount(null);
+          }}
+          title="Edit Account"
+        >
+          <AccountForm
+            initialData={selectedAccount ?? undefined}
+            onSubmit={handleEditAccount}
+            onCancel={() => {
+              setIsEditModalOpen(false);
+              setSelectedAccount(null);
+            }}
+            accountTypes={accountTypes}
+            currencies={currencies}
+          />
+        </Modal>
+      </div>
+    </Layout>
+  );
+} 

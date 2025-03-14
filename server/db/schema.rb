@@ -10,14 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_13_133327) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_14_213906) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.decimal "balance", precision: 15, scale: 2, null: false
+    t.string "account_type", null: false
+    t.string "currency", default: "COP", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
 
   create_table "expenses", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
-    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
     t.string "category", null: false
     t.string "destination", null: false
     t.string "frequency", null: false
@@ -32,7 +44,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_133327) do
   create_table "incomes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
-    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "amount", precision: 15, scale: 2, null: false
     t.string "frequency", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -47,6 +59,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_13_133327) do
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
+  add_foreign_key "accounts", "users"
   add_foreign_key "expenses", "users"
   add_foreign_key "incomes", "users"
 end

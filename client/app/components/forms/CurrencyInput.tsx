@@ -37,13 +37,13 @@ export function CurrencyInput({
   fullWidth = false,
   helperText
 }: CurrencyInputProps) {
-  const [displayValue, setDisplayValue] = useState(formatCurrency(value))
+  const [displayValue, setDisplayValue] = useState(formatCurrency(value, false))
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value
     const numericValue = parseCurrencyInput(rawValue)
     onChange(numericValue)
-    setDisplayValue(formatCurrency(numericValue))
+    setDisplayValue(formatCurrency(numericValue, false))
   }
 
   const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
@@ -52,7 +52,7 @@ export function CurrencyInput({
   }
 
   const handleBlur = () => {
-    setDisplayValue(formatCurrency(value))
+    setDisplayValue(formatCurrency(value, false))
   }
 
   return (
