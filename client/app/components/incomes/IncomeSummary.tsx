@@ -1,4 +1,4 @@
-import { BarChart2, TrendingUp } from "lucide-react"
+import { BarChart2 } from "lucide-react"
 import { StatCard } from "../StatCard"
 
 interface IncomeSummaryProps {
@@ -19,7 +19,6 @@ export function IncomeSummary({ totalIncome, incomeCount }: IncomeSummaryProps) 
           amount={totalIncome}
           description={`${incomeCount} income sources`}
           icon={BarChart2}
-          iconSecondary={TrendingUp}
           variant="green"
         />
       </div>

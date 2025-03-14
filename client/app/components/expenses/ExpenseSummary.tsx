@@ -1,4 +1,4 @@
-import { PieChart, CreditCard } from "lucide-react"
+import { PieChart } from "lucide-react"
 import { StatCard } from "../StatCard"
 import type { ExpensesByCategory } from "../../lib/types/expenses"
 import { CategoryDistribution } from "../CategoryDistribution"
@@ -33,7 +33,6 @@ export function ExpenseSummary({
           amount={totalExpenses}
           description={`${expenseCount} expenses`}
           icon={PieChart}
-          iconSecondary={CreditCard}
           variant="blue"
         />
         <div className="col-span-2 bg-white rounded-lg shadow p-4">

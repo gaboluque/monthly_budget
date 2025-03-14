@@ -6,7 +6,6 @@ interface StatCardProps {
   amount: number
   description: string
   icon: LucideIcon
-  iconSecondary: LucideIcon
   variant?: 'green' | 'blue'
 }
 
@@ -15,7 +14,6 @@ export function StatCard({
   amount, 
   description, 
   icon: Icon,
-  iconSecondary: IconSecondary,
   variant = 'blue' 
 }: StatCardProps) {
   const variantClasses = {
@@ -43,7 +41,9 @@ export function StatCard({
     <div className={`${classes.bg} border ${classes.border} rounded-lg p-4 h-32`}>
       <div className="flex items-center justify-between">
         <h4 className={`text-sm font-medium ${classes.title}`}>{title}</h4>
-        <IconSecondary className={`w-4 h-4 ${classes.icon}`} />
+        <div className="flex gap-2">
+          <Icon className={`w-4 h-4 ${classes.icon}`} />
+        </div>
       </div>
       <p className={`text-2xl font-bold ${classes.amount} mt-2`}>
         {formatCurrency(amount, false)}
