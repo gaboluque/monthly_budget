@@ -1,30 +1,29 @@
-require 'httparty'
-require 'json'
+require "httparty"
+require "json"
 
-module ChatGPT
+module ChatGpt
   class Client
     include HTTParty
-    base_uri 'https://api.openai.com/v1'
+    base_uri "https://api.openai.com/v1"
 
     def initialize(api_key = nil)
-      @api_key = api_key || ENV['OPENAI_API_KEY']
-      raise 'OpenAI API key is required' unless @api_key
+      @api_key = api_key || ENV["OPENAI_API_KEY"]
+      raise "OpenAI API key is required" unless @api_key
 
       self.class.default_options.merge!(
         headers: {
-          'Content-Type' => 'application/json',
-          'Authorization' => "Bearer #{@api_key}"
+          "Content-Type" => "application/json",
+          "Authorization" => "Bearer #{@api_key}"
         }
       )
     end
 
-    def get_completion(messages, model: 'gpt-3.5-turbo', temperature: 0.7)
+    def get_completion(messages, model: "gpt-4o")
       response = self.class.post(
-        '/chat/completions',
+        "/chat/completions",
         body: {
           model: model,
           messages: messages,
-          temperature: temperature
         }.to_json
       )
 
@@ -37,11 +36,11 @@ module ChatGPT
       case response.code
       when 200
         parsed_response = JSON.parse(response.body)
-        parsed_response.dig('choices', 0, 'message', 'content')
+        parsed_response.dig("choices", 0, "message", "content")
       when 401
-        raise 'Invalid API key'
+        raise "Invalid API key"
       when 429
-        raise 'Rate limit exceeded'
+        raise "Rate limit exceeded"
       else
         raise "OpenAI API error: #{response.code} - #{response.body}"
       end

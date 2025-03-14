@@ -1,0 +1,1 @@
+export type Insight = string;
