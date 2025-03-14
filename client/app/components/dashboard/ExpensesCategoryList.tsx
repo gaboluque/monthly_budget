@@ -1,23 +1,15 @@
-import { Loader2, Check, Calendar, ArrowUpDown, ChevronDown, ChevronUp, Filter, Building2, ChevronRight } from "lucide-react"
+import { Loader2, Check, Calendar, ChevronDown, Building2, ChevronRight, Hourglass } from "lucide-react"
 import type { Expense } from "../../lib/types/expenses"
 import { ExpenseItem } from "./ExpenseItem"
 import { formatCurrency } from "../../lib/utils/currency"
 import { useMemo, useState } from "react"
 
-type SortField = "category" | "amount"
-type SortDirection = "asc" | "desc"
 
 interface ExpensesListProps {
   expenses: Expense[]
   isLoading: boolean
   markingExpensed: string | null
-  sortField: SortField
-  sortDirection: SortDirection
-  showSortOptions: boolean
-  setShowSortOptions: (show: boolean) => void
   onAction: (id: string) => Promise<void>
-  handleSortChange: (field: SortField) => void
-  getSortDescription: () => string
   isPending: boolean
 }
 
@@ -39,6 +31,10 @@ function ExpenseDestinationGroup({
   onToggle 
 }: ExpenseDestinationGroupProps) {
   const totalAmount = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
+  
+  // Calculate pending and expensed counts
+  const expensedCount = expenses.filter(expense => expense.last_expensed_at).length
+  const pendingCount = expenses.length - expensedCount
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
@@ -54,9 +50,11 @@ function ExpenseDestinationGroup({
           )}
           <Building2 className="w-4 h-4 text-gray-500" />
           <h3 className="text-sm font-medium text-gray-900">{destination}</h3>
-          <span className="text-xs text-gray-500 ml-2">
-            {expenses.length} {expenses.length === 1 ? 'expense' : 'expenses'}
-          </span>
+          <div className="flex items-center gap-2 ml-2">
+            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <Hourglass className="w-3 h-3" /> {pendingCount}
+            </span>
+          </div>
         </div>
         <div className="text-sm font-semibold text-gray-900">{formatCurrency(totalAmount)}</div>
       </button>
@@ -81,13 +79,7 @@ export function ExpensesCategoryList({
   expenses,
   isLoading,
   markingExpensed,
-  sortField,
-  sortDirection,
-  showSortOptions,
-  setShowSortOptions,
   onAction,
-  handleSortChange,
-  getSortDescription,
   isPending,
 }: ExpensesListProps) {
   // State to track expanded destinations
@@ -155,92 +147,11 @@ export function ExpensesCategoryList({
             Expensed: {expensesCount.expensed}
           </span>
         </div>
-
-          {/* Mobile Sort Button */}
-          {!isLoading && expenses.length > 0 && (
-            <div className="md:hidden">
-              <button
-                onClick={() => setShowSortOptions(!showSortOptions)}
-                className="flex items-center gap-1 px-3 py-2 bg-gray-100 rounded-md text-gray-700 hover:bg-gray-200"
-              >
-                <Filter className="w-4 h-4" />
-                <span className="sr-only md:not-sr-only">Sort</span>
-              </button>
-            </div>
-          )}
         </div>
 
         <p className="text-sm text-gray-600 mb-3">
           {isPending ? "Expenses that need to be marked as paid" : "Expenses that have been marked as paid"}
         </p>
-
-        {/* Mobile Sort Options - Collapsible */}
-        {!isLoading && expenses.length > 0 && showSortOptions && (
-          <div className="md:hidden mt-3 p-3 bg-gray-50 rounded-md">
-            <div className="text-sm font-medium text-gray-700 mb-2">Sort by:</div>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => handleSortChange("category")}
-                className={`px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-1 ${
-                  sortField === "category"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-white border border-gray-200 text-gray-700"
-                }`}
-              >
-                Category
-                {sortField === "category" &&
-                  (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-              </button>
-              <button
-                onClick={() => handleSortChange("amount")}
-                className={`px-3 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-1 ${
-                  sortField === "amount"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-white border border-gray-200 text-gray-700"
-                }`}
-              >
-                Amount
-                {sortField === "amount" &&
-                  (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-              </button>
-            </div>
-            <div className="mt-2 text-xs text-gray-500 text-center">Currently sorted by: {getSortDescription()}</div>
-          </div>
-        )}
-
-        {/* Desktop Sort Controls */}
-        {!isLoading && expenses.length > 0 && (
-          <div className="hidden md:flex items-center gap-3 mt-3">
-            <div className="text-sm text-gray-500 flex items-center">
-              <ArrowUpDown className="w-4 h-4 mr-1" />
-              Sort by:
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleSortChange("category")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-1 ${
-                  sortField === "category"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Category
-                {sortField === "category" &&
-                  (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-              </button>
-              <button
-                onClick={() => handleSortChange("amount")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-1 ${
-                  sortField === "amount" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                Amount
-                {sortField === "amount" &&
-                  (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {isLoading ? (
