@@ -44,8 +44,6 @@ export default function Expenses() {
         expense = await createExpense(data);
       }
 
-      console.log({ expense });
-
       if (expense) setSelectedExpense(null);
     } catch (error) {
       ui.notify({

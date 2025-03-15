@@ -57,6 +57,10 @@ export function useExpenses() {
     try {
       const expense = await expensesApi.create(data);
       await fetchExpenses();
+      ui.notify({
+        message: "Expense created successfully",
+        type: "success",
+      });
       return expense;
     } catch (error) {
       ui.notify({
@@ -71,6 +75,10 @@ export function useExpenses() {
     try {
       const expense = await expensesApi.update(id, data);
       await fetchExpenses();
+      ui.notify({
+        message: "Expense updated successfully",
+        type: "success",
+      });
       return expense;
     } catch (error) {
       ui.notify({
@@ -85,6 +93,10 @@ export function useExpenses() {
     try {
       await expensesApi.delete(id);
       await fetchExpenses();
+      ui.notify({
+        message: "Expense deleted successfully",
+        type: "success",
+      });
       return true;
     } catch (error) {
       ui.notify({
