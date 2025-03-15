@@ -6,7 +6,7 @@ import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
 import { CurrencyInput } from '../forms/CurrencyInput';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useExpenses } from '../../hooks/useExpenses';
-
+import { Spinner } from '../ui/Spinner';
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
   onCancel: () => void;
@@ -43,8 +43,6 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
     }
   }, [isAccountsLoading, isCategoriesLoading, accounts, categories]);
 
-  console.log({ formData, initialData });
-
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setError(null);
@@ -57,6 +55,12 @@ export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProp
       setIsSubmitting(false);
     }
   };
+
+  if (isAccountsLoading || isCategoriesLoading) {
+    return <Spinner />
+  }
+
+  console.log({ formData });
 
   return (
     <Form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} error={error ?? undefined}>
