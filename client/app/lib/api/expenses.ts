@@ -15,13 +15,13 @@ export const expensesApi = {
   // Get a single expense by ID
   getById: async (id: string): Promise<Expense> => {
     const response = await apiClient.get(`/expenses/${id}`);
-    return response.data;
+    return response;
   },
 
   // Create a new expense
   create: async (data: CreateExpenseData): Promise<Expense> => {
     const response = await apiClient.post("/expenses", { expense: data });
-    return response.data;
+    return response;
   },
 
   // Update an expense
@@ -29,7 +29,7 @@ export const expensesApi = {
     const response = await apiClient.patch(`/expenses/${id}`, {
       expense: data,
     });
-    return response.data;
+    return response;
   },
 
   // Delete an expense

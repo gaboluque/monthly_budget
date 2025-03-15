@@ -17,8 +17,7 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Expenses() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null)
+  const [selectedExpense, setSelectedExpense] = useState<Expense | CreateExpenseData | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
   const { expenses, categories, isLoading, totalExpenses, expensesByCategory, createExpense, updateExpense, deleteExpense } = useExpenses()
 
@@ -38,38 +37,22 @@ export default function Expenses() {
 
   const handleSubmit = async (data: CreateExpenseData) => {
     try {
-      if (selectedExpense?.id) {
-        await updateExpense(selectedExpense.id, data)
-        setIsModalOpen(false)
-        setSelectedExpense(null)
+      let expense: Expense | null = null;
+      if (data?.id) {
+        expense = await updateExpense(data.id, data);
       } else {
-        await createExpense(data)
-        // Don't close the modal if we're creating another
-        if (!isModalOpen) {
-          setIsModalOpen(false)
-          setSelectedExpense(null)
-        }
+        expense = await createExpense(data);
       }
+
+      console.log({ expense });
+
+      if (expense) setSelectedExpense(null);
     } catch (error) {
       ui.notify({
         message: "Failed to save expense",
         type: "error",
       });
     }
-  }
-
-  const handleCreateAnother = () => {
-    // Reset the form with a new empty expense
-    setSelectedExpense({
-      id: "",
-      name: "",
-      amount: 0,
-      category: "",
-      destination: "",
-      frequency: "monthly",
-      created_at: "",
-      updated_at: "",
-    })
   }
 
   const toggleCategory = (category: string) => {
@@ -81,16 +64,8 @@ export default function Expenses() {
 
   const handleAddExpense = (category?: string) => {
     setSelectedExpense({
-      id: "",
-      name: "",
-      amount: 0,
-      category: category || "",
-      destination: "",
-      frequency: "monthly",
-      created_at: "",
-      updated_at: "",
+      category: category || undefined,
     })
-    setIsModalOpen(true)
   }
 
   const handleDeleteExpense = (id: string) => {
@@ -156,10 +131,7 @@ export default function Expenses() {
                 isExpanded={expandedCategories[category]}
                 onToggle={toggleCategory}
                 onAddExpense={handleAddExpense}
-                onEditExpense={(expense) => {
-                  setSelectedExpense(expense)
-                  setIsModalOpen(true)
-                }}
+                onEditExpense={setSelectedExpense}
                 onDeleteExpense={handleDeleteExpense}
               />
             ))}
@@ -168,21 +140,16 @@ export default function Expenses() {
       </div>
 
       <Modal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false)
-          setSelectedExpense(null)
-        }}
+        isOpen={!!selectedExpense}
+        onClose={() => { setSelectedExpense(null) }}
         title={selectedExpense?.id ? "Edit Expense" : "Add Expense"}
       >
         <ExpenseForm
-          initialData={selectedExpense ?? undefined}
+          initialData={selectedExpense}
           onSubmit={handleSubmit}
           onCancel={() => {
-            setIsModalOpen(false)
             setSelectedExpense(null)
           }}
-          onCreateAnother={handleCreateAnother}
         />
       </Modal>
     </Layout>

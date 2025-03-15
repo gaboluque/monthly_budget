@@ -55,29 +55,29 @@ export function useExpenses() {
 
   const createExpense = async (data: CreateExpenseData) => {
     try {
-      await expensesApi.create(data);
+      const expense = await expensesApi.create(data);
       await fetchExpenses();
-      return true;
+      return expense;
     } catch (error) {
       ui.notify({
         message: "Failed to create expense",
         type: "error",
       });
-      return false;
+      return null;
     }
   };
 
   const updateExpense = async (id: string, data: CreateExpenseData) => {
     try {
-      await expensesApi.update(id, data);
+      const expense = await expensesApi.update(id, data);
       await fetchExpenses();
-      return true;
+      return expense;
     } catch (error) {
       ui.notify({
         message: "Failed to update expense",
         type: "error",
       });
-      return false;
+      return null;
     }
   };
 
@@ -91,7 +91,7 @@ export function useExpenses() {
         message: "Failed to delete expense",
         type: "error",
       });
-      return false;
+      return null;
     }
   };
 

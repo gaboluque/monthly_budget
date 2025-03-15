@@ -3,6 +3,7 @@ import { Button } from "../Button"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Expense } from "../../lib/types/expenses"
 import { CATEGORY_COLORS } from "../../lib/types/expenses"
+import { useExpenseAccounts } from "../../hooks/useExpenseAccounts"
 
 interface ExpenseItemProps {
   expense: Expense
@@ -12,6 +13,9 @@ interface ExpenseItemProps {
 }
 
 export function ExpenseItem({ expense, isMarking, isPending, onAction }: ExpenseItemProps) {
+  const { getAccountName } = useExpenseAccounts();
+  const accountName = getAccountName(expense.account_id);
+  
   const iconBgColor = isPending ? "bg-blue-100" : "bg-green-100"
   const iconColor = isPending ? "text-blue-600" : "text-green-600"
   const buttonBgColor = isPending ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
@@ -48,7 +52,7 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
             <p className="text-lg font-semibold text-gray-900">{formatCurrency(expense.amount)}</p>
             <p className="text-xs text-gray-500 capitalize">{expense.frequency}</p>
           </div>
-          {expense.destination && <div className="text-xs text-gray-500">To: {expense.destination}</div>}
+          {expense.account_id && <div className="text-xs text-gray-500">Account: {accountName}</div>}
         </div>
 
         <Button
@@ -80,6 +84,9 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
                 >
                   {expense.category}
                 </span>
+                {expense.account_id && (
+                  <span className="text-xs text-gray-500">Account: {accountName}</span>
+                )}
               </div>
             </div>
           </div>

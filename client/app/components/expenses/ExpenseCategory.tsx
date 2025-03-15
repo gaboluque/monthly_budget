@@ -23,7 +23,6 @@ export function ExpenseCategory({
   onEditExpense,
   onDeleteExpense,
 }: ExpenseCategoryProps) {
-  console.log(expenses)
   const totalAmount = expenses.reduce((sum, expense) => sum + (Number(expense.amount || 0)), 0)
   const categoryColor = CATEGORY_COLORS[category] || "#6b7280" // Default to gray if category not found
 
