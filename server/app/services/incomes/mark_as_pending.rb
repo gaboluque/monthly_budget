@@ -2,21 +2,21 @@ module Incomes
   class MarkAsPending < ApplicationService
     attr_reader :income, :user
 
-    def initialize(income, user)
+    def initialize(income)
       @income = income
-      @user = user
+      @user = income.user
     end
 
     def call
-      return { success: false, errors: 'Income is not received' } if user.incomes.received_this_month.where(id: income.id).blank?
+      return { success: true, income: income } if income.pending?
 
       ActiveRecord::Base.transaction do
-        if income.update(last_received_at: nil)
-          income.account.update!(balance: income.account.balance - income.amount)
-          { success: true, income: income }
-        else
-          { success: false, errors: income.errors.full_messages }
-        end
+        income.update!(last_received_at: nil)
+
+        new_balance = income.account.balance - income.amount
+        income.account.update!(balance: new_balance)
+
+        { success: true, income: income }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

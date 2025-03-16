@@ -2,24 +2,21 @@ module Expenses
   class MarkAsExpensed < ApplicationService
     attr_reader :expense, :user
 
-    def initialize(expense, user)
+    def initialize(expense)
       @expense = expense
-      @user = user
+      @user = expense.user
     end
 
     def call
-      return { success: false, errors: 'Expense is not pending' } if user.expenses.pending.where(id: expense.id).blank?
+      return { success: true, expense: expense } if expense.expensed?
 
       ActiveRecord::Base.transaction do
-        if expense.update(last_expensed_at: Time.current)
-          # Update account balance if expense is associated with an account
-          if expense.account.present?
-            expense.account.update!(balance: expense.account.balance + expense.amount)
-          end
-          { success: true, expense: expense }
-        else
-          { success: false, errors: expense.errors }
-        end
+        expense.update!(last_expensed_at: DateTime.current)
+
+        new_balance = expense.account.balance + expense.amount
+        expense.account.update!(balance: new_balance)
+
+        { success: true, expense: expense }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

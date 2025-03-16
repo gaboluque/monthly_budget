@@ -31,12 +31,16 @@ class Expense < ApplicationRecord
     where('last_expensed_at BETWEEN ? AND ?', current_month_start, current_month_end)
   }
 
-  # For backward compatibility during migration
-  def destination
-    if account_id.present?
-      account&.id
-    else
-      old_destination
-    end
+  def expensed?
+    return false if last_expensed_at.nil?
+
+    current_month_start = Time.current.beginning_of_month
+    current_month_end = Time.current.end_of_month
+
+    last_expensed_at.between?(current_month_start, current_month_end)
+  end
+
+  def pending?
+    !expensed?
   end
 end

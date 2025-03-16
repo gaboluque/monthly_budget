@@ -88,7 +88,7 @@ module Api
 
       # PUT /api/v1/expenses/:id/mark_as_expensed
       def mark_as_expensed
-        result = Expenses::MarkAsExpensed.call(@expense, current_user)
+        result = Expenses::MarkAsExpensed.call(@expense)
 
         if result[:success]
           render json: result[:expense]
@@ -99,7 +99,7 @@ module Api
 
       # PUT /api/v1/expenses/:id/mark_as_pending
       def mark_as_pending
-        result = Expenses::MarkAsPending.call(@expense, current_user)
+        result = Expenses::MarkAsPending.call(@expense)
 
         if result[:success]
           render json: result[:expense]

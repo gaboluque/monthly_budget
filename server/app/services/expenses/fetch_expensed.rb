@@ -14,7 +14,7 @@ module Expenses
         'last_expensed_at BETWEEN ? AND ?',
         current_month_start,
         current_month_end
-      )
+      ).order(last_expensed_at: :desc)
 
       { success: true, expenses: expensed_expenses }
     rescue StandardError => e

@@ -22,23 +22,17 @@ class Income < ApplicationRecord
     where('last_received_at BETWEEN ? AND ?', current_month_start, current_month_end)
   }
 
-  # Calculate monthly amount based on frequency
-  def monthly_amount
-    case frequency
-    when "monthly"
-      amount
-    when "bi-weekly"
-      (amount * 26) / 12
-    when "weekly"
-      (amount * 52) / 12
-    when "daily"
-      (amount * 365) / 12
-    when "yearly"
-      amount / 12
-    when "quarterly"
-      amount / 3
-    else
-      amount
-    end
+  # Check if the income was received in the current month
+  def received_this_month?
+    return false if last_received_at.nil?
+
+    current_month_start = Time.current.beginning_of_month
+    current_month_end = Time.current.end_of_month
+
+    last_received_at.between?(current_month_start, current_month_end)
+  end
+
+  def pending?
+    !received_this_month?
   end
 end

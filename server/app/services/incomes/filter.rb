@@ -10,8 +10,16 @@ module Incomes
     def call
       incomes = user.incomes
 
-      # Add filters here if needed in the future
-      # For example, filter by date range, category, etc.
+      # Apply account filter
+      incomes = incomes.where(account_id: params[:account_id]) if params[:account_id].present?
+
+      # Apply frequency filter
+      incomes = incomes.where(frequency: params[:frequency]) if params[:frequency].present?
+
+      # Apply name filter - use LOWER for better compatibility across databases
+      if params[:name].present?
+        incomes = incomes.where('LOWER(name) LIKE ?', "%#{params[:name].downcase}%")
+      end
 
       { success: true, incomes: incomes }
     rescue StandardError => e

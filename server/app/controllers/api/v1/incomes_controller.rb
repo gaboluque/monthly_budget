@@ -56,7 +56,7 @@ module Api
 
       # PUT /api/v1/incomes/:id/mark_as_received
       def mark_as_received
-        result = Incomes::MarkAsReceived.call(@income, current_user)
+        result = Incomes::MarkAsReceived.call(@income)
 
         if result[:success]
           render json: result[:income]
@@ -67,7 +67,7 @@ module Api
 
       # PUT /api/v1/incomes/:id/mark_as_pending
       def mark_as_pending
-        result = Incomes::MarkAsPending.call(@income, current_user)
+        result = Incomes::MarkAsPending.call(@income)
 
         if result[:success]
           render json: result[:income]
