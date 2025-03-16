@@ -21,10 +21,10 @@ export interface Account {
 }
 
 export interface CreateAccountData {
-  name: string;
-  balance: number;
-  account_type: AccountType;
-  currency: Currency;
+  name?: string;
+  balance?: number;
+  account_type?: AccountType;
+  currency?: Currency;
   description?: string;
   is_owned?: boolean;
 }

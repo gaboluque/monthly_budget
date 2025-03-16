@@ -1,8 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '../Button';
-import { Input } from '../forms/Input';
-import { CurrencyInput } from '../forms/CurrencyInput';
-import { Form, FormGroup, FormActions } from '../forms/Form';
+import { Form, FormField, SubmitHandler } from '../forms/NewForm';
 import type { CreateAccountData, Account, AccountType, Currency } from '../../lib/types/accounts';
 
 interface AccountFormProps {
@@ -13,151 +11,145 @@ interface AccountFormProps {
   currencies: Currency[];
 }
 
-export function AccountForm({ 
-  onSubmit, 
-  onCancel, 
-  initialData, 
-  accountTypes, 
-  currencies 
+const FORM_ID = 'account-form';
+
+export function AccountForm({
+  onSubmit,
+  onCancel,
+  initialData,
+  accountTypes,
+  currencies
 }: AccountFormProps) {
-  const [formData, setFormData] = useState<CreateAccountData>({
-    name: initialData?.name ?? '',
-    balance: initialData?.balance ?? 0,
-    account_type: initialData?.account_type ?? accountTypes[0],
-    currency: initialData?.currency ?? currencies[0],
-    description: initialData?.description ?? '',
-    is_owned: initialData?.is_owned ?? true,
-  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
+  const accountTypeOptions = useMemo(() => {
+    return accountTypes.map(type => ({
+      value: type,
+      label: type
     }));
+  }, [accountTypes]);
+
+  const currencyOptions = useMemo(() => {
+    return currencies.map(currency => ({
+      value: currency,
+      label: currency
+    }));
+  }, [currencies]);
+
+  // Default values for the form
+  const defaultValues: CreateAccountData = {
+    name: initialData?.name ?? undefined,
+    balance: initialData?.balance ?? undefined,
+    account_type: initialData?.account_type ?? accountTypes[0],
+    currency: initialData?.currency ?? currencies[0],
+    description: initialData?.description ?? undefined,
+    is_owned: initialData?.is_owned ?? true,
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleBalanceChange = (value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      balance: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit: SubmitHandler<CreateAccountData> = async (data) => {
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
-      await onSubmit(formData);
+      await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
+      throw err; // Re-throw to let react-hook-form handle the error
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const submitForm = () => {
+    const form = document.getElementById(FORM_ID) as HTMLFormElement;
+    if (form) form.requestSubmit();
+  };
+
+  const formFields: FormField<CreateAccountData>[] = [
+    {
+      name: 'name',
+      label: 'Account Name',
+      type: 'text',
+      placeholder: 'Enter account name',
+      required: true,
+      validation: {
+        required: 'Account name is required'
+      }
+    },
+    {
+      name: 'balance',
+      label: 'Balance',
+      type: 'number',
+      placeholder: '$0.00',
+      required: true,
+      validation: {
+        required: 'Balance is required'
+      }
+    },
+    {
+      name: 'account_type',
+      label: 'Account Type',
+      type: 'select',
+      options: accountTypeOptions,
+      required: true,
+      validation: {
+        required: 'Account type is required'
+      }
+    },
+    {
+      name: 'currency',
+      label: 'Currency',
+      type: 'select',
+      options: currencyOptions,
+      required: true,
+      validation: {
+        required: 'Currency is required'
+      }
+    },
+    {
+      name: 'description',
+      label: 'Description',
+      type: 'textarea',
+      placeholder: 'Optional description for this account'
+    },
+    // Note: checkbox handling might need special attention in the NewForm component
+    // This assumes the NewForm component can handle checkbox inputs
+    {
+      name: 'is_owned',
+      label: 'I own this account',
+      type: 'checkbox'
+    }
+  ];
+
   return (
-    <Form onSubmit={handleSubmit} error={error ?? undefined}>
-      <FormGroup>
-        <Input
-          type="text"
-          label="Account Name"
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleInputChange}
-          required
-          fullWidth
-          helperText="Enter the name of your account"
-          autoComplete="off"
-        />
-
-        <CurrencyInput
-          label="Balance"
-          id="balance"
-          value={formData.balance}
-          onChange={handleBalanceChange}
-          required
-          fullWidth
-          helperText="Enter the current balance of this account"
-        />
-
-        <Input
-          type="select"
-          label="Account Type"
-          id="account_type"
-          name="account_type"
-          value={formData.account_type}
-          onChange={handleSelectChange}
-          options={accountTypes.map(type => ({ value: type, label: type }))}
-          required
-          fullWidth
-          helperText="Select the type of account"
-        />
-
-        <Input
-          type="select"
-          label="Currency"
-          id="currency"
-          name="currency"
-          value={formData.currency}
-          onChange={handleSelectChange}
-          options={currencies.map(currency => ({ value: currency, label: currency }))}
-          required
-          fullWidth
-          helperText="Select the currency for this account"
-        />
-
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleInputChange}
-            rows={3}
-            className="w-full px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900"
-          />
-          <p className="mt-1 text-sm text-gray-500">
-            Optional description for this account
-          </p>
+    <div className="space-y-4">
+      {error && (
+        <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+          {error}
         </div>
+      )}
 
-        <FormGroup>
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={formData.is_owned}
-              onChange={(e) => setFormData({ ...formData, is_owned: e.target.checked })}
-              className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            <span className="text-sm text-gray-700">I own this account</span>
-          </label>
-        </FormGroup>
-      </FormGroup>
+      <Form<CreateAccountData>
+        id={FORM_ID}
+        fields={formFields}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        defaultValues={defaultValues}
+      />
 
-      <FormActions>
+      <div className="flex justify-end space-x-2 mt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={submitForm}
+        >
           {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
         </Button>
-      </FormActions>
-    </Form>
+      </div>
+    </div>
   );
 } 
