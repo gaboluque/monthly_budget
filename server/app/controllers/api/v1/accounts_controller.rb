@@ -5,10 +5,15 @@ module Api
 
       # GET /api/v1/accounts
       def index
-        @accounts = current_user.accounts
-        render json: {
-          data: @accounts
-        }
+        result = Accounts::Filter.call(current_user, params)
+
+        if result[:success]
+          render json: {
+            data: result[:accounts]
+          }
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       # GET /api/v1/accounts/:id
@@ -18,28 +23,35 @@ module Api
 
       # POST /api/v1/accounts
       def create
-        @account = current_user.accounts.build(account_params)
+        result = Accounts::Create.call(current_user, account_params)
 
-        if @account.save
-          render json: @account, status: :created
+        if result[:success]
+          render json: result[:account], status: :created
         else
-          render json: { errors: @account.errors.full_messages }, status: :unprocessable_entity
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # PATCH/PUT /api/v1/accounts/:id
       def update
-        if @account.update(account_params)
-          render json: @account
+        result = Accounts::Update.call(@account, account_params)
+
+        if result[:success]
+          render json: result[:account]
         else
-          render json: { errors: @account.errors.full_messages }, status: :unprocessable_entity
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # DELETE /api/v1/accounts/:id
       def destroy
-        @account.destroy
-        render json: @account, status: :ok
+        result = Accounts::Destroy.call(@account)
+
+        if result[:success]
+          render json: result[:account], status: :ok
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       # GET /api/v1/accounts/types

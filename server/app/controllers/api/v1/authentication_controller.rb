@@ -9,7 +9,7 @@ module Api
         if user&.authenticate(user_params[:password])
           render json: { jwt: generate_jwt(user) }, status: :ok
         else
-          render json: { error: "Invalid credentials" }, status: :unauthorized
+          render_error("Invalid credentials", :unauthorized)
         end
       end
 
@@ -18,7 +18,7 @@ module Api
         if @user.save
           render json: { jwt: generate_jwt(@user) }, status: :created
         else
-          render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
+          render_error(@user.errors.full_messages, :unprocessable_entity)
         end
       end
 

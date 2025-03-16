@@ -5,10 +5,15 @@ module Api
 
       # GET /api/v1/incomes
       def index
-        @incomes = current_user.incomes
-        render json: {
-          data: @incomes
-        }
+        result = Incomes::Filter.call(current_user, params)
+
+        if result[:success]
+          render json: {
+            data: result[:incomes]
+          }
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       # GET /api/v1/incomes/:id
@@ -18,55 +23,56 @@ module Api
 
       # POST /api/v1/incomes
       def create
-        @income = current_user.incomes.build(income_params)
+        result = Incomes::Create.call(current_user, income_params)
 
-        if @income.save
-          render json: @income, status: :created
+        if result[:success]
+          render json: result[:income], status: :created
         else
-          render json: { errors: @income.errors.full_messages }, status: :unprocessable_entity
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # PATCH/PUT /api/v1/incomes/:id
       def update
-        if @income.update(income_params)
-          render json: @income
+        result = Incomes::Update.call(@income, income_params)
+
+        if result[:success]
+          render json: result[:income]
         else
-          render json: { errors: @income.errors.full_messages }, status: :unprocessable_entity
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # DELETE /api/v1/incomes/:id
       def destroy
-        @income.destroy
-        render json: @income, status: :ok
+        result = Incomes::Destroy.call(@income)
+
+        if result[:success]
+          render json: result[:income], status: :ok
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       # PUT /api/v1/incomes/:id/mark_as_received
       def mark_as_received
-        if current_user.incomes.pending.where(id: params[:id]).blank?
-          render json: { errors: 'Income is not pending' }, status: :unprocessable_entity
-          return
-        end
+        result = Incomes::MarkAsReceived.call(@income, current_user)
 
-        ActiveRecord::Base.transaction do
-          @income.update(last_received_at: Time.current)
-          @income.account.update(balance: @income.account.balance + @income.amount)
-          render json: @income, status: :ok
+        if result[:success]
+          render json: result[:income]
+        else
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # PUT /api/v1/incomes/:id/mark_as_pending
       def mark_as_pending
-        if current_user.incomes.received_this_month.where(id: params[:id]).blank?
-          render json: { errors: 'Income is not received' }, status: :unprocessable_entity
-          return
-        end
+        result = Incomes::MarkAsPending.call(@income, current_user)
 
-        ActiveRecord::Base.transaction do
-          @income.update(last_received_at: nil)
-          @income.account.update(balance: @income.account.balance - @income.amount)
-          render json: @income, status: :ok
+        if result[:success]
+          render json: result[:income]
+        else
+          render_error(result[:errors], :unprocessable_entity)
         end
       end
 
@@ -77,18 +83,28 @@ module Api
 
       # GET /api/v1/incomes/pending
       def pending
-        @pending_incomes = current_user.incomes.pending
-        render json: {
-          data: @pending_incomes
-        }
+        result = Incomes::FetchPending.call(current_user)
+
+        if result[:success]
+          render json: {
+            data: result[:incomes]
+          }
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       # GET /api/v1/incomes/received
       def received
-        @received_incomes = current_user.incomes.received
-        render json: {
-          data: @received_incomes
-        }
+        result = Incomes::FetchReceived.call(current_user)
+
+        if result[:success]
+          render json: {
+            data: result[:incomes]
+          }
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
       end
 
       private

@@ -13,9 +13,9 @@ module Api
           @decoded = jwt_decode(header)
           @current_user = User.find(@decoded[:user_id])
         rescue ActiveRecord::RecordNotFound => e
-          render json: { errors: e.message }, status: :unauthorized
+          render_error(e.message, :unauthorized)
         rescue JWT::DecodeError => e
-          render json: { errors: e.message }, status: :unauthorized
+          render_error(e.message, :unauthorized)
         end
       end
 
