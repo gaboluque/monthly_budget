@@ -2,8 +2,9 @@ module Api
   module V1
     class ExpensesController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_expense, only: [ :show, :update, :destroy, :mark_as_expensed, :unmark_as_expensed ]
+      before_action :set_expense, only: [ :show, :update, :destroy, :mark_as_expensed, :mark_as_pending ]
 
+      # GET /api/v1/expenses
       def index
         @expenses = current_user.expenses
         @expenses = @expenses.by_category(params[:category]) if params[:category].present?
@@ -15,10 +16,12 @@ module Api
         }
       end
 
+      # GET /api/v1/expenses/:id
       def show
         render json: @expense
       end
 
+      # POST /api/v1/expenses
       def create
         @expense = current_user.expenses.build(expense_params)
 
@@ -29,6 +32,7 @@ module Api
         end
       end
 
+      # PUT /api/v1/expenses/:id
       def update
         if @expense.update(expense_params)
           render json: @expense
@@ -37,15 +41,18 @@ module Api
         end
       end
 
+      # DELETE /api/v1/expenses/:id
       def destroy
         @expense.destroy
         render json: @expense, status: :ok
       end
 
+      # GET /api/v1/expenses/categories
       def categories
         render json: { data: Expense::DEFAULT_CATEGORIES }
       end
 
+      # GET /api/v1/expenses/pending
       def pending
         @pending_expenses = current_user.expenses.pending
         render json: {
@@ -53,6 +60,7 @@ module Api
         }
       end
 
+      # GET /api/v1/expenses/expensed
       def expensed
         current_month_start = Time.current.beginning_of_month
         current_month_end = Time.current.end_of_month
@@ -66,19 +74,43 @@ module Api
         }
       end
 
+      # PUT /api/v1/expenses/:id/mark_as_expensed
       def mark_as_expensed
-        if @expense.update(last_expensed_at: Time.current)
-          render json: @expense
-        else
-          render json: { errors: @expense.errors }, status: :unprocessable_entity
+        if current_user.expenses.pending.where(id: params[:id]).blank?
+          render json: { errors: 'Expense is not pending' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          if @expense.update(last_expensed_at: Time.current)
+            # Update account balance if expense is associated with an account
+            if @expense.account.present?
+              @expense.account.update!(balance: @expense.account.balance + @expense.amount)
+            end
+            render json: @expense
+          else
+            render json: { errors: @expense.errors }, status: :unprocessable_entity
+          end
         end
       end
 
-      def unmark_as_expensed
-        if @expense.update(last_expensed_at: nil)
-          render json: @expense
-        else
-          render json: { errors: @expense.errors }, status: :unprocessable_entity
+      # PUT /api/v1/expenses/:id/mark_as_pending
+      def mark_as_pending
+        if current_user.expenses.expensed.where(id: params[:id]).blank?
+          render json: { errors: 'Expense is not expensed' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          if @expense.update(last_expensed_at: nil)
+            # Restore account balance if expense is associated with an account
+            if @expense.account.present?
+              @expense.account.update!(balance: @expense.account.balance - @expense.amount)
+            end
+            render json: @expense
+          else
+            render json: { errors: @expense.errors }, status: :unprocessable_entity
+          end
         end
       end
 

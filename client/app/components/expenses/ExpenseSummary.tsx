@@ -1,5 +1,5 @@
 import { PieChart } from "lucide-react"
-import { StatCard } from "../StatCard"
+import { StatCard } from "../ui/StatCard"
 import type { ExpensesByCategory } from "../../lib/types/expenses"
 import { CategoryDistribution } from "../CategoryDistribution"
 
@@ -9,10 +9,10 @@ interface ExpenseSummaryProps {
   expensesByCategory: ExpensesByCategory
 }
 
-export function ExpenseSummary({ 
-  totalExpenses, 
-  expenseCount, 
-  expensesByCategory 
+export function ExpenseSummary({
+  totalExpenses,
+  expenseCount,
+  expensesByCategory
 }: ExpenseSummaryProps) {
   const categoryTotals = Object.fromEntries(
     Object.entries(expensesByCategory).map(([category, expenses]) => [

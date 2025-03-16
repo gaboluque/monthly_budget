@@ -1,4 +1,4 @@
-import { PageHeader } from "../PageHeader"
+import { PageHeader } from "../ui/PageHeader"
 
 interface IncomeHeaderProps {
   onAddIncome: () => void

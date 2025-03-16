@@ -1,6 +1,6 @@
 import { insightsApi } from "../lib/api/insights";
-import { Layout } from "../components/Layout"
-import { PageHeader } from "../components/PageHeader"
+import { Layout } from "../components/ui/Layout"
+import { PageHeader } from "../components/ui/PageHeader"
 import { useEffect, useState } from "react";
 import "../styles/markdown.css"
 import Markdown from 'react-markdown'

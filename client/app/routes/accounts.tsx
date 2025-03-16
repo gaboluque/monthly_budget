@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { Layout } from "../components/Layout";
-import { Modal } from "../components/Modal";
+import { Layout } from "../components/ui/Layout";
+import { Modal } from "../components/ui/Modal";
 import { Loader2 } from "lucide-react";
 import { AccountHeader } from "../components/accounts/AccountHeader";
 import { AccountSummary } from "../components/accounts/AccountSummary";
@@ -23,13 +23,13 @@ export default function AccountsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
-  
-  const { 
-    accounts, 
-    accountTypes, 
-    currencies, 
-    isLoading, 
-    totalBalance, 
+
+  const {
+    accounts,
+    accountTypes,
+    currencies,
+    isLoading,
+    totalBalance,
     accountsByType,
     createAccount,
     updateAccount,

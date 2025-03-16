@@ -2,7 +2,7 @@
 
 import { Link, useLocation } from "@remix-run/react"
 import { Button } from "./Button"
-import { logout } from "../lib/utils/auth"
+import { logout } from "../../lib/utils/auth"
 import { useState } from "react"
 import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight, PieChart, Wallet } from "lucide-react"
 
@@ -69,11 +69,10 @@ export function Header() {
                 <Link
                   key={path}
                   to={path}
-                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive(path)
-                      ? activeClass
-                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                  }`}
+                  className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(path)
+                    ? activeClass
+                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    }`}
                 >
                   <Icon className="w-4 h-4 mr-2" />
                   {label}
@@ -121,11 +120,10 @@ export function Header() {
               <Link
                 key={path}
                 to={path}
-                className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${
-                  isActive(path)
-                    ? activeClass
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
+                className={`flex items-center justify-between px-3 py-2 rounded-md text-base font-medium ${isActive(path)
+                  ? activeClass
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                  }`}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <div className="flex items-center">

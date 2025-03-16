@@ -3,14 +3,16 @@ import { expensesApi } from "../lib/api/expenses";
 import { incomesApi } from "../lib/api/incomes";
 import type { Expense } from "../lib/types/expenses";
 import { ui } from "../lib/ui/manager";
-type SortField = "category" | "amount";
-type SortDirection = "asc" | "desc";
+import { Income } from "../lib/types/incomes";
 
 export function useDashboard() {
   const [pendingExpenses, setPendingExpenses] = useState<Expense[]>([]);
   const [expensedExpenses, setExpensedExpenses] = useState<Expense[]>([]);
+  const [pendingIncomes, setPendingIncomes] = useState<Income[]>([]);
+  const [receivedIncomes, setReceivedIncomes] = useState<Income[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [markingExpensed, setMarkingExpensed] = useState<string | null>(null);
+  const [markingReceived, setMarkingReceived] = useState<string | null>(null);
   const [summaryData, setSummaryData] = useState({
     totalIncome: 0,
     totalExpenses: 0,
@@ -21,11 +23,6 @@ export function useDashboard() {
     pendingExpensesCount: 0,
     expensesByCategory: {} as Record<string, number>,
   });
-
-  // Sorting state
-  const [sortField, setSortField] = useState<SortField>("amount");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [showSortOptions, setShowSortOptions] = useState(false);
 
   const fetchExpenses = async () => {
     try {
@@ -58,14 +55,30 @@ export function useDashboard() {
         (sum, expense) => sum + Number(expense.amount),
         0
       );
-      const totalIncome = incomes.reduce(
-        (sum, income) => sum + Number(income.amount),
-        0
-      );
       const totalPendingExpenses = pendingExpenses.reduce(
         (sum, expense) => sum + Number(expense.amount),
         0
       );
+
+      const { pendingIncomes, receivedIncomes } = incomes.reduce(
+        (acc, income) => {
+          if (!income.last_received_at) {
+            acc.pendingIncomes.push(income);
+          } else {
+            acc.receivedIncomes.push(income);
+          }
+          return acc;
+        },
+        { pendingIncomes: [] as Income[], receivedIncomes: [] as Income[] }
+      );
+
+      const totalIncome = receivedIncomes.reduce(
+        (sum, income) => sum + Number(income.amount),
+        0
+      );
+
+      setPendingIncomes(pendingIncomes);
+      setReceivedIncomes(receivedIncomes);
 
       // Calculate expenses by category
       const expensesByCategory = expenses.reduce((acc, expense) => {
@@ -95,11 +108,12 @@ export function useDashboard() {
       ui.notify({
         message: "Failed to fetch summary data",
         type: "error",
+        error: err,
       });
     }
   };
 
-  const handleMarkAsExpensed = async (expenseId: string) => {
+  const handleMarkExpenseAsExpensed = async (expenseId: string) => {
     try {
       setMarkingExpensed(expenseId);
       await expensesApi.markAsExpensed(expenseId);
@@ -115,15 +129,15 @@ export function useDashboard() {
     }
   };
 
-  const handleUnmarkAsExpensed = async (expenseId: string) => {
+  const handleMarkExpenseAsPending = async (expenseId: string) => {
     try {
       setMarkingExpensed(expenseId);
-      await expensesApi.unmarkAsExpensed(expenseId);
+      await expensesApi.markAsPending(expenseId);
       await fetchExpenses(); // Refresh both lists
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
       ui.notify({
-        message: "Failed to unmark expense",
+        message: "Failed to mark expense as pending",
         type: "error",
       });
     } finally {
@@ -131,39 +145,33 @@ export function useDashboard() {
     }
   };
 
-  // Handle sort change
-  const handleSortChange = (field: SortField) => {
-    if (field === sortField) {
-      // Toggle direction if clicking the same field
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      // Set new field and default direction
-      setSortField(field);
-      setSortDirection(field === "amount" ? "desc" : "asc");
+  const handleMarkIncomeAsReceived = async (incomeId: string) => {
+    try {
+      setMarkingReceived(incomeId);
+      await incomesApi.markAsReceived(incomeId);
+      await fetchSummaryData(); // Refresh summary data
+    } catch (err) {
+      ui.notify({
+        message: "Failed to mark income as received",
+        type: "error",
+      });
+    } finally {
+      setMarkingReceived(null);
     }
-    // Close sort options on mobile after selection
-    setShowSortOptions(false);
   };
 
-  // Sort expenses based on current sort settings
-  const sortExpenses = (expenses: Expense[]) => {
-    return [...expenses].sort((a, b) => {
-      if (sortField === "category") {
-        const comparison = a.category.localeCompare(b.category);
-        return sortDirection === "asc" ? comparison : -comparison;
-      } else {
-        const comparison = Number(a.amount) - Number(b.amount);
-        return sortDirection === "asc" ? comparison : -comparison;
-      }
-    });
-  };
-
-  // Get current sort description for mobile display
-  const getSortDescription = () => {
-    if (sortField === "category") {
-      return `Category (${sortDirection === "asc" ? "A-Z" : "Z-A"})`;
-    } else {
-      return `Amount (${sortDirection === "asc" ? "Low-High" : "High-Low"})`;
+  const handleMarkIncomeAsPending = async (incomeId: string) => {
+    try {
+      setMarkingReceived(incomeId);
+      await incomesApi.markAsPending(incomeId);
+      await fetchSummaryData(); // Refresh summary data
+    } catch (err) {
+      ui.notify({
+        message: "Failed to mark income as pending",
+        type: "error",
+      });
+    } finally {
+      setMarkingReceived(null);
     }
   };
 
@@ -173,18 +181,17 @@ export function useDashboard() {
   }, []);
 
   return {
-    pendingExpenses: sortExpenses(pendingExpenses),
-    expensedExpenses: sortExpenses(expensedExpenses),
+    pendingExpenses,
+    expensedExpenses,
+    pendingIncomes,
+    receivedIncomes,
     isLoading,
     markingExpensed,
+    markingReceived,
     summaryData,
-    sortField,
-    sortDirection,
-    showSortOptions,
-    setShowSortOptions,
-    handleMarkAsExpensed,
-    handleUnmarkAsExpensed,
-    handleSortChange,
-    getSortDescription,
+    handleMarkExpenseAsExpensed,
+    handleMarkExpenseAsPending,
+    handleMarkIncomeAsReceived,
+    handleMarkIncomeAsPending,
   };
 }

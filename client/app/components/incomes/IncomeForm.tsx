@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../Button';
+import { Button } from '../ui/Button';
 import type { CreateIncomeData, Income } from '../../lib/types/incomes';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';

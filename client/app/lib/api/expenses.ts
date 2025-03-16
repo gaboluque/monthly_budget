@@ -57,13 +57,13 @@ export const expensesApi = {
 
   // Mark expense as expensed
   markAsExpensed: async (id: string): Promise<Expense> => {
-    const response = await apiClient.post(`/expenses/${id}/mark_as_expensed`);
+    const response = await apiClient.put(`/expenses/${id}/mark_as_expensed`);
     return response.data;
   },
 
-  // Unmark expense as expensed
-  unmarkAsExpensed: async (id: string): Promise<Expense> => {
-    const response = await apiClient.post(`/expenses/${id}/unmark_as_expensed`);
+  // Mark expense as pending
+  markAsPending: async (id: string): Promise<Expense> => {
+    const response = await apiClient.put(`/expenses/${id}/mark_as_pending`);
     return response.data;
   },
 };

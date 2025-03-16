@@ -13,6 +13,7 @@ export interface Income {
   frequency: IncomeFrequency;
   created_at: string;
   updated_at: string;
+  last_received_at: string | null;
 }
 
 export interface CreateIncomeData {

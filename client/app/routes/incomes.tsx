@@ -1,7 +1,7 @@
 import { useState } from "react"
 import type { MetaFunction } from "@remix-run/node"
-import { Layout } from "../components/Layout"
-import { Modal } from "../components/Modal"
+import { Layout } from "../components/ui/Layout"
+import { Modal } from "../components/ui/Modal"
 import { IncomeForm } from "../components/incomes/IncomeForm"
 import { IncomeHeader } from "../components/incomes/IncomeHeader"
 import { IncomeSummary } from "../components/incomes/IncomeSummary"
@@ -9,7 +9,7 @@ import { IncomeItem } from "../components/incomes/IncomeItem"
 import { useIncomes } from "../hooks/useIncomes"
 import type { Income, CreateIncomeData } from "../lib/types/incomes"
 import { Loader2, DollarSign, PlusCircle } from "lucide-react"
-import { Button } from "../components/Button"
+import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
 export const meta: MetaFunction = () => {
   return [{ title: "Incomes | Monthly Budget" }, { name: "description", content: "Manage your income sources" }]

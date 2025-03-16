@@ -1,21 +1,30 @@
 import { CreditCard, Check, Undo, Loader2 } from "lucide-react"
-import { Button } from "../Button"
+import { Button } from "../ui/Button"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Expense } from "../../lib/types/expenses"
 import { CATEGORY_COLORS } from "../../lib/types/expenses"
 import { useExpenseAccounts } from "../../hooks/useExpenseAccounts"
+import { useMemo } from "react"
 
 interface ExpenseItemProps {
   expense: Expense
   isMarking: boolean
-  isPending: boolean
-  onAction: (id: string) => Promise<void>
+  onAction: (id: string) => void
 }
 
-export function ExpenseItem({ expense, isMarking, isPending, onAction }: ExpenseItemProps) {
+export function ExpenseItem({ expense, isMarking, onAction }: ExpenseItemProps) {
   const { getAccountName } = useExpenseAccounts();
   const accountName = getAccountName(expense.account_id);
-  
+
+  const isPending = useMemo(() => {
+    if (!expense.last_expensed_at) return true;
+
+    // If last expensed at is not on this month, it's pending
+    const lastExpensedAt = new Date(expense.last_expensed_at);
+
+    return lastExpensedAt.getMonth() !== new Date().getMonth()
+  }, [expense.last_expensed_at])
+
   const iconBgColor = isPending ? "bg-blue-100" : "bg-green-100"
   const iconColor = isPending ? "text-blue-600" : "text-green-600"
   const buttonBgColor = isPending ? "bg-green-600 hover:bg-green-700" : "bg-gray-600 hover:bg-gray-700"
@@ -34,9 +43,9 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
           <div>
             <h3 className="text-base font-medium text-gray-900">{expense.name}</h3>
             <div className="flex items-center mt-1">
-              <span 
+              <span
                 className="text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center"
-                style={{ 
+                style={{
                   backgroundColor: `${categoryColor}20`,
                   color: categoryColor
                 }}
@@ -75,9 +84,9 @@ export function ExpenseItem({ expense, isMarking, isPending, onAction }: Expense
             <div>
               <h3 className="text-base font-medium text-gray-900">{expense.name}</h3>
               <div className="flex items-center mt-1 gap-4">
-                <span 
+                <span
                   className="text-xs font-medium px-2 py-0.5 rounded-full w-24 text-center"
-                  style={{ 
+                  style={{
                     backgroundColor: `${categoryColor}20`,
                     color: categoryColor
                   }}

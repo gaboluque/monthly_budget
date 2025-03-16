@@ -1,5 +1,5 @@
 import { LucideIcon } from "lucide-react"
-import { formatCurrency } from "../lib/utils/currency"
+import { formatCurrency } from "../../lib/utils/currency"
 
 interface StatCardProps {
   title: string
@@ -9,12 +9,12 @@ interface StatCardProps {
   variant?: 'green' | 'blue'
 }
 
-export function StatCard({ 
-  title, 
-  amount, 
-  description, 
+export function StatCard({
+  title,
+  amount,
+  description,
   icon: Icon,
-  variant = 'blue' 
+  variant = 'blue'
 }: StatCardProps) {
   const variantClasses = {
     green: {
