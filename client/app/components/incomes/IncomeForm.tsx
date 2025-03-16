@@ -44,12 +44,7 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     setIsSubmitting(true);
     setError(null);
     try {
-      // Convert amount from string to number if needed
-      const formattedData = {
-        ...data,
-        amount: typeof data.amount === 'string' ? parseFloat(data.amount) : data.amount
-      };
-      await onSubmit(formattedData);
+      await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
       throw err; // Re-throw to let react-hook-form handle the error
