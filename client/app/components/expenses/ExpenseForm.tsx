@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button } from '../Button';
 import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
-import { Form, FormField, SubmitHandler } from '../forms/NewForm';
+import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useExpenses } from '../../hooks/useExpenses';
 import { Spinner } from '../ui/Spinner';

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, FormField, SubmitHandler } from './forms/NewForm';
+import { Form, FormField, SubmitHandler } from './forms/Form';
 import { Button } from './Button';
 
 interface LoginFormProps {

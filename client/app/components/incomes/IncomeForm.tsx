@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Button } from '../Button';
 import type { CreateIncomeData, Income } from '../../lib/types/incomes';
-import { Form, FormField, SubmitHandler } from '../forms/NewForm';
+import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 
 interface IncomeFormProps {

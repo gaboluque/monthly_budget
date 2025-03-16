@@ -1,77 +1,113 @@
-import React from 'react';
+import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues } from "react-hook-form"
 
-interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  error?: string;
-  children: React.ReactNode;
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date';
+
+export interface FormField<T extends FieldValues> {
+    name: Path<T>;
+    label: string;
+    type: FormFieldType;
+    placeholder?: string;
+    required?: boolean;
+    options?: { value: string; label: string }[]; // For select fields
+    validation?: Omit<RegisterOptions<T, Path<T>>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
 }
 
-export const Form: React.FC<FormProps> = ({
-  onSubmit,
-  error,
-  children,
-  className = '',
-  ...props
-}) => {
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit(e);
-  };
-
-  // Concatenate class names with spaces
-  const formClasses = ['space-y-4', className].filter(Boolean).join(' ');
-
-  return (
-    <form
-      onSubmit={handleSubmit}
-      className={formClasses}
-      noValidate
-      {...props}
-    >
-      {children}
-      {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-600">{error}</p>
-        </div>
-      )}
-    </form>
-  );
-};
-
-interface FormGroupProps {
-  children: React.ReactNode;
-  className?: string;
+export interface FormProps<T extends FieldValues> {
+    fields: FormField<T>[];
+    onSubmit: SubmitHandler<T>;
+    className?: string;
+    defaultValues?: DefaultValues<T>;
+    id: string;
 }
 
-export const FormGroup: React.FC<FormGroupProps> = ({
-  children,
-  className = '',
-}) => {
-  // Concatenate class names with spaces
-  const groupClasses = ['space-y-4', className].filter(Boolean).join(' ');
+export type { SubmitHandler };
 
-  return (
-    <div className={groupClasses}>
-      {children}
-    </div>
-  );
-};
+export const Form = <T extends FieldValues>({
+    id,
+    fields,
+    onSubmit,
+    className = '',
+    defaultValues,
+}: FormProps<T>) => {
+    const { register, handleSubmit, formState: { errors } } = useForm<T>({
+        defaultValues
+    });
 
-interface FormActionsProps {
-  children: React.ReactNode;
-  className?: string;
-}
+    const renderField = (field: FormField<T>) => {
+        const { name, type, placeholder, options, validation } = field;
 
-export const FormActions: React.FC<FormActionsProps> = ({
-  children,
-  className = '',
-}) => {
-  // Concatenate class names with spaces
-  const actionClasses = ['flex items-center justify-end space-x-3 pt-2', className].filter(Boolean).join(' ');
+        switch (type) {
+            case 'select':
+                return (
+                    <select
+                        id={name.toString()}
+                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="">-</option>
+                        {options?.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </select>
+                );
 
-  return (
-    <div className={actionClasses}>
-      {children}
-    </div>
-  );
+            case 'textarea':
+                return (
+                    <textarea
+                        id={name.toString()}
+                        placeholder={placeholder}
+                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                );
+
+            case 'checkbox':
+                return (
+                    <input
+                        type="checkbox"
+                        id={name.toString()}
+                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                );
+
+            default:
+                return (
+                    <input
+                        type={type}
+                        autoComplete={type === 'email' ? 'email' : 'off'}
+                        id={name.toString()}
+                        placeholder={placeholder}
+                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                );
+        }
+    };
+
+    return (
+        <form id={id} onSubmit={handleSubmit(onSubmit)} className={className}>
+            {fields.map((field) => (
+                <div key={field.name.toString()} className="mb-4">
+                    <label
+                        htmlFor={field.name.toString()}
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                    >
+                        {field.label}
+                        {field.required && <span className="text-red-500 ml-1">*</span>}
+                    </label>
+
+                    {renderField(field)}
+
+                    {errors[field.name] && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors[field.name]?.message as string}
+                        </p>
+                    )}
+                </div>
+            ))}
+        </form>
+    );
 };

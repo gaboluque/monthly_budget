@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Button } from '../Button';
-import { Form, FormField, SubmitHandler } from '../forms/NewForm';
+import { Form, FormField, SubmitHandler } from '../forms/Form';
 import type { CreateAccountData, Account, AccountType, Currency } from '../../lib/types/accounts';
 
 interface AccountFormProps {
