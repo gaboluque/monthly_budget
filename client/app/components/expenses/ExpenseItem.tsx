@@ -1,6 +1,7 @@
 import { Edit2, Trash2 } from "lucide-react"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Expense } from "../../lib/types/expenses"
+import { useExpenseAccounts } from "../../hooks/useExpenseAccounts"
 
 interface ExpenseItemProps {
   expense: Expense
@@ -9,6 +10,9 @@ interface ExpenseItemProps {
 }
 
 export function ExpenseItem({ expense, onEdit, onDelete }: ExpenseItemProps) {
+  const { getAccountName } = useExpenseAccounts();
+  const accountName = getAccountName(expense.account_id);
+  
   return (
     <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -24,10 +28,10 @@ export function ExpenseItem({ expense, onEdit, onDelete }: ExpenseItemProps) {
               <span className="text-xs text-gray-500 mr-1">Frequency:</span>
               <span className="text-sm text-gray-700 capitalize">{expense.frequency}</span>
             </div>
-            {expense.destination && (
+            {expense.account_id && (
               <div className="flex items-center">
-                <span className="text-xs text-gray-500 mr-1">To:</span>
-                <span className="text-sm text-gray-700">{expense.destination}</span>
+                <span className="text-xs text-gray-500 mr-1">Account:</span>
+                <span className="text-sm text-gray-700">{accountName}</span>
               </div>
             )}
           </div>

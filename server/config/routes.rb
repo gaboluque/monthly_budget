@@ -23,7 +23,13 @@ Rails.application.routes.draw do
           post :unmark_as_expensed
         end
       end
-      resources :insights, only: [:index]
+      resources :accounts do
+        collection do
+          get :types
+          get :currencies
+        end
+      end
+      resources :insights, only: [ :index ]
     end
   end
 end

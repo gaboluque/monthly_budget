@@ -22,7 +22,7 @@ export class NotificationsManager {
     this.notifySubscribers();
 
     if (options.type === "error") {
-      console.error(options.message);
+      console.error(options.message, options.error);
     }
 
     return id;

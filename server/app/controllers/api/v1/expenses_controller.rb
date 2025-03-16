@@ -2,12 +2,13 @@ module Api
   module V1
     class ExpensesController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_expense, only: [:show, :update, :destroy, :mark_as_expensed, :unmark_as_expensed]
+      before_action :set_expense, only: [ :show, :update, :destroy, :mark_as_expensed, :unmark_as_expensed ]
 
       def index
         @expenses = current_user.expenses
         @expenses = @expenses.by_category(params[:category]) if params[:category].present?
         @expenses = @expenses.by_frequency(params[:frequency]) if params[:frequency].present?
+        @expenses = @expenses.by_account(params[:account_id]) if params[:account_id].present?
 
         render json: {
           data: @expenses
@@ -88,7 +89,16 @@ module Api
       end
 
       def expense_params
-        params.require(:expense).permit(:name, :amount, :category, :destination, :frequency, :last_expensed_at)
+        # Handle both old destination and new account_id
+        params_hash = params.require(:expense).permit(:name, :amount, :category, :destination, :account_id, :frequency, :last_expensed_at)
+
+        # If destination is provided but account_id is not, try to use destination as account_id
+        if params_hash[:destination].present? && params_hash[:account_id].blank?
+          params_hash[:account_id] = params_hash[:destination]
+          params_hash.delete(:destination)
+        end
+
+        params_hash
       end
     end
   end

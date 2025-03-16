@@ -5,7 +5,8 @@ export interface Expense {
   name: string;
   amount: number;
   category: string;
-  destination: string;
+  destination?: string; // Keep for backward compatibility
+  account_id: string;
   frequency: ExpenseFrequency;
   last_expensed_at?: string;
   created_at: string;
@@ -13,11 +14,12 @@ export interface Expense {
 }
 
 export interface CreateExpenseData {
-  name: string;
-  amount: number;
-  category: string;
-  destination: string;
-  frequency: Expense["frequency"];
+  id?: string;
+  name?: string;
+  amount?: number;
+  category?: string;
+  account_id?: string;
+  frequency?: Expense["frequency"];
 }
 
 export interface UpdateExpenseData extends Partial<CreateExpenseData> {}
