@@ -73,40 +73,11 @@ export const Form = <T extends FieldValues>({
                     />
                 );
 
-            case 'currency': {
-                const { onChange, onBlur, ref } = register(name, validation as RegisterOptions<T, Path<T>>);
-                const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-                    // Remove non-numeric characters except decimal point
-                    const numericValue = e.target.value.replace(/[^\d.]/g, '');
-                    // Format as currency for display (without initial 0)
-                    const formattedValue = numericValue ? `$${numericValue}` : '';
-                    // Update the input value with formatted currency
-                    e.target.value = formattedValue;
-                    // Pass the numeric value to react-hook-form
-                    const numericParsed = numericValue ? parseFloat(numericValue) : '';
-                    // Call the original onChange with a custom event
-                    onChange({
-                        target: { name, value: numericParsed },
-                        type: 'change',
-                    } as unknown as React.ChangeEvent<HTMLInputElement>);
-                };
-                return (
-                    <input
-                        id={name.toString()}
-                        placeholder={placeholder || '$'}
-                        onChange={handleChange}
-                        name={name}
-                        onBlur={onBlur}
-                        ref={ref}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                );
-            }
-
             default:
                 return (
                     <input
                         type={type}
+                        autoComplete={type === 'email' ? 'email' : 'off'}
                         id={name.toString()}
                         placeholder={placeholder}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}

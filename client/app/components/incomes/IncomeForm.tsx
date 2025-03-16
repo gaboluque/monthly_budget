@@ -1,30 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '../Button';
 import type { CreateIncomeData, Income } from '../../lib/types/incomes';
 import { Form, FormField, SubmitHandler } from '../forms/NewForm';
+import { useAccounts } from '../../hooks/useAccounts';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;
   onCancel: () => void;
   initialData?: Income;
 }
-
-const INCOME_SOURCE_OPTIONS = [
-  { value: 'Salary', label: 'Salary' },
-  { value: 'Bonus', label: 'Bonus' },
-  { value: 'Commission', label: 'Commission' },
-  { value: 'Freelance Income', label: 'Freelance Income' },
-  { value: 'Consulting', label: 'Consulting' },
-  { value: 'Investment Income', label: 'Investment Income' },
-  { value: 'Dividends', label: 'Dividends' },
-  { value: 'Rental Income', label: 'Rental Income' },
-  { value: 'Side Business', label: 'Side Business' },
-  { value: 'Pension', label: 'Pension' },
-  { value: 'Social Security', label: 'Social Security' },
-  { value: 'Royalties', label: 'Royalties' },
-  { value: 'Interest Income', label: 'Interest Income' },
-  { value: 'Other', label: 'Other' },
-];
 
 const FREQUENCY_OPTIONS = [
   { value: 'monthly', label: 'Monthly' },
@@ -40,6 +24,14 @@ const FORM_ID = 'income-form';
 export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { accounts } = useAccounts();
+
+  const accountOptions = useMemo(() => {
+    return accounts.map((account) => ({
+      value: account.id,
+      label: account.name
+    }));
+  }, [accounts]);
 
   // Default values for the form
   const defaultValues: CreateIncomeData = {
@@ -75,8 +67,7 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     {
       name: 'name',
       label: 'Income Source',
-      type: 'select',
-      options: INCOME_SOURCE_OPTIONS,
+      type: 'text',
       required: true,
       validation: {
         required: 'Income source is required'
@@ -94,6 +85,16 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
           value: 0.01,
           message: 'Amount must be greater than 0'
         }
+      }
+    },
+    {
+      name: 'account_id',
+      label: 'Account',
+      type: 'select',
+      options: accountOptions,
+      required: true,
+      validation: {
+        required: 'Account is required'
       }
     },
     {
