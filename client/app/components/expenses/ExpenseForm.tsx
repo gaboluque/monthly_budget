@@ -1,17 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '../Button';
-import { Input } from '../forms/Input';
-import { Form, FormGroup, FormActions } from '../forms/Form';
 import type { CreateExpenseData, Expense } from '../../lib/types/expenses';
-import { expensesApi } from '../../lib/api/expenses';
-import { formatCurrency } from '../../lib/utils/currency';
-import { ui } from '../../lib/ui/manager';
+import { Form, FormField, SubmitHandler } from '../forms/Form';
+import { useAccounts } from '../../hooks/useAccounts';
+import { useExpenses } from '../../hooks/useExpenses';
+import { Spinner } from '../ui/Spinner';
 
 interface ExpenseFormProps {
   onSubmit: (data: CreateExpenseData) => Promise<void>;
   onCancel: () => void;
-  initialData?: Expense;
-  onCreateAnother?: () => void;
+  initialData?: Expense | CreateExpenseData | null;
 }
 
 const FREQUENCY_OPTIONS = [
@@ -20,174 +18,156 @@ const FREQUENCY_OPTIONS = [
   { value: 'weekly', label: 'Weekly' },
 ];
 
-const parseCurrencyInput = (value: string): number => {
-  // Remove currency symbol, commas, and other non-numeric characters except decimal point
-  const numericValue = value.replace(/[^0-9.]/g, '');
-  
-  // Ensure only one decimal point
-  const parts = numericValue.split('.');
-  if (parts.length > 2) return 0;
-  
-  // If there's a decimal point, ensure only 2 decimal places
-  if (parts[1]) {
-    parts[1] = parts[1].slice(0, 2);
-  }
-  
-  return Number(parts.join('.')) || 0;
-};
+const FORM_ID = 'expense-form';
 
-export function ExpenseForm({ onSubmit, onCancel, initialData, onCreateAnother }: ExpenseFormProps) {
-  const [formData, setFormData] = useState<CreateExpenseData>({
-    name: initialData?.name ?? '',
-    amount: initialData?.amount ?? 0,
-    category: initialData?.category ?? '',
-    destination: initialData?.destination ?? '',
-    frequency: initialData?.frequency ?? 'monthly',
-  });
-  const [displayAmount, setDisplayAmount] = useState(formatCurrency(formData.amount));
+export function ExpenseForm({ onSubmit, onCancel, initialData }: ExpenseFormProps) {
+  const { accounts, isLoading: isAccountsLoading } = useAccounts();
+  const { categories, isLoading: isCategoriesLoading } = useExpenses();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await expensesApi.getCategories();
-        setCategories(data);
-      } catch (err) {
-        ui.notify({
-          message: 'Failed to fetch categories',
-          type: 'error',
-        });
-      }
-    };
-    fetchCategories();
-  }, []);
+  const accountOptions = useMemo(() => {
+    return accounts.map((account) => ({
+      value: account.id,
+      label: `${account.name} (${account.account_type})`
+    }));
+  }, [accounts]);
 
+  const categoryOptions = useMemo(() => {
+    return categories.map(cat => ({
+      value: cat,
+      label: cat
+    }));
+  }, [categories]);
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    const numericValue = parseCurrencyInput(rawValue);
-    setFormData({ ...formData, amount: numericValue });
-    setDisplayAmount(formatCurrency(numericValue));
+  // Default values for the form
+  const defaultValues: CreateExpenseData = {
+    name: initialData?.name ?? undefined,
+    amount: initialData?.amount ?? undefined,
+    category: initialData?.category ?? undefined,
+    account_id: initialData?.account_id ?? undefined,
+    frequency: initialData?.frequency ?? undefined,
   };
 
-  const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.target.value = formData.amount.toString();
-    e.target.select();
-  };
-
-  const handleAmountBlur = () => {
-    setDisplayAmount(formatCurrency(formData.amount));
-  };
-
-  const handleSubmit = async (createAnother: boolean = false) => {
+  const handleSubmit: SubmitHandler<CreateExpenseData> = async (data) => {
     setIsSubmitting(true);
     setError(null);
-    
     try {
-      await onSubmit(formData);
-      if (createAnother && onCreateAnother) {
-        onCreateAnother();
-        // Reset form data
-        setFormData({
-          name: '',
-          amount: 0,
-          category: '',
-          destination: '',
-          frequency: 'monthly',
-        });
-        setDisplayAmount(formatCurrency(0));
-      }
+      await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
+      throw err; // Re-throw to let react-hook-form handle the error
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const submitForm = () => {
+    const form = document.getElementById(FORM_ID) as HTMLFormElement;
+    if (form) form.requestSubmit();
+  };
+
+  if (isAccountsLoading || isCategoriesLoading) {
+    return <Spinner />
+  }
+
+  const formFields: FormField<CreateExpenseData>[] = [
+    {
+      name: 'name',
+      label: 'Expense Name',
+      type: 'text',
+      placeholder: 'Enter expense name',
+      required: true,
+      validation: {
+        required: 'Expense name is required'
+      }
+    },
+    {
+      name: 'amount',
+      label: 'Amount',
+      type: 'number',
+      placeholder: '$0.00',
+      required: true,
+      validation: {
+        required: 'Amount is required',
+        min: {
+          value: 0.01,
+          message: 'Amount must be greater than 0'
+        }
+      }
+    },
+    {
+      name: 'category',
+      label: 'Category',
+      type: 'select',
+      options: categoryOptions,
+      required: true,
+      validation: {
+        required: 'Category is required'
+      }
+    },
+    {
+      name: 'account_id',
+      label: 'Account',
+      type: 'select',
+      options: accountOptions,
+      required: true,
+      validation: {
+        required: 'Account is required'
+      }
+    },
+    {
+      name: 'frequency',
+      label: 'Frequency',
+      type: 'select',
+      options: FREQUENCY_OPTIONS,
+      required: true,
+      validation: {
+        required: 'Frequency is required'
+      }
+    },
+  ];
+
   return (
-    <Form onSubmit={(e) => { e.preventDefault(); handleSubmit(false); }} error={error ?? undefined}>
-      <FormGroup>
-        <Input
-          type="text"
-          label="Expense Name"
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-          fullWidth
-          helperText="Enter the name of the expense"
-          autoComplete='off'
-        />
+    <div className="space-y-4">
+      {error && (
+        <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+          {error}
+        </div>
+      )}
 
-        <Input
-          label="Amount"
-          id="amount"
-          type="text"
-          inputMode="decimal"
-          value={displayAmount}
-          onChange={handleAmountChange}
-          onFocus={handleAmountFocus}
-          onBlur={handleAmountBlur}
-          required
-          fullWidth
-          helperText="Enter the amount for this expense"
-        />
+      <Form<CreateExpenseData>
+        id={FORM_ID}
+        fields={formFields}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        defaultValues={defaultValues}
+      />
 
-        <Input
-          type="select"
-          label="Category"
-          id="category"
-          value={formData.category}
-          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-          options={categories.map(cat => ({ value: cat, label: cat }))}
-          required
-          fullWidth
-          helperText="Select the category this expense belongs to"
-        />
-
-        <Input
-          type="text"
-          label="Destination"
-          id="destination"
-          value={formData.destination}
-          onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-          required
-          fullWidth
-          helperText="Enter where this expense is paid to (e.g., landlord, utility company)"
-        />
-
-        <Input
-          type="select"
-          label="Frequency"
-          id="frequency"
-          value={formData.frequency}
-          onChange={(e) => setFormData({ ...formData, frequency: e.target.value as Expense['frequency'] })}
-          options={FREQUENCY_OPTIONS}
-          required
-          fullWidth
-          helperText="How often do you pay this expense?"
-        />
-      </FormGroup>
-
-      <FormActions>
+      <div className="flex justify-end space-x-2 mt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        {!initialData?.id && onCreateAnother && (
-          <Button 
-            type="button" 
+
+        {!initialData?.id && (
+          <Button
+            type="button"
+            variant="secondary"
             disabled={isSubmitting}
-            onClick={() => handleSubmit(true)}
+            onClick={submitForm}
           >
             {isSubmitting ? 'Saving...' : 'Create & Add Another'}
           </Button>
         )}
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
+
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={submitForm}
+        >
+          {isSubmitting ? 'Saving...' : (initialData?.id ? 'Update' : 'Create')}
         </Button>
-      </FormActions>
-    </Form>
+      </div>
+    </div>
   );
 } 

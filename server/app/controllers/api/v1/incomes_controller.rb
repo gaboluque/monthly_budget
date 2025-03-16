@@ -51,7 +51,7 @@ module Api
       end
 
       def income_params
-        params.require(:income).permit(:name, :amount, :frequency)
+        params.require(:income).permit(:name, :amount, :frequency, :account_id)
       end
     end
   end

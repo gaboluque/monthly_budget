@@ -1,97 +1,99 @@
 import React, { useState } from 'react';
-import { Form, FormGroup, FormActions } from './forms/Form';
-import {Input} from './forms/Input';
-import {Button} from './Button';
+import { Form, FormField, SubmitHandler } from './forms/Form';
+import { Button } from './Button';
 
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => Promise<void>;
 }
 
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
+const FORM_ID = 'login-form';
+
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<{
-    email?: string;
-    password?: string;
-  }>({});
+  const [error, setError] = useState<string | null>(null);
 
-  const validateForm = () => {
-    const errors: { email?: string; password?: string } = {};
-    let isValid = true;
-
-    if (!email) {
-      errors.email = 'Email is required';
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email is invalid';
-      isValid = false;
-    }
-
-    if (!password) {
-      errors.password = 'Password is required';
-      isValid = false;
-    } else if (password.length < 6) {
-      errors.password = 'Password must be at least 6 characters';
-      isValid = false;
-    }
-
-    setFieldErrors(errors);
-    return isValid;
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
+  const handleSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setIsLoading(true);
-    await onSubmit(email, password);
+    setError(null);
+
+    try {
+      await onSubmit(data.email, data.password);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred while signing in');
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const submitForm = () => {
+    const form = document.getElementById(FORM_ID) as HTMLFormElement;
+    if (form) form.requestSubmit();
+  };
+
+  const formFields: FormField<LoginFormData>[] = [
+    {
+      name: 'email',
+      label: 'Email address',
+      type: 'email',
+      placeholder: 'Enter your email',
+      required: true,
+      validation: {
+        required: 'Email is required',
+        pattern: {
+          value: /\S+@\S+\.\S+/,
+          message: 'Email is invalid'
+        }
+      }
+    },
+    {
+      name: 'password',
+      label: 'Password',
+      type: 'password',
+      placeholder: 'Enter your password',
+      required: true,
+      validation: {
+        required: 'Password is required',
+        minLength: {
+          value: 6,
+          message: 'Password must be at least 6 characters'
+        }
+      }
+    }
+  ];
 
   return (
-        <Form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Input
-              label="Email address"
-              type="email"
-              id="email"
-              name="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              error={fieldErrors.email}
-              fullWidth
-              required
-            />
-            
-            <Input
-              label="Password"
-              type="password"
-              id="password"
-              name="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={fieldErrors.password}
-              fullWidth
-              required
-            />
-          </FormGroup>
-          
-          <FormActions className="mt-6">
-            <Button
-              type="submit"
-              variant="primary"
-              size="lg"
-              isLoading={isLoading}
-              fullWidth
-            >
-              Sign in
-            </Button>
-          </FormActions>
-        </Form>
+    <div className="space-y-4">
+      {error && (
+        <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
+      <Form<LoginFormData>
+        id={FORM_ID}
+        fields={formFields}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+      />
+
+      <div className="mt-6">
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          isLoading={isLoading}
+          fullWidth
+          onClick={submitForm}
+        >
+          Sign in
+        </Button>
+      </div>
+    </div>
   );
 };

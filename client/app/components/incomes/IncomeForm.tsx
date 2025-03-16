@@ -1,32 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '../Button';
-import { Input } from '../forms/Input';
-import { Form, FormGroup, FormActions } from '../forms/Form';
 import type { CreateIncomeData, Income } from '../../lib/types/incomes';
-import { formatCurrency } from '../../lib/utils/currency';
+import { Form, FormField, SubmitHandler } from '../forms/Form';
+import { useAccounts } from '../../hooks/useAccounts';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;
   onCancel: () => void;
   initialData?: Income;
 }
-
-const INCOME_SOURCE_OPTIONS = [
-  { value: 'Salary', label: 'Salary' },
-  { value: 'Bonus', label: 'Bonus' },
-  { value: 'Commission', label: 'Commission' },
-  { value: 'Freelance Income', label: 'Freelance Income' },
-  { value: 'Consulting', label: 'Consulting' },
-  { value: 'Investment Income', label: 'Investment Income' },
-  { value: 'Dividends', label: 'Dividends' },
-  { value: 'Rental Income', label: 'Rental Income' },
-  { value: 'Side Business', label: 'Side Business' },
-  { value: 'Pension', label: 'Pension' },
-  { value: 'Social Security', label: 'Social Security' },
-  { value: 'Royalties', label: 'Royalties' },
-  { value: 'Interest Income', label: 'Interest Income' },
-  { value: 'Other', label: 'Other' },
-];
 
 const FREQUENCY_OPTIONS = [
   { value: 'monthly', label: 'Monthly' },
@@ -37,112 +19,119 @@ const FREQUENCY_OPTIONS = [
   { value: 'quarterly', label: 'Quarterly' },
 ];
 
-const parseCurrencyInput = (value: string): number => {
-  // Remove currency symbol, commas, and other non-numeric characters except decimal point
-  const numericValue = value.replace(/[^0-9.]/g, '');
-  
-  // Ensure only one decimal point
-  const parts = numericValue.split('.');
-  if (parts.length > 2) return 0;
-  
-  // If there's a decimal point, ensure only 2 decimal places
-  if (parts[1]) {
-    parts[1] = parts[1].slice(0, 2);
-  }
-  
-  return Number(parts.join('.')) || 0;
-};
+const FORM_ID = 'income-form';
 
 export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps) {
-  const [formData, setFormData] = useState<CreateIncomeData>({
-    name: initialData?.name ?? 'salary',
-    amount: initialData?.amount ?? 0,
-    frequency: initialData?.frequency ?? 'monthly',
-  });
-  const [displayAmount, setDisplayAmount] = useState(formatCurrency(formData.amount));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { accounts } = useAccounts();
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value;
-    const numericValue = parseCurrencyInput(rawValue);
-    setFormData({ ...formData, amount: numericValue });
-    setDisplayAmount(formatCurrency(numericValue));
+  const accountOptions = useMemo(() => {
+    return accounts.map((account) => ({
+      value: account.id,
+      label: account.name
+    }));
+  }, [accounts]);
+
+  // Default values for the form
+  const defaultValues: CreateIncomeData = {
+    name: initialData?.name ?? undefined,
+    amount: initialData?.amount ?? undefined,
+    frequency: initialData?.frequency ?? undefined,
   };
 
-  const handleAmountFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    // When focusing, show the raw number without currency formatting
-    e.target.value = formData.amount.toString();
-    e.target.select();
-  };
-
-  const handleAmountBlur = () => {
-    // When blurring, format the number as currency
-    setDisplayAmount(formatCurrency(formData.amount));
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit: SubmitHandler<CreateIncomeData> = async (data) => {
     setIsSubmitting(true);
     setError(null);
     try {
-      await onSubmit(formData);
+      await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
+      throw err; // Re-throw to let react-hook-form handle the error
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const submitForm = () => {
+    const form = document.getElementById(FORM_ID) as HTMLFormElement;
+    if (form) form.requestSubmit();
+  };
+
+  const formFields: FormField<CreateIncomeData>[] = [
+    {
+      name: 'name',
+      label: 'Income Source',
+      type: 'text',
+      required: true,
+      validation: {
+        required: 'Income source is required'
+      }
+    },
+    {
+      name: 'amount',
+      label: 'Amount',
+      type: 'number',
+      placeholder: '$0.00',
+      required: true,
+      validation: {
+        required: 'Amount is required',
+        min: {
+          value: 0.01,
+          message: 'Amount must be greater than 0'
+        }
+      }
+    },
+    {
+      name: 'account_id',
+      label: 'Account',
+      type: 'select',
+      options: accountOptions,
+      required: true,
+      validation: {
+        required: 'Account is required'
+      }
+    },
+    {
+      name: 'frequency',
+      label: 'Frequency',
+      type: 'select',
+      options: FREQUENCY_OPTIONS,
+      required: true,
+      validation: {
+        required: 'Frequency is required'
+      }
+    },
+  ];
+
   return (
-    <Form onSubmit={handleSubmit} error={error ?? undefined}>
-      <FormGroup>
-        <Input
-          type="select"
-          label="Income Source"
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          options={INCOME_SOURCE_OPTIONS}
-          required
-          fullWidth
-          helperText="Select the type of income you want to add"
-        />
+    <div className="space-y-4">
+      {error && (
+        <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded">
+          {error}
+        </div>
+      )}
 
-        <Input
-          label="Amount"
-          id="amount"
-          type="text"
-          inputMode="decimal"
-          value={displayAmount}
-          onChange={handleAmountChange}
-          onFocus={handleAmountFocus}
-          onBlur={handleAmountBlur}
-          required
-          fullWidth
-          helperText="Enter the amount for this income source"
-        />
+      <Form<CreateIncomeData>
+        id={FORM_ID}
+        fields={formFields}
+        onSubmit={handleSubmit}
+        className="space-y-4"
+        defaultValues={defaultValues}
+      />
 
-        <Input
-          type="select"
-          label="Frequency"
-          id="frequency"
-          value={formData.frequency}
-          onChange={(e) => setFormData({ ...formData, frequency: e.target.value as Income['frequency'] })}
-          options={FREQUENCY_OPTIONS}
-          required
-          fullWidth
-          helperText="How often do you receive this income?"
-        />
-      </FormGroup>
-
-      <FormActions>
+      <div className="flex justify-end space-x-2 mt-4">
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : initialData ? 'Update' : 'Create'}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={submitForm}
+        >
+          {isSubmitting ? 'Saving...' : (initialData ? 'Update' : 'Create')}
         </Button>
-      </FormActions>
-    </Form>
+      </div>
+    </div>
   );
 } 

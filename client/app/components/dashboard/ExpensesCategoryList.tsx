@@ -3,7 +3,7 @@ import type { Expense } from "../../lib/types/expenses"
 import { ExpenseItem } from "./ExpenseItem"
 import { formatCurrency } from "../../lib/utils/currency"
 import { useMemo, useState } from "react"
-
+import { useExpenseAccounts } from "../../hooks/useExpenseAccounts"
 
 interface ExpensesListProps {
   expenses: Expense[]
@@ -14,7 +14,7 @@ interface ExpensesListProps {
 }
 
 interface ExpenseDestinationGroupProps {
-  destination: string
+  destinationName: string
   expenses: Expense[]
   markingExpensed: string | null
   onAction: (id: string) => Promise<void>
@@ -23,7 +23,7 @@ interface ExpenseDestinationGroupProps {
 }
 
 function ExpenseDestinationGroup({ 
-  destination, 
+  destinationName, 
   expenses, 
   markingExpensed, 
   onAction,
@@ -49,7 +49,7 @@ function ExpenseDestinationGroup({
             <ChevronRight className="w-4 h-4 text-gray-500" />
           )}
           <Building2 className="w-4 h-4 text-gray-500" />
-          <h3 className="text-sm font-medium text-gray-900">{destination}</h3>
+          <h3 className="text-sm font-medium text-gray-900">{destinationName}</h3>
           <div className="flex items-center gap-2 ml-2">
             <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full flex items-center gap-1">
               <Hourglass className="w-3 h-3" /> {pendingCount}
@@ -82,6 +82,8 @@ export function ExpensesCategoryList({
   onAction,
   isPending,
 }: ExpensesListProps) {
+  const { getAccountName } = useExpenseAccounts();
+  
   // State to track expanded destinations
   const [expandedDestinations, setExpandedDestinations] = useState<Set<string>>(new Set())
 
@@ -100,36 +102,40 @@ export function ExpensesCategoryList({
   }, [expenses])
 
   // Toggle destination expansion
-  const toggleDestination = (destination: string) => {
+  const toggleDestination = (destinationId: string) => {
     setExpandedDestinations((prev) => {
       const next = new Set(prev)
-      if (next.has(destination)) {
-        next.delete(destination)
+      if (next.has(destinationId)) {
+        next.delete(destinationId)
       } else {
-        next.add(destination)
+        next.add(destinationId)
       }
       return next
     })
   }
 
-  // Group expenses by destination
-  const expensesByDestination = expenses.reduce<Record<string, Expense[]>>((groups, expense) => {
-    const destination = expense.destination || "Other"
-    if (!groups[destination]) {
-      groups[destination] = []
-    }
-    groups[destination].push(expense)
-    return groups
-  }, {})
+  // Group expenses by account_id
+  const expensesByDestination = useMemo(() => {
+    return expenses.reduce<Record<string, Expense[]>>((groups, expense) => {
+      const accountId = expense.account_id || "unknown"
+      if (!groups[accountId]) {
+        groups[accountId] = []
+      }
+      groups[accountId].push(expense)
+      return groups
+    }, {})
+  }, [expenses]);
 
   // Sort destinations by total amount
-  const sortedDestinations = Object.entries(expensesByDestination)
-    .sort(([, expensesA], [, expensesB]) => {
-      const totalA = expensesA.reduce((sum, exp) => sum + exp.amount, 0)
-      const totalB = expensesB.reduce((sum, exp) => sum + exp.amount, 0)
-      return totalB - totalA
-    })
-    .map(([destination]) => destination)
+  const sortedDestinations = useMemo(() => {
+    return Object.entries(expensesByDestination)
+      .sort(([, expensesA], [, expensesB]) => {
+        const totalA = expensesA.reduce((sum, exp) => sum + exp.amount, 0)
+        const totalB = expensesB.reduce((sum, exp) => sum + exp.amount, 0)
+        return totalB - totalA
+      })
+      .map(([destinationId]) => destinationId)
+  }, [expensesByDestination]);
 
   return (
     <div>
@@ -173,15 +179,15 @@ export function ExpensesCategoryList({
         </div>
       ) : (
         <div className="space-y-6">
-          {sortedDestinations.map((destination) => (
+          {sortedDestinations.map((destinationId) => (
             <ExpenseDestinationGroup
-              key={destination}
-              destination={destination}
-              expenses={expensesByDestination[destination]}
+              key={destinationId}
+              destinationName={getAccountName(destinationId)}
+              expenses={expensesByDestination[destinationId]}
               markingExpensed={markingExpensed}
               onAction={onAction}
-              isExpanded={expandedDestinations.has(destination)}
-              onToggle={() => toggleDestination(destination)}
+              isExpanded={expandedDestinations.has(destinationId)}
+              onToggle={() => toggleDestination(destinationId)}
             />
           ))}
         </div>

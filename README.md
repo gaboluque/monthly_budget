@@ -57,7 +57,7 @@ This app helps you:
 
 ### 👤 User
 
-```typescript
+```
 User {
   email: string           // unique, required
   password_digest: string // required
@@ -72,7 +72,7 @@ User {
 
 ### 💵 Income
 
-```typescript
+```
 Income {
   user_id: references    // required, foreign key
   name: string          // required
@@ -85,7 +85,7 @@ Income {
 
 ### 💳 Expense
 
-```typescript
+```
 Expense {
   user_id: references    // required, foreign key
   name: string          // required
@@ -94,6 +94,21 @@ Expense {
   destination: string   // required
   frequency: string     // required, enum of supported frequencies
   last_expensed_at: datetime  // nullable
+  createdAt: datetime
+  updatedAt: datetime
+}
+```
+
+### Accounts
+
+```
+Account {
+  user_id: references    // required, foreign key
+  name: string          // required
+  balance: decimal      // required, precision: 10, scale: 2
+  type: string          // required, enum of supported account types (e.g., Checking, Savings, Credit Card, loan, etc)
+  currency: string      // required, enum of supported currencies (e.g., USD, COP) - default: COP
+  description: text     // nullable
   createdAt: datetime
   updatedAt: datetime
 }

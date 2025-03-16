@@ -16,9 +16,10 @@ export interface Income {
 }
 
 export interface CreateIncomeData {
-  name: string;
-  amount: number;
-  frequency: IncomeFrequency;
+  name?: string;
+  amount?: number;
+  frequency?: IncomeFrequency;
+  account_id?: string;
 }
 
 export interface UpdateIncomeData extends Partial<CreateIncomeData> {}

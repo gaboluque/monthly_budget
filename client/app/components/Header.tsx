@@ -4,7 +4,7 @@ import { Link, useLocation } from "@remix-run/react"
 import { Button } from "./Button"
 import { logout } from "../lib/utils/auth"
 import { useState } from "react"
-import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight, PieChart } from "lucide-react"
+import { Menu, X, Home, DollarSign, CreditCard, LogOut, ChevronRight, PieChart, Wallet } from "lucide-react"
 
 const navigationLinks = [
   {
@@ -24,6 +24,12 @@ const navigationLinks = [
     label: "Expenses",
     icon: CreditCard,
     activeClass: "bg-blue-50 text-blue-700",
+  },
+  {
+    path: "/accounts",
+    label: "Accounts",
+    icon: Wallet,
+    activeClass: "bg-yellow-50 text-yellow-700",
   },
   {
     path: "/insights",
