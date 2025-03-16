@@ -1,5 +1,5 @@
 import { BarChart2 } from "lucide-react"
-import { StatCard } from "../StatCard"
+import { StatCard } from "../ui/StatCard"
 
 interface IncomeSummaryProps {
   totalIncome: number

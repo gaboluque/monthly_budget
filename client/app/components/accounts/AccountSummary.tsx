@@ -1,5 +1,5 @@
 import { Wallet } from "lucide-react"
-import { StatCard } from "../StatCard"
+import { StatCard } from "../ui/StatCard"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { AccountsByType } from "../../hooks/useAccounts"
 
@@ -26,10 +26,10 @@ interface AccountSummaryProps {
   accountsByType: AccountsByType
 }
 
-export function AccountSummary({ 
-  totalBalance, 
-  accountCount, 
-  accountsByType 
+export function AccountSummary({
+  totalBalance,
+  accountCount,
+  accountsByType
 }: AccountSummaryProps) {
   const typeBalances = Object.fromEntries(
     Object.entries(accountsByType).map(([type, accounts]) => [
@@ -58,10 +58,10 @@ export function AccountSummary({
             {Object.entries(typeBalances).map(([type, amount]) => (
               <div key={type} className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${getAccountTypeColor(type)}`}></div>
-                  <div className="flex-1">
-                    <div className="text-sm font-medium">{type}</div>
-                    <div className="text-xs text-gray-500">{formatCurrency(amount, false)}</div>
-                  </div>
+                <div className="flex-1">
+                  <div className="text-sm font-medium">{type}</div>
+                  <div className="text-xs text-gray-500">{formatCurrency(amount, false)}</div>
+                </div>
               </div>
             ))}
           </div>

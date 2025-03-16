@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
-import { Confirm } from "../../../components/Confirm"
-import { Notification } from "../../../components/Notification"
+import { Confirm } from "../../../components/ui/Confirm"
+import { Notification } from "../../../components/ui/Notification"
 import { UIManager } from "../manager"
 import type { ConfirmOptions, NotificationItem } from "../types"
 

@@ -1,5 +1,5 @@
 import { CreditCard, Check, Undo, Loader2 } from "lucide-react"
-import { Button } from "../Button"
+import { Button } from "../ui/Button"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Expense } from "../../lib/types/expenses"
 import { CATEGORY_COLORS } from "../../lib/types/expenses"
@@ -9,7 +9,7 @@ import { useMemo } from "react"
 interface ExpenseItemProps {
   expense: Expense
   isMarking: boolean
-  onAction: (id: string) => Promise<void>
+  onAction: (id: string) => void
 }
 
 export function ExpenseItem({ expense, isMarking, onAction }: ExpenseItemProps) {

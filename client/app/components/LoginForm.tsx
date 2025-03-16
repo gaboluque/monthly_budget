@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, FormField, SubmitHandler } from './forms/Form';
-import { Button } from './Button';
+import { Button } from './ui/Button';
 
 interface LoginFormProps {
   onSubmit: (email: string, password: string) => Promise<void>;

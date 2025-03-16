@@ -10,6 +10,12 @@ Rails.application.routes.draw do
       resources :incomes do
         collection do
           get :categories
+          get :pending
+          get :received
+        end
+        member do
+          put :mark_as_received
+          put :mark_as_pending
         end
       end
       resources :expenses do
@@ -19,8 +25,8 @@ Rails.application.routes.draw do
           get :expensed
         end
         member do
-          post :mark_as_expensed
-          post :unmark_as_expensed
+          put :mark_as_expensed
+          put :mark_as_pending
         end
       end
       resources :accounts do

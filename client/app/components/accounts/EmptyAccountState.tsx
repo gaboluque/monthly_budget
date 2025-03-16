@@ -1,5 +1,5 @@
 import { Plus } from "lucide-react"
-import { Button } from "../Button"
+import { Button } from "../ui/Button"
 
 interface EmptyAccountStateProps {
   onAddAccount: () => void

@@ -1,7 +1,7 @@
 module Api
   module V1
     class IncomesController < ApplicationController
-      before_action :set_income, only: [ :show, :update, :destroy ]
+      before_action :set_income, only: [ :show, :update, :destroy, :mark_as_received, :mark_as_pending ]
 
       # GET /api/v1/incomes
       def index
@@ -40,6 +40,55 @@ module Api
       def destroy
         @income.destroy
         render json: @income, status: :ok
+      end
+
+      # PUT /api/v1/incomes/:id/mark_as_received
+      def mark_as_received
+        if current_user.incomes.pending.where(id: params[:id]).blank?
+          render json: { errors: 'Income is not pending' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          @income.update(last_received_at: Time.current)
+          @income.account.update(balance: @income.account.balance + @income.amount)
+          render json: @income, status: :ok
+        end
+      end
+
+      # PUT /api/v1/incomes/:id/mark_as_pending
+      def mark_as_pending
+        if current_user.incomes.received_this_month.where(id: params[:id]).blank?
+          render json: { errors: 'Income is not received' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          @income.update(last_received_at: nil)
+          @income.account.update(balance: @income.account.balance - @income.amount)
+          render json: @income, status: :ok
+        end
+      end
+
+      # GET /api/v1/incomes/categories
+      def categories
+        render json: { data: Income::FREQUENCIES }
+      end
+
+      # GET /api/v1/incomes/pending
+      def pending
+        @pending_incomes = current_user.incomes.pending
+        render json: {
+          data: @pending_incomes
+        }
+      end
+
+      # GET /api/v1/incomes/received
+      def received
+        @received_incomes = current_user.incomes.received
+        render json: {
+          data: @received_incomes
+        }
       end
 
       private

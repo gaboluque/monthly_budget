@@ -30,4 +30,28 @@ export const incomesApi = {
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/incomes/${id}`);
   },
+
+  // Get pending incomes
+  getPending: async (): Promise<Income[]> => {
+    const response = await apiClient.get("/incomes/pending");
+    return response.data;
+  },
+
+  // Get received incomes
+  getReceived: async (): Promise<Income[]> => {
+    const response = await apiClient.get("/incomes/received");
+    return response.data;
+  },
+
+  // Mark an income as received
+  markAsReceived: async (id: string): Promise<Income> => {
+    const response = await apiClient.put(`/incomes/${id}/mark_as_received`);
+    return response.data;
+  },
+
+  // Unmark an income as received
+  markAsPending: async (id: string): Promise<Income> => {
+    const response = await apiClient.put(`/incomes/${id}/mark_as_pending`);
+    return response.data;
+  },
 };

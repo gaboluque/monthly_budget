@@ -1,4 +1,4 @@
-import type { ButtonVariant } from "../../components/Button";
+import type { ButtonVariant } from "../../components/ui/Button";
 
 export interface ConfirmOptions {
   title?: string;
@@ -13,7 +13,7 @@ export interface ConfirmOptions {
 export interface NotifyOptions {
   message: string;
   type?: "success" | "error" | "info" | "warning";
-  error?: Error;
+  error?: unknown;
 }
 
 export interface NotificationItem extends NotifyOptions {

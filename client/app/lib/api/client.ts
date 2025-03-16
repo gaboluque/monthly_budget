@@ -35,9 +35,15 @@ export const apiClient = {
       body: JSON.stringify(data),
     }),
 
-  patch: async <T>(url: string, data: T) =>
+  patch: async <T>(url: string, data?: T) =>
     request(url, {
       method: "PATCH",
+      body: JSON.stringify(data),
+    }),
+
+  put: async <T>(url: string, data?: T) =>
+    request(url, {
+      method: "PUT",
       body: JSON.stringify(data),
     }),
 
