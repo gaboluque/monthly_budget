@@ -15,14 +15,8 @@ export default function Dashboard() {
     isLoading,
     markingExpensed,
     summaryData,
-    sortField,
-    sortDirection,
-    showSortOptions,
-    setShowSortOptions,
     handleMarkAsExpensed,
     handleUnmarkAsExpensed,
-    handleSortChange,
-    getSortDescription,
   } = useDashboard()
 
   return (
@@ -36,14 +30,8 @@ export default function Dashboard() {
         expensedExpenses={expensedExpenses}
         isLoading={isLoading}
         markingExpensed={markingExpensed}
-        sortField={sortField}
-        sortDirection={sortDirection}
-        showSortOptions={showSortOptions}
-        setShowSortOptions={setShowSortOptions}
         handleMarkAsExpensed={handleMarkAsExpensed}
         handleUnmarkAsExpensed={handleUnmarkAsExpensed}
-        handleSortChange={handleSortChange}
-        getSortDescription={getSortDescription}
       />
     </Layout>
   )

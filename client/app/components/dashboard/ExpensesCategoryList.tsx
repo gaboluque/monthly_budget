@@ -22,23 +22,23 @@ interface ExpenseDestinationGroupProps {
   onToggle: () => void
 }
 
-function ExpenseDestinationGroup({ 
-  destinationName, 
-  expenses, 
-  markingExpensed, 
+function ExpenseDestinationGroup({
+  destinationName,
+  expenses,
+  markingExpensed,
   onAction,
   isExpanded,
-  onToggle 
+  onToggle
 }: ExpenseDestinationGroupProps) {
   const totalAmount = expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0)
-  
+
   // Calculate pending and expensed counts
   const expensedCount = expenses.filter(expense => expense.last_expensed_at).length
   const pendingCount = expenses.length - expensedCount
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">
-      <button 
+      <button
         onClick={onToggle}
         className="w-full bg-gray-50 px-4 py-3 flex items-center justify-between hover:bg-gray-100 transition-colors"
       >
@@ -65,7 +65,6 @@ function ExpenseDestinationGroup({
               key={expense.id}
               expense={expense}
               isMarking={markingExpensed === expense.id}
-              isPending={!!expense.last_expensed_at}
               onAction={onAction}
             />
           ))}
@@ -83,7 +82,7 @@ export function ExpensesCategoryList({
   isPending,
 }: ExpensesListProps) {
   const { getAccountName } = useExpenseAccounts();
-  
+
   // State to track expanded destinations
   const [expandedDestinations, setExpandedDestinations] = useState<Set<string>>(new Set())
 
@@ -146,13 +145,13 @@ export function ExpensesCategoryList({
             Expenses
           </h2>
           <div className="flex items-center gap-2">
-          <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full">
-            Pending: {expensesCount.pending}
-          </span>
-          <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
-            Expensed: {expensesCount.expensed}
-          </span>
-        </div>
+            <span className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5 rounded-full">
+              Pending: {expensesCount.pending}
+            </span>
+            <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full">
+              Expensed: {expensesCount.expensed}
+            </span>
+          </div>
         </div>
 
         <p className="text-sm text-gray-600 mb-3">

@@ -67,18 +67,40 @@ module Api
       end
 
       def mark_as_expensed
-        if @expense.update(last_expensed_at: Time.current)
-          render json: @expense
-        else
-          render json: { errors: @expense.errors }, status: :unprocessable_entity
+        if current_user.expenses.pending.where(id: params[:id]).blank?
+          render json: { errors: 'Expense is not pending' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          if @expense.update(last_expensed_at: Time.current)
+            # Update account balance if expense is associated with an account
+            if @expense.account.present?
+              @expense.account.update!(balance: @expense.account.balance + @expense.amount)
+            end
+            render json: @expense
+          else
+            render json: { errors: @expense.errors }, status: :unprocessable_entity
+          end
         end
       end
 
       def unmark_as_expensed
-        if @expense.update(last_expensed_at: nil)
-          render json: @expense
-        else
-          render json: { errors: @expense.errors }, status: :unprocessable_entity
+        if current_user.expenses.expensed.where(id: params[:id]).blank?
+          render json: { errors: 'Expense is not expensed' }, status: :unprocessable_entity
+          return
+        end
+
+        ActiveRecord::Base.transaction do
+          if @expense.update(last_expensed_at: nil)
+            # Restore account balance if expense is associated with an account
+            if @expense.account.present?
+              @expense.account.update!(balance: @expense.account.balance - @expense.amount)
+            end
+            render json: @expense
+          else
+            render json: { errors: @expense.errors }, status: :unprocessable_entity
+          end
         end
       end
 

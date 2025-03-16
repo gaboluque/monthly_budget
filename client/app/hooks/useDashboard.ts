@@ -3,8 +3,6 @@ import { expensesApi } from "../lib/api/expenses";
 import { incomesApi } from "../lib/api/incomes";
 import type { Expense } from "../lib/types/expenses";
 import { ui } from "../lib/ui/manager";
-type SortField = "category" | "amount";
-type SortDirection = "asc" | "desc";
 
 export function useDashboard() {
   const [pendingExpenses, setPendingExpenses] = useState<Expense[]>([]);
@@ -21,11 +19,6 @@ export function useDashboard() {
     pendingExpensesCount: 0,
     expensesByCategory: {} as Record<string, number>,
   });
-
-  // Sorting state
-  const [sortField, setSortField] = useState<SortField>("amount");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [showSortOptions, setShowSortOptions] = useState(false);
 
   const fetchExpenses = async () => {
     try {
@@ -131,60 +124,18 @@ export function useDashboard() {
     }
   };
 
-  // Handle sort change
-  const handleSortChange = (field: SortField) => {
-    if (field === sortField) {
-      // Toggle direction if clicking the same field
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      // Set new field and default direction
-      setSortField(field);
-      setSortDirection(field === "amount" ? "desc" : "asc");
-    }
-    // Close sort options on mobile after selection
-    setShowSortOptions(false);
-  };
-
-  // Sort expenses based on current sort settings
-  const sortExpenses = (expenses: Expense[]) => {
-    return [...expenses].sort((a, b) => {
-      if (sortField === "category") {
-        const comparison = a.category.localeCompare(b.category);
-        return sortDirection === "asc" ? comparison : -comparison;
-      } else {
-        const comparison = Number(a.amount) - Number(b.amount);
-        return sortDirection === "asc" ? comparison : -comparison;
-      }
-    });
-  };
-
-  // Get current sort description for mobile display
-  const getSortDescription = () => {
-    if (sortField === "category") {
-      return `Category (${sortDirection === "asc" ? "A-Z" : "Z-A"})`;
-    } else {
-      return `Amount (${sortDirection === "asc" ? "Low-High" : "High-Low"})`;
-    }
-  };
-
   useEffect(() => {
     fetchExpenses();
     fetchSummaryData();
   }, []);
 
   return {
-    pendingExpenses: sortExpenses(pendingExpenses),
-    expensedExpenses: sortExpenses(expensedExpenses),
+    pendingExpenses,
+    expensedExpenses,
     isLoading,
     markingExpensed,
     summaryData,
-    sortField,
-    sortDirection,
-    showSortOptions,
-    setShowSortOptions,
     handleMarkAsExpensed,
     handleUnmarkAsExpensed,
-    handleSortChange,
-    getSortDescription,
   };
 }
