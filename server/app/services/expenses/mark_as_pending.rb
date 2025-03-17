@@ -38,7 +38,8 @@ module Expenses
         account_id: expense.account_id,
         amount: expense.amount,
         transaction_type: Transaction.transaction_types[:expense],
-        description: "Expense: #{expense.name} - #{expense.last_expensed_at.strftime('%d/%m/%Y')}"
+        description: "Expense: #{expense.name}",
+        executed_at: expense.last_expensed_at
       ).order(created_at: :desc)
     end
   end

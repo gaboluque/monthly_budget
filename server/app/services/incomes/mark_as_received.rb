@@ -28,7 +28,7 @@ module Incomes
       transaction_params = {
         amount: income.amount,
         transaction_type: Transaction.transaction_types[:income],
-        description: "Income: #{income.name} - #{date.strftime('%d/%m/%Y')}",
+        description: "Income: #{income.name}",
         account_id: income.account_id,
         executed_at: date,
         item: income

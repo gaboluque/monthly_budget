@@ -1,8 +1,8 @@
 module Api
   module V1
     class TransactionsController < ApplicationController
-      before_action :authenticate_user
-      before_action :set_transaction, only: [ :show, :update, :destroy ]
+      before_action :authenticate_user!
+      before_action :set_transaction, only: [ :show, :destroy ]
 
       # GET /api/v1/transactions
       def index
@@ -23,30 +23,6 @@ module Api
 
         if result[:success]
           render json: result[:formatted_transaction]
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
-      end
-
-      # POST /api/v1/transactions
-      def create
-        result = Transactions::Create.call(current_user, transaction_params)
-
-        if result[:success]
-          format_result = Transactions::Formatter.call(result[:transaction])
-          render json: format_result[:formatted_transaction], status: :created
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
-      end
-
-      # PATCH/PUT /api/v1/transactions/1
-      def update
-        result = Transactions::Update.call(@transaction, transaction_params)
-
-        if result[:success]
-          format_result = Transactions::Formatter.call(result[:transaction])
-          render json: format_result[:formatted_transaction]
         else
           render_error(result[:errors], :unprocessable_entity)
         end

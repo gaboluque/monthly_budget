@@ -40,7 +40,8 @@ module Incomes
         account_id: account.id,
         amount: income.amount,
         transaction_type: Transaction.transaction_types[:income],
-        description: "Income: #{income.name} - #{income.last_received_at.strftime('%d/%m/%Y')}"
+        description: "Income: #{income.name}",
+        executed_at: income.last_received_at
       ).order(created_at: :desc)
     end
   end

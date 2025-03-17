@@ -28,7 +28,7 @@ module Expenses
       transaction_params = {
         amount: expense.amount,
         transaction_type: Transaction.transaction_types[:expense],
-        description: "Expense: #{expense.name} - #{date.strftime('%d/%m/%Y')}",
+        description: "Expense: #{expense.name}",
         account_id: expense.account_id,
         executed_at: date,
         item: expense
