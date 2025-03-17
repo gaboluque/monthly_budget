@@ -15,8 +15,6 @@ module Transactions
       else
         { success: false, errors: transaction.errors.full_messages }
       end
-    rescue StandardError => e
-      { success: false, errors: e.message }
     end
   end
 end

@@ -16,10 +16,30 @@ module Expenses
         new_balance = expense.account.balance + expense.amount
         expense.account.update!(balance: new_balance)
 
+        create_transaction
+
         { success: true, expense: expense }
       end
-    rescue StandardError => e
-      { success: false, errors: e.message }
+    end
+
+    private
+
+    def create_transaction
+      transaction_params = {
+        amount: expense.amount,
+        transaction_type: Transaction.transaction_types[:expense],
+        description: "Expense: #{expense.name}",
+        account_id: expense.account_id,
+        executed_at: DateTime.current,
+        item: expense
+      }
+
+      transaction_result = Transactions::Create.call(user, transaction_params)
+      unless transaction_result[:success]
+        raise StandardError, "Failed to create transaction: #{transaction_result[:errors]}"
+      end
+
+      transaction_result
     end
   end
 end

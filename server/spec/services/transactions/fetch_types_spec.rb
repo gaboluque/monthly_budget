@@ -6,7 +6,7 @@ RSpec.describe Transactions::FetchTypes do
       result = described_class.call
 
       expect(result[:success]).to be true
-      expect(result[:types]).to eq(Transaction::TRANSACTION_TYPES)
+      expect(result[:types]).to eq(Transaction.transaction_types.keys)
     end
 
     it 'handles exceptions gracefully' do

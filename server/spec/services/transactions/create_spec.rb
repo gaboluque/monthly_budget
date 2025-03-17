@@ -9,7 +9,7 @@ RSpec.describe Transactions::Create do
     {
       account_id: account.id,
       amount: 100.50,
-      transaction_type: 'Deposit',
+      transaction_type: Transaction.transaction_types[:deposit],
       description: 'Test deposit',
       executed_at: DateTime.now
     }
@@ -19,7 +19,7 @@ RSpec.describe Transactions::Create do
     {
       account_id: account.id,
       amount: nil,
-      transaction_type: 'Deposit',
+      transaction_type: Transaction.transaction_types[:deposit],
       description: 'Invalid deposit'
     }
   }
@@ -29,7 +29,7 @@ RSpec.describe Transactions::Create do
       account_id: account.id,
       recipient_account_id: recipient_account.id,
       amount: 50.25,
-      transaction_type: 'Transfer',
+      transaction_type: Transaction.transaction_types[:transfer],
       description: 'Test transfer',
       executed_at: DateTime.now
     }
@@ -52,7 +52,7 @@ RSpec.describe Transactions::Create do
         expect(transaction.user).to eq(user)
         expect(transaction.account).to eq(account)
         expect(transaction.amount).to eq(100.50)
-        expect(transaction.transaction_type).to eq('Deposit')
+        expect(transaction.transaction_type).to eq(Transaction.transaction_types[:deposit])
         expect(transaction.description).to eq('Test deposit')
       end
 
@@ -61,7 +61,7 @@ RSpec.describe Transactions::Create do
 
         expect(result[:success]).to be true
         transaction = result[:transaction]
-        expect(transaction.transaction_type).to eq('Transfer')
+        expect(transaction.transaction_type).to eq(Transaction.transaction_types[:transfer])
         expect(transaction.recipient_account).to eq(recipient_account)
       end
     end

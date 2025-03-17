@@ -1,6 +1,7 @@
 class Income < ApplicationRecord
   belongs_to :user
   belongs_to :account
+  has_many :transactions, as: :item, dependent: :nullify
 
   # Define frequency options
   FREQUENCIES = %w[monthly bi-weekly weekly daily yearly quarterly].freeze

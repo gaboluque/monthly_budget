@@ -14,11 +14,34 @@ RSpec.describe Expense, type: :model do
   describe 'associations' do
     it { should belong_to(:user) }
     it { should belong_to(:account).optional }
+    it { should have_many(:transactions).dependent(:nullify) }
   end
 
   describe 'factory' do
     it 'has a valid factory' do
       expect(build(:expense)).to be_valid
+    end
+  end
+
+  describe 'with transactions' do
+    let(:user) { create(:user) }
+    let(:account) { create(:account, user: user) }
+    let(:expense) { create(:expense, user: user, account: account) }
+
+    it 'can have associated transactions' do
+      transaction = create(:transaction, :expense, user: user, account: account, item: expense)
+      expect(expense.transactions).to include(transaction)
+      expect(transaction.item).to eq(expense)
+    end
+
+    it 'keeps transactions when expense is destroyed but sets item to nil' do
+      transaction = create(:transaction, :expense, user: user, account: account, item: expense)
+      transaction_id = transaction.id
+      expense.destroy
+
+      reloaded_transaction = Transaction.find(transaction_id)
+      expect(reloaded_transaction).to be_present
+      expect(reloaded_transaction.item).to be_nil
     end
   end
 

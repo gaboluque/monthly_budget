@@ -13,7 +13,7 @@ module Transactions
     private
 
     def fetch_transaction_types
-      Transaction::TRANSACTION_TYPES
+      Transaction.transaction_types.keys
     end
   end
 end

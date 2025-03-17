@@ -3,15 +3,10 @@ require 'rails_helper'
 RSpec.describe Transactions::Filter do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user) }
-  let(:deposit) { create(:transaction, user: user, account: account, transaction_type: 'Deposit') }
-  let(:withdrawal) { create(:transaction, user: user, account: account, transaction_type: 'Withdrawal') }
+  let!(:deposit) { create(:transaction, :deposit, user: user, account: account, created_at: 4.days.ago) }
+  let!(:withdrawal) { create(:transaction, :withdrawal, user: user, account: account, created_at: 3.days.ago) }
 
   describe '.call' do
-    before do
-      deposit
-      withdrawal
-    end
-
     it 'returns all transactions for a user' do
       result = described_class.call(user, {})
 
@@ -21,7 +16,7 @@ RSpec.describe Transactions::Filter do
     end
 
     it 'filters by transaction type' do
-      result = described_class.call(user, { transaction_type: 'Deposit' })
+      result = described_class.call(user, { transaction_type: Transaction.transaction_types[:deposit] })
 
       expect(result[:success]).to be true
       expect(result[:transactions].count).to eq(1)
@@ -32,17 +27,20 @@ RSpec.describe Transactions::Filter do
       old_transaction = create(:transaction,
         user: user,
         account: account,
-        executed_at: 2.months.ago
+        executed_at: 3.months.ago,
+        created_at: 3.months.ago
       )
 
       result = described_class.call(user, {
         start_date: 1.month.ago,
-        end_date: Date.tomorrow
+        end_date: 1.day.ago
       })
 
       expect(result[:success]).to be true
       expect(result[:transactions].count).to eq(2)
       expect(result[:transactions]).not_to include(old_transaction)
+      expect(result[:transactions].first).to eq(withdrawal)
+      expect(result[:transactions].last).to eq(deposit)
     end
 
     it 'filters by account' do
@@ -57,32 +55,16 @@ RSpec.describe Transactions::Filter do
     end
 
     it 'returns transactions ordered by execution date (newest first)' do
-      # Clear existing transactions to start fresh
-      Transaction.delete_all
-
-      # Create with explicitly different dates to ensure reliable ordering
       old_transaction = create(:transaction,
         user: user,
         account: account,
-        executed_at: 30.days.ago
-      )
-
-      middle_transaction = create(:transaction,
-        user: user,
-        account: account,
-        executed_at: 15.days.ago
-      )
-
-      new_transaction = create(:transaction,
-        user: user,
-        account: account,
-        executed_at: 1.day.ago
+        executed_at: 2.months.ago,
+        created_at: 2.months.ago
       )
 
       result = described_class.call(user, {})
 
-      # Use an array comparison to check the exact ordering
-      expect(result[:transactions].to_a).to eq([ new_transaction, middle_transaction, old_transaction ])
+      expect(result[:transactions].to_a).to eq([ withdrawal, deposit, old_transaction ])
     end
   end
 end

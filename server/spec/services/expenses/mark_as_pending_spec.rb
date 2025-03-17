@@ -5,23 +5,30 @@ RSpec.describe Expenses::MarkAsPending, type: :service do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
     let(:expense) { create(:expense, user: user, account: account, last_expensed_at: Date.today) }
+    let!(:transaction) { create(:transaction, user: user, account: account, amount: expense.amount, transaction_type: 'expense', description: "Expense: #{expense.name}", item: expense) }
 
     context 'when marking an expense as pending' do
-      it 'sets last_expensed_at to nil' do
-        expect(expense.last_expensed_at).not_to be_nil
-
-        result = Expenses::MarkAsPending.call(expense)
-        expense.reload
-
-        expect(expense.last_expensed_at).to be_nil
-      end
-
       it 'returns success and the updated expense' do
         result = Expenses::MarkAsPending.call(expense)
 
         expect(result[:success]).to be true
         expect(result[:expense]).to eq(expense)
         expect(result[:expense].last_expensed_at).to be_nil
+      end
+
+      it 'removes the associated transaction' do
+        expect {
+          result = Expenses::MarkAsPending.call(expense)
+        }.to change(Transaction, :count).by(-1)
+      end
+
+      it 'updates the account balance' do
+        initial_balance = account.balance
+
+        result = Expenses::MarkAsPending.call(expense)
+        account.reload
+
+        expect(account.balance).to eq(initial_balance - expense.amount)
       end
     end
 
@@ -43,6 +50,12 @@ RSpec.describe Expenses::MarkAsPending, type: :service do
         expect(result[:success]).to be true
         expect(result[:expense]).to eq(pending_expense)
       end
+
+      it 'does not remove any transactions' do
+        expect {
+          result = Expenses::MarkAsPending.call(pending_expense)
+        }.not_to change(Transaction, :count)
+      end
     end
 
     context 'when an exception occurs' do
@@ -53,6 +66,23 @@ RSpec.describe Expenses::MarkAsPending, type: :service do
       it 'returns failure and the error message' do
         result = Expenses::MarkAsPending.call(expense)
 
+        expect(result[:success]).to be false
+        expect(result[:errors]).to eq('Test error')
+      end
+    end
+
+    context 'when transaction removal fails' do
+      before do
+        allow_any_instance_of(Account).to receive(:update!).and_raise(StandardError.new('Test error'))
+      end
+
+      it 'does not update the balance' do
+        initial_balance = account.balance
+
+        result = Expenses::MarkAsPending.call(expense)
+        account.reload
+
+        expect(account.balance).to eq(initial_balance)
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')
       end
