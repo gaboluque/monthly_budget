@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_16_190641) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_17_000001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_190641) do
     t.index ["user_id"], name: "index_incomes_on_user_id"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "account_id", null: false
+    t.bigint "recipient_account_id"
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.string "transaction_type", null: false
+    t.text "description"
+    t.datetime "executed_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["recipient_account_id"], name: "index_transactions_on_recipient_account_id"
+    t.index ["transaction_type"], name: "index_transactions_on_transaction_type"
+    t.index ["user_id"], name: "index_transactions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -69,4 +85,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_16_190641) do
   add_foreign_key "expenses", "users"
   add_foreign_key "incomes", "accounts"
   add_foreign_key "incomes", "users"
+  add_foreign_key "transactions", "accounts"
+  add_foreign_key "transactions", "accounts", column: "recipient_account_id"
+  add_foreign_key "transactions", "users"
 end

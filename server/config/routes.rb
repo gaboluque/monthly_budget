@@ -35,6 +35,11 @@ Rails.application.routes.draw do
           get :currencies
         end
       end
+      resources :transactions do
+        collection do
+          get :types
+        end
+      end
       resources :insights, only: [ :index ]
     end
   end

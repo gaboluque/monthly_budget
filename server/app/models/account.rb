@@ -1,6 +1,9 @@
 class Account < ApplicationRecord
   belongs_to :user
 
+  has_many :transactions, dependent: :destroy
+  has_many :incoming_transactions, class_name: 'Transaction', foreign_key: 'recipient_account_id', dependent: :destroy
+
   # Validations
   validates :name, presence: true
   validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0 }
