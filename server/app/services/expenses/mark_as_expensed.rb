@@ -16,7 +16,7 @@ module Expenses
         new_balance = expense.account.balance + expense.amount
         expense.account.update!(balance: new_balance)
 
-        create_transaction
+        create_transaction(expense.last_expensed_at)
 
         { success: true, expense: expense }
       end
@@ -24,13 +24,13 @@ module Expenses
 
     private
 
-    def create_transaction
+    def create_transaction(date)
       transaction_params = {
         amount: expense.amount,
         transaction_type: Transaction.transaction_types[:expense],
-        description: "Expense: #{expense.name}",
+        description: "Expense: #{expense.name} - #{date.strftime('%d/%m/%Y')}",
         account_id: expense.account_id,
-        executed_at: DateTime.current,
+        executed_at: date,
         item: expense
       }
 

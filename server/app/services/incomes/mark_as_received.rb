@@ -11,12 +11,12 @@ module Incomes
       return { success: true, income: income } if income.received_this_month?
 
       ActiveRecord::Base.transaction do
-        income.update!(last_received_at: Time.current)
+        income.update!(last_received_at: DateTime.current)
 
         new_balance = income.account.balance + income.amount
         income.account.update!(balance: new_balance)
 
-        create_transaction
+        create_transaction(income.last_received_at)
 
         { success: true, income: income }
       end
@@ -24,13 +24,13 @@ module Incomes
 
     private
 
-    def create_transaction
+    def create_transaction(date)
       transaction_params = {
         amount: income.amount,
         transaction_type: Transaction.transaction_types[:income],
-        description: "Income: #{income.name}",
+        description: "Income: #{income.name} - #{date.strftime('%d/%m/%Y')}",
         account_id: income.account_id,
-        executed_at: Time.current,
+        executed_at: date,
         item: income
       }
 
