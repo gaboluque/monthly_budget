@@ -1,10 +1,11 @@
 module Expenses
   class MarkAsPending < ApplicationService
-    attr_reader :expense, :user
+    attr_reader :expense, :user, :transaction
 
-    def initialize(expense)
+    def initialize(expense, transaction = nil)
       @expense = expense
       @user = expense.user
+      @transaction = transaction
     end
 
     def call
@@ -28,7 +29,7 @@ module Expenses
     private
 
     def remove_transaction
-      transaction = expense_transactions.last
+      transaction = transaction || expense_transactions.last
       transaction.destroy if transaction.present?
     end
 

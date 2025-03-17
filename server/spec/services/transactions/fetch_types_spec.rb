@@ -10,13 +10,9 @@ RSpec.describe Transactions::FetchTypes do
     end
 
     it 'handles exceptions gracefully' do
-      service = described_class.new
+      allow(Transaction).to receive(:transaction_types).and_raise(StandardError.new('Test error'))
 
-      # Stub the private method to raise an error
-      allow(service).to receive(:fetch_transaction_types).and_raise(StandardError.new('Test error'))
-
-      # Call the method directly since we're working with an instance
-      result = service.call
+      result = described_class.call
 
       expect(result[:success]).to be false
       expect(result[:errors]).to eq('Test error')

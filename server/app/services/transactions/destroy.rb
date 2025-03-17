@@ -7,13 +7,27 @@ module Transactions
     end
 
     def call
-      if transaction.destroy
+      ActiveRecord::Base.transaction do
+        rollback_transaction
+        transaction.destroy!
+
+
         { success: true, transaction: transaction }
-      else
-        { success: false, errors: transaction.errors.full_messages }
       end
-    rescue StandardError => e
-      { success: false, errors: e.message }
+    end
+
+    private
+
+    def rollback_transaction
+      item = transaction.item
+      type = transaction.transaction_type
+
+      case type
+      when Transaction.transaction_types[:income]
+        Incomes::MarkAsPending.call(item, transaction)
+      when Transaction.transaction_types[:expense]
+        Expenses::MarkAsPending.call(item, transaction)
+      end
     end
   end
 end

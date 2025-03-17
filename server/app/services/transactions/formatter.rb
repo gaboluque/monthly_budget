@@ -18,8 +18,6 @@ module Transactions
       json[:recipient_account] = transaction.recipient_account.as_json if transaction.recipient_account
 
       { success: true, formatted_transaction: json }
-    rescue StandardError => e
-      { success: false, errors: e.message }
     end
   end
 end

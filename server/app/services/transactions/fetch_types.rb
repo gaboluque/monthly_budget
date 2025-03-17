@@ -1,13 +1,7 @@
 module Transactions
   class FetchTypes < ApplicationService
-    def initialize
-    end
-
     def call
-      types = fetch_transaction_types
-      { success: true, types: types }
-    rescue StandardError => e
-      { success: false, errors: e.message }
+      { success: true, types: fetch_transaction_types }
     end
 
     private

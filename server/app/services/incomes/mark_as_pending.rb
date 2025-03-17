@@ -1,11 +1,12 @@
 module Incomes
   class MarkAsPending < ApplicationService
-    attr_reader :income, :user, :account
+    attr_reader :income, :user, :account, :transaction
 
-    def initialize(income)
+    def initialize(income, transaction = nil)
       @income = income
       @user = income.user
       @account = income.account
+      @transaction = transaction
     end
 
     def call
@@ -29,7 +30,7 @@ module Incomes
     private
 
     def remove_transaction
-      transaction = income_transactions.last
+      transaction = transaction || income_transactions.last
 
       transaction.destroy if transaction.present?
     end
