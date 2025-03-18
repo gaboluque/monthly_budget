@@ -8,6 +8,8 @@ import { TransactionFilters } from "../components/transactions/TransactionFilter
 import { useTransactions } from "../hooks/useTransactions";
 import { ui } from "../lib/ui/manager";
 import { Transaction } from "../lib/types/transactions";
+import { CreateTransactionData } from "../lib/api/transactions";
+import { PageHeader } from "../components/ui/PageHeader";
 
 export const meta: MetaFunction = () => {
     return [
@@ -24,17 +26,34 @@ export default function Transactions() {
         isLoading,
         isSubmitting,
         filterParams,
+        createTransaction,
         deleteTransaction,
         applyFilters,
         clearFilters,
     } = useTransactions();
 
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
+    const [isNewTransaction, setIsNewTransaction] = useState(false);
 
     const handleOpenModal = (id: string) => {
+        setIsNewTransaction(false);
         const transaction = transactions.find((t) => t.id === id);
         if (transaction) {
             setTransaction(transaction);
+        }
+    };
+
+    const handleNewTransaction = () => {
+        setIsNewTransaction(true);
+        setTransaction(undefined);
+    };
+
+    const handleCreateTransaction = async (data: CreateTransactionData) => {
+        try {
+            await createTransaction(data);
+            setIsNewTransaction(false); // Close the modal
+        } catch (error) {
+            // Error is already handled in the hook
         }
     };
 
@@ -52,41 +71,50 @@ export default function Transactions() {
         });
     };
 
+    const handleCloseModal = () => {
+        setTransaction(undefined);
+        setIsNewTransaction(false);
+    };
+
     return (
         <Layout>
-            <div className="sm:flex sm:items-center sm:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-                    <p className="mt-2 text-sm text-gray-700">
-                        A list of all your transactions across accounts.
-                    </p>
+            <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+                <PageHeader
+                    title="Transactions"
+                    description="A list of all your transactions across accounts."
+                    buttonText="Add Transaction"
+                    buttonColor="blue"
+                    onAction={handleNewTransaction}
+                />
+
+                <div className="mt-6">
+                    <TransactionFilters
+                        accounts={accounts}
+                        transactionTypes={transactionTypes}
+                        onApplyFilters={applyFilters}
+                        onClearFilters={clearFilters}
+                        currentFilters={filterParams}
+                    />
+
+                    <TransactionsList
+                        transactions={transactions}
+                        isLoading={isLoading}
+                        onOpen={handleOpenModal}
+                        onDelete={handleDeleteTransaction}
+                    />
                 </div>
             </div>
 
-            <div className="mt-6">
-                <TransactionFilters
-                    accounts={accounts}
-                    transactionTypes={transactionTypes}
-                    onApplyFilters={applyFilters}
-                    onClearFilters={clearFilters}
-                    currentFilters={filterParams}
-                />
-
-                <TransactionsList
-                    transactions={transactions}
-                    isLoading={isLoading}
-                    onOpen={handleOpenModal}
-                    onDelete={handleDeleteTransaction}
-                />
-            </div>
-
             <TransactionModal
-                isOpen={!!transaction}
-                onClose={() => setTransaction(undefined)}
+                isOpen={!!transaction || isNewTransaction}
+                onClose={handleCloseModal}
                 accounts={accounts}
+                transactionTypes={transactionTypes}
                 transaction={transaction}
                 isSubmitting={isSubmitting}
-                title={"Transaction"}
+                title={isNewTransaction ? "New Transaction" : "Transaction"}
+                onSubmit={handleCreateTransaction}
+                isNewTransaction={isNewTransaction}
             />
         </Layout>
     );

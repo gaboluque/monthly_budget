@@ -22,6 +22,10 @@ export function ExpenseItem({ expense, isMarking, onAction }: ExpenseItemProps) 
     // If last expensed at is not on this month, it's pending
     const lastExpensedAt = new Date(expense.last_expensed_at);
 
+    console.log("lastExpensedAt", lastExpensedAt)
+    console.log("new Date()", new Date())
+    console.log("lastExpensedAt.getMonth() !== new Date().getMonth()", lastExpensedAt.getMonth() !== new Date().getMonth())
+
     return lastExpensedAt.getMonth() !== new Date().getMonth()
   }, [expense.last_expensed_at])
 

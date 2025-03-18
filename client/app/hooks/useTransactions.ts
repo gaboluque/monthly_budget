@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { transactionsApi } from "../lib/api/transactions";
+import {
+  transactionsApi,
+  CreateTransactionData,
+} from "../lib/api/transactions";
 import { accountsApi } from "../lib/api/accounts";
 import {
   Transaction,
@@ -47,6 +50,28 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     fetchData();
   }, [filterParams]);
 
+  const createTransaction = async (data: CreateTransactionData) => {
+    setIsSubmitting(true);
+    try {
+      const newTransaction = await transactionsApi.create(data);
+      setTransactions((prev) => [newTransaction, ...prev]);
+      ui.notify({
+        message: "Transaction created successfully",
+        type: "success",
+      });
+      return newTransaction;
+    } catch (error) {
+      ui.notify({
+        message: "Failed to create transaction",
+        type: "error",
+        error: error instanceof Error ? error : new Error(String(error)),
+      });
+      throw error;
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const deleteTransaction = async (id: string) => {
     setIsSubmitting(true);
     try {
@@ -85,6 +110,7 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     isLoading,
     isSubmitting,
     filterParams,
+    createTransaction,
     deleteTransaction,
     applyFilters,
     clearFilters,

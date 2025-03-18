@@ -1,6 +1,13 @@
-import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues } from "react-hook-form"
+import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
+import { useEffect, useMemo } from "react";
 
 export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date';
+
+export type ConditionalRule<T extends FieldValues> = {
+    field: Path<T>;
+    operator: 'equals' | 'notEquals' | 'includes' | 'notIncludes';
+    value: unknown;
+}
 
 export interface FormField<T extends FieldValues> {
     name: Path<T>;
@@ -10,6 +17,7 @@ export interface FormField<T extends FieldValues> {
     required?: boolean;
     options?: { value: string; label: string }[]; // For select fields
     validation?: Omit<RegisterOptions<T, Path<T>>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
+    showWhen?: ConditionalRule<T>[];
 }
 
 export interface FormProps<T extends FieldValues> {
@@ -18,6 +26,7 @@ export interface FormProps<T extends FieldValues> {
     className?: string;
     defaultValues?: DefaultValues<T>;
     id: string;
+    onFieldChange?: (name: Path<T>, value: unknown) => void;
 }
 
 export type { SubmitHandler };
@@ -28,10 +37,54 @@ export const Form = <T extends FieldValues>({
     onSubmit,
     className = '',
     defaultValues,
+    onFieldChange,
 }: FormProps<T>) => {
-    const { register, handleSubmit, formState: { errors } } = useForm<T>({
+    const { register, handleSubmit, formState: { errors }, control } = useForm<T>({
         defaultValues
     });
+
+    // Watch all fields and notify when they change
+    const values = useWatch({ control });
+
+    useEffect(() => {
+        if (onFieldChange && values) {
+            // Find fields that have values and notify
+            Object.entries(values).forEach(([fieldName, value]) => {
+                if (value !== undefined) {
+                    onFieldChange(fieldName as Path<T>, value);
+                }
+            });
+        }
+    }, [values, onFieldChange]);
+
+    // Evaluate conditional visibility rules
+    const evaluateRule = (rule: ConditionalRule<T>, formValues: Record<string, unknown>): boolean => {
+        const fieldValue = formValues?.[rule.field as string];
+
+        switch (rule.operator) {
+            case 'equals':
+                return fieldValue === rule.value;
+            case 'notEquals':
+                return fieldValue !== rule.value;
+            case 'includes':
+                return Array.isArray(rule.value) && rule.value.includes(fieldValue);
+            case 'notIncludes':
+                return Array.isArray(rule.value) && !rule.value.includes(fieldValue);
+            default:
+                return true;
+        }
+    };
+
+    const evaluateVisibility = (field: FormField<T>): boolean => {
+        if (!field.showWhen || !values) return true;
+
+        return field.showWhen.every(rule => evaluateRule(rule, values));
+    };
+
+    // Filter fields based on visibility conditions
+    const visibleFields = useMemo(() => {
+        return fields.filter(evaluateVisibility);
+    }, [fields, values]);
 
     const renderField = (field: FormField<T>) => {
         const { name, type, placeholder, options, validation } = field;
@@ -89,7 +142,7 @@ export const Form = <T extends FieldValues>({
 
     return (
         <form id={id} onSubmit={handleSubmit(onSubmit)} className={className}>
-            {fields.map((field) => (
+            {visibleFields.map((field) => (
                 <div key={field.name.toString()} className="mb-4">
                     <label
                         htmlFor={field.name.toString()}

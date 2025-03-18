@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: transactions
+#
+#  id                   :bigint           not null, primary key
+#  amount               :decimal(10, 2)   not null
+#  description          :text
+#  executed_at          :datetime         not null
+#  item_type            :string
+#  transaction_type     :string           not null
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  account_id           :bigint           not null
+#  item_id              :bigint
+#  recipient_account_id :bigint
+#  user_id              :bigint           not null
+#
+# Indexes
+#
+#  index_transactions_on_account_id            (account_id)
+#  index_transactions_on_item                  (item_type,item_id)
+#  index_transactions_on_recipient_account_id  (recipient_account_id)
+#  index_transactions_on_transaction_type      (transaction_type)
+#  index_transactions_on_user_id               (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (account_id => accounts.id)
+#  fk_rails_...  (recipient_account_id => accounts.id)
+#  fk_rails_...  (user_id => users.id)
+#
 FactoryBot.define do
   factory :transaction do
     association :user

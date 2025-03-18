@@ -5,6 +5,16 @@ import type {
   TransactionsFilterParams,
 } from "../types/transactions";
 
+// Interface for creating a new transaction
+export interface CreateTransactionData {
+  account_id: string;
+  recipient_account_id?: string;
+  amount: number;
+  transaction_type: string;
+  description?: string;
+  executed_at?: string;
+}
+
 export const transactionsApi = {
   getAll: async (params?: TransactionsFilterParams): Promise<Transaction[]> => {
     const queryParams = new URLSearchParams();
@@ -25,6 +35,13 @@ export const transactionsApi = {
 
   getById: async (id: string): Promise<Transaction> => {
     const response = await apiClient.get(`/transactions/${id}`);
+    return response;
+  },
+
+  create: async (data: CreateTransactionData): Promise<Transaction> => {
+    const response = await apiClient.post("/transactions", {
+      transaction: data,
+    });
     return response;
   },
 

@@ -11,12 +11,9 @@ module Incomes
       return { success: true, income: income } if income.received_this_month?
 
       ActiveRecord::Base.transaction do
-        income.update!(last_received_at: DateTime.current)
+        transaction = create_transaction(income.last_received_at)
 
-        new_balance = income.account.balance + income.amount
-        income.account.update!(balance: new_balance)
-
-        create_transaction(income.last_received_at)
+        income.update!(last_received_at: transaction.executed_at)
 
         { success: true, income: income }
       end
@@ -39,7 +36,7 @@ module Incomes
         raise StandardError, "Failed to create transaction: #{transaction_result[:errors]}"
       end
 
-      transaction_result
+      transaction_result[:transaction]
     end
   end
 end

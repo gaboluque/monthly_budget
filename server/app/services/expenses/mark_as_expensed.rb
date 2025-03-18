@@ -11,12 +11,9 @@ module Expenses
       return { success: true, expense: expense } if expense.expensed?
 
       ActiveRecord::Base.transaction do
-        expense.update!(last_expensed_at: DateTime.current)
+        transaction = create_transaction(DateTime.current)
 
-        new_balance = expense.account.balance + expense.amount
-        expense.account.update!(balance: new_balance)
-
-        create_transaction(expense.last_expensed_at)
+        expense.update!(last_expensed_at: transaction.executed_at)
 
         { success: true, expense: expense }
       end
@@ -39,7 +36,7 @@ module Expenses
         raise StandardError, "Failed to create transaction: #{transaction_result[:errors]}"
       end
 
-      transaction_result
+      transaction_result[:transaction]
     end
   end
 end

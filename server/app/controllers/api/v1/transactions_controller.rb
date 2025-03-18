@@ -17,6 +17,17 @@ module Api
         end
       end
 
+      # POST /api/v1/transactions
+      def create
+        result = Transactions::Create.call(current_user, transaction_params)
+
+        if result[:success]
+          render json: result[:transaction], status: :created
+        else
+          render_error(result[:errors], :unprocessable_entity)
+        end
+      end
+
       # GET /api/v1/transactions/1
       def show
         result = Transactions::Formatter.call(@transaction)
