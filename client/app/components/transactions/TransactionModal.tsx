@@ -1,65 +1,113 @@
-import { Transaction, TransactionType } from "../../lib/types/transactions";
-import { Account } from "../../lib/types/accounts";
-import { Modal } from "../ui/Modal";
+import { Modal } from "../ui/Modal"
+import type { Transaction } from "../../lib/types/transactions"
+import type { Account } from "../../lib/types/accounts"
+import { formatCurrency } from "../../lib/utils/formatters"
 
-export interface TransactionModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    accounts: Account[];
-    transactionTypes: TransactionType[];
-    initialData?: Transaction;
-    isSubmitting: boolean;
-    title: string;
+interface TransactionModalProps {
+    isOpen: boolean
+    onClose: () => void
+    accounts: Account[]
+    transaction: Transaction | undefined
+    isSubmitting: boolean
+    title: string
 }
 
 export function TransactionModal({
     isOpen,
     onClose,
     accounts,
-    transactionTypes,
-    title
+    transaction,
+    isSubmitting,
+    title,
 }: TransactionModalProps) {
+    const handleRollback = () => {
+        // This would be implemented with actual rollback logic
+        console.log("Rolling back transaction:", transaction)
+        // After rollback is complete, you might want to close the modal
+        onClose()
+    }
+
+    // Find the account and transaction type objects based on IDs in initialData
+    const account = transaction ? accounts.find((acc) => acc.id === transaction.account_id) : null
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>
-            <div>
-                {/* Transaction form would go here */}
-                {/* Using props that were flagged as unused */}
-                <div className="space-y-4">
-                    {/* Account selection */}
+            <div className="p-4">
+                <div className="space-y-6">
+                    {/* Account information */}
                     <div>
-                        <label htmlFor="account" className="block text-sm font-medium text-gray-700">
-                            Account
-                        </label>
-                        <select
-                            id="account"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-                        >
-                            {accounts.map((account) => (
-                                <option key={account.id} value={account.id}>
-                                    {account.name}
-                                </option>
-                            ))}
-                        </select>
+                        <h3 className="text-sm font-medium text-gray-700 mb-1">Account</h3>
+                        <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                            {account ? (
+                                <div>
+                                    <p className="font-medium text-gray-900">{account.name}</p>
+                                    {account.balance !== undefined && (
+                                        <p className="text-sm text-gray-500 mt-1">Balance: {formatCurrency(account.balance)}</p>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="text-gray-500">No account information available</p>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Transaction type selection */}
-                    <div>
-                        <label htmlFor="transaction-type" className="block text-sm font-medium text-gray-700">
-                            Type
-                        </label>
-                        <select
-                            id="transaction-type"
-                            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    {/* Transaction details if available */}
+                    {transaction && (
+                        <div>
+                            <h3 className="text-sm font-medium text-gray-700 mb-1">Transaction Details</h3>
+                            <div className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p className="text-xs text-gray-500">Amount</p>
+                                        <p className="font-medium text-gray-900">{formatCurrency(transaction.amount)}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">Date</p>
+                                        <p className="font-medium text-gray-900">
+                                            {transaction.executed_at ? new Date(transaction.executed_at).toLocaleDateString() : "N/A"}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">Transaction Type</p>
+                                        <p className="font-medium text-gray-900">
+                                            {transaction.transaction_type}
+                                        </p>
+                                    </div>
+                                    {transaction.description && (
+                                        <div className="col-span-2">
+                                            <p className="text-xs text-gray-500">Description</p>
+                                            <p className="font-medium text-gray-900">{transaction.description}</p>
+                                        </div>
+                                    )}
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Action buttons */}
+                    <div className="flex justify-end space-x-3 pt-4 mt-4 border-t border-gray-200">
+                        {transaction && (
+                            <button
+                                type="button"
+                                onClick={handleRollback}
+                                className="px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                disabled={isSubmitting}
+                            >
+                                Rollback Transaction
+                            </button>
+                        )}
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                            {transactionTypes.map((type) => (
-                                <option key={type.id} value={type.id}>
-                                    {type.name}
-                                </option>
-                            ))}
-                        </select>
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>
         </Modal>
-    );
-} 
+    )
+}
+

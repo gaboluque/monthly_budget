@@ -55,12 +55,12 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
         prev.filter((transaction) => transaction.id !== id)
       );
       ui.notify({
-        message: "Transaction deleted successfully",
+        message: "Transaction rolled back successfully",
         type: "success",
       });
     } catch (error) {
       ui.notify({
-        message: "Failed to delete transaction",
+        message: "Failed to rollback transaction",
         type: "error",
         error: error instanceof Error ? error : new Error(String(error)),
       });

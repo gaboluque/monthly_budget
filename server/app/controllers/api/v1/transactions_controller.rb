@@ -33,7 +33,7 @@ module Api
         result = Transactions::Destroy.call(@transaction)
 
         if result[:success]
-          head :no_content
+          render json: @transaction, status: :no_content
         else
           render_error(result[:errors], :unprocessable_entity)
         end

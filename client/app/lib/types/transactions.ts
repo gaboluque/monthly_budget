@@ -12,10 +12,7 @@ export interface Transaction {
   recipient_account_name?: string;
 }
 
-export interface TransactionType {
-  id: string;
-  name: string;
-}
+export type TransactionType = string;
 
 export interface TransactionsFilterParams {
   account_id?: string;

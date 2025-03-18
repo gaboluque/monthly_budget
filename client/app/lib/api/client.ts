@@ -18,8 +18,12 @@ const request = async (url: string, options?: RequestInit) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const res = await response.json();
-    return res;
+    try {
+      const res = await response.json();
+      return res;
+    } catch (error) {
+      return {};
+    }
   } catch (error) {
     console.error("API Error:", error);
     throw error;

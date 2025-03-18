@@ -9,8 +9,6 @@ module Transactions
     def call
       ActiveRecord::Base.transaction do
         rollback_transaction
-        transaction.destroy!
-
 
         { success: true, transaction: transaction }
       end
@@ -27,6 +25,12 @@ module Transactions
         Incomes::MarkAsPending.call(item, transaction)
       when Transaction.transaction_types[:expense]
         Expenses::MarkAsPending.call(item, transaction)
+      when Transaction.transaction_types[:transfer]
+      when Transaction.transaction_types[:payment]
+      when Transaction.transaction_types[:deposit]
+        transaction.account.update(balance: transaction.account.balance - transaction.amount)
+      when Transaction.transaction_types[:withdrawal]
+        transaction.account.update(balance: transaction.account.balance + transaction.amount)
       end
     end
   end

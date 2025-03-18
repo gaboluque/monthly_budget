@@ -1,4 +1,4 @@
-import { Trash2, Edit } from "lucide-react";
+import { Eye, Undo2 } from "lucide-react";
 import { Transaction } from "../../lib/types/transactions";
 import { formatCurrency, formatDate } from "../../lib/utils/formatters";
 import { Button } from "../ui/Button";
@@ -6,11 +6,11 @@ import { Button } from "../ui/Button";
 interface TransactionsListProps {
     transactions: Transaction[];
     isLoading: boolean;
-    onEdit: (id: string) => void;
+    onOpen: (id: string) => void;
     onDelete: (id: string) => void;
 }
 
-export function TransactionsList({ transactions, isLoading, onEdit, onDelete }: TransactionsListProps) {
+export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: TransactionsListProps) {
     if (isLoading) {
         return (
             <div className="animate-pulse space-y-4 mt-4">
@@ -93,10 +93,10 @@ export function TransactionsList({ transactions, isLoading, onEdit, onDelete }: 
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            onClick={() => onEdit(transaction.id)}
+                                            onClick={() => onOpen(transaction.id)}
                                             className="text-blue-600 hover:text-blue-900"
                                         >
-                                            <Edit className="h-4 w-4" />
+                                            <Eye className="h-4 w-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
@@ -104,7 +104,7 @@ export function TransactionsList({ transactions, isLoading, onEdit, onDelete }: 
                                             onClick={() => onDelete(transaction.id)}
                                             className="text-red-600 hover:text-red-900"
                                         >
-                                            <Trash2 className="h-4 w-4" />
+                                            <Undo2 className="h-4 w-4" />
                                         </Button>
                                     </div>
                                 </td>

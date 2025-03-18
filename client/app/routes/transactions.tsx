@@ -29,20 +29,19 @@ export default function Transactions() {
         clearFilters,
     } = useTransactions();
 
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [editingTransaction, setEditingTransaction] = useState<Transaction | undefined>(undefined);
+    const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
 
-    const handleOpenEditModal = (id: string) => {
+    const handleOpenModal = (id: string) => {
         const transaction = transactions.find((t) => t.id === id);
         if (transaction) {
-            setEditingTransaction(transaction);
+            setTransaction(transaction);
         }
     };
 
     const handleDeleteTransaction = (id: string) => {
         ui.confirm({
-            title: "Delete Transaction",
-            message: "Are you sure you want to delete this transaction? This action cannot be undone.",
+            title: "Rollback Transaction",
+            message: "Are you sure you want to rollback this transaction?",
             onConfirm: async () => {
                 try {
                     await deleteTransaction(id);
@@ -62,13 +61,6 @@ export default function Transactions() {
                         A list of all your transactions across accounts.
                     </p>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setIsCreateModalOpen(true)}
-                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
-                >
-                    Create Transaction
-                </button>
             </div>
 
             <div className="mt-6">
@@ -83,22 +75,18 @@ export default function Transactions() {
                 <TransactionsList
                     transactions={transactions}
                     isLoading={isLoading}
-                    onEdit={handleOpenEditModal}
+                    onOpen={handleOpenModal}
                     onDelete={handleDeleteTransaction}
                 />
             </div>
 
             <TransactionModal
-                isOpen={isCreateModalOpen || editingTransaction !== undefined}
-                onClose={() => {
-                    setIsCreateModalOpen(false);
-                    setEditingTransaction(undefined);
-                }}
+                isOpen={!!transaction}
+                onClose={() => setTransaction(undefined)}
                 accounts={accounts}
-                transactionTypes={transactionTypes}
-                initialData={editingTransaction}
+                transaction={transaction}
                 isSubmitting={isSubmitting}
-                title={editingTransaction ? "Edit Transaction" : "Create Transaction"}
+                title={"Transaction"}
             />
         </Layout>
     );

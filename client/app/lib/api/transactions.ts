@@ -1,8 +1,6 @@
 import { apiClient } from "./client";
 import type {
   Transaction,
-  CreateTransactionData,
-  UpdateTransactionData,
   TransactionType,
   TransactionsFilterParams,
 } from "../types/transactions";
@@ -27,23 +25,6 @@ export const transactionsApi = {
 
   getById: async (id: string): Promise<Transaction> => {
     const response = await apiClient.get(`/transactions/${id}`);
-    return response;
-  },
-
-  create: async (data: CreateTransactionData): Promise<Transaction> => {
-    const response = await apiClient.post("/transactions", {
-      transaction: data,
-    });
-    return response;
-  },
-
-  update: async (
-    id: string,
-    data: UpdateTransactionData
-  ): Promise<Transaction> => {
-    const response = await apiClient.patch(`/transactions/${id}`, {
-      transaction: data,
-    });
     return response;
   },
 
