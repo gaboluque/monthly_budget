@@ -1,3 +1,5 @@
+import { Account } from "./accounts";
+
 export interface Transaction {
   id: string;
   account_id: string;
@@ -12,6 +14,8 @@ export interface Transaction {
   updated_at: string;
   account_name?: string;
   recipient_account_name?: string;
+  account?: Account;
+  recipient_account?: Account;
 }
 
 export type TransactionType = string;

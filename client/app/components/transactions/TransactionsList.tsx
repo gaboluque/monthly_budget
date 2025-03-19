@@ -85,9 +85,9 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {transaction.account_name}
-                                    {transaction.recipient_account_name && (
-                                        <span> → {transaction.recipient_account_name}</span>
+                                    {transaction.account?.name}
+                                    {transaction.recipient_account?.name && (
+                                        <span> → {transaction.recipient_account?.name}</span>
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

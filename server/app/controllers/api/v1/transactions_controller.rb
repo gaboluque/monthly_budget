@@ -12,6 +12,7 @@ module Api
       # POST /api/v1/transactions
       def create
         result = Transactions::Create.call(current_user, transaction_params)
+        @transaction = result[:transaction]
 
         if result[:success]
           render :show, status: :created
