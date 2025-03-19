@@ -30,7 +30,7 @@ FactoryBot.define do
     name { "Test Expense" }
     amount { 100.00 }
     frequency { "monthly" }
-    last_expensed_at { Faker::Date.between(from: 1.year.ago, to: Date.today) }
+    last_expensed_at { DateTime.current }
     category { "Needs" }
     association :user
     association :account

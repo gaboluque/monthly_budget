@@ -11,7 +11,7 @@ RSpec.describe Incomes::FetchPending, type: :service do
 
     before do
       # Ensure the received_income is marked as received in the current month
-      received_income.update(last_received_at: Time.current)
+      received_income.update!(last_received_at: Time.current)
     end
 
     context 'when user has pending incomes' do

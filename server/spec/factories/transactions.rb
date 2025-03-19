@@ -36,7 +36,7 @@ FactoryBot.define do
     amount { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
     transaction_type { Transaction.transaction_types[:deposit] }
     description { Faker::Lorem.sentence }
-    executed_at { Faker::Time.between(from: 30.days.ago, to: DateTime.now) }
+    executed_at { DateTime.current }
 
     trait :deposit do
       transaction_type { Transaction.transaction_types[:deposit] }
@@ -63,6 +63,14 @@ FactoryBot.define do
     trait :expense do
       transaction_type { Transaction.transaction_types[:expense] }
       association :item, factory: :expense
+    end
+
+    trait :executed_in_current_month do
+      executed_at { 1.day.ago }
+    end
+
+    trait :executed_in_past_month do
+      executed_at { 40.days.ago }
     end
   end
 end

@@ -27,7 +27,7 @@ FactoryBot.define do
     name { Faker::Commerce.product_name }
     amount { Faker::Number.decimal(l_digits: 3, r_digits: 2) }
     frequency { Income::FREQUENCIES.sample }
-    last_received_at { Faker::Date.between(from: 1.year.ago, to: Date.today) }
+    last_received_at { DateTime.current }
     association :user
     association :account
   end

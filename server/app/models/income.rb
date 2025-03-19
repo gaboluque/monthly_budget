@@ -62,7 +62,7 @@ class Income < ApplicationRecord
   end
 
   def current_month_transaction
-    transactions.where(executed_at: Time.current.beginning_of_month..Time.current.end_of_month).last
+    transactions.where(executed_at: DateTime.current.beginning_of_month..DateTime.current.end_of_month).last
   end
 
   def last_executed_at

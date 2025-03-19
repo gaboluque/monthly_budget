@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Transactions::Filter do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user) }
-  let!(:deposit) { create(:transaction, :deposit, user: user, account: account, created_at: 4.days.ago) }
-  let!(:withdrawal) { create(:transaction, :withdrawal, user: user, account: account, created_at: 3.days.ago) }
+  let!(:deposit) { create(:transaction, :deposit, user: user, account: account, created_at: 4.days.ago, executed_at: 4.days.ago) }
+  let!(:withdrawal) { create(:transaction, :withdrawal, user: user, account: account, created_at: 3.days.ago, executed_at: 3.days.ago) }
 
   describe '.call' do
     it 'returns all transactions for a user' do

@@ -13,9 +13,13 @@ module Incomes
       return { success: true, income: income } if income.pending?
 
       ActiveRecord::Base.transaction do
-        Transactions::Destroy.call(transaction)
+        result = Transactions::Destroy.call(transaction)
 
-        income.update!(last_received_at: income.last_executed_at)
+        if result[:success]
+          income.update!(last_received_at: income.reload.last_executed_at)
+        else
+          return { success: false, errors: result[:errors] }
+        end
 
         { success: true, income: income }
       end

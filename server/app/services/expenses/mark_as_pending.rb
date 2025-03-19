@@ -12,9 +12,13 @@ module Expenses
       return { success: true, expense: expense } if expense.pending?
 
       ActiveRecord::Base.transaction do
-        Transactions::Destroy.call(transaction)
+        result = Transactions::Destroy.call(transaction)
 
-        expense.update!(last_expensed_at: expense.reload.last_executed_at)
+        if result[:success]
+          expense.update!(last_expensed_at: expense.reload.last_executed_at)
+        else
+          return { success: false, errors: result[:errors] }
+        end
 
         { success: true, expense: expense }
       end

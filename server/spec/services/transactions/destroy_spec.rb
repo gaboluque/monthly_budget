@@ -6,97 +6,92 @@ RSpec.describe Transactions::Destroy do
   let!(:transaction) { create(:transaction, user: user, account: account) }
 
   describe '.call' do
+    subject { described_class.call(transaction) }
+
     it 'destroys the transaction' do
-      expect {
-        result = described_class.call(transaction)
-        expect(result[:success]).to be true
-      }.to change(Transaction, :count).by(-1)
-    end
+      initial_balance = account.balance
 
-    it 'returns the destroyed transaction' do
-      result = described_class.call(transaction)
+      result = subject
 
+      expect(Transaction.count).to eq(0)
+      expect(result[:success]).to be_truthy
       expect(result[:transaction]).to eq(transaction)
+      expect(account.reload.transactions).not_to include(transaction)
+      expect(account.reload.balance).not_to eq(initial_balance)
     end
 
-    context 'when the transaction is an income transaction' do
-      let(:income) { create(:income, user: user, account: account, last_received_at: 1.day.ago) }
-      let!(:transaction) { create(:transaction, :income, user: user, account: account, item: income) }
+    context 'when transaction type is deposit' do
+      let!(:transaction) { create(:transaction, :deposit, user: user, account: account) }
 
-      it 'calls the Incomes::MarkAsPending service' do
-        expect(Incomes::MarkAsPending).to receive(:call).with(income, transaction)
-        described_class.call(transaction)
-      end
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
 
-      it 'marks the income as pending' do
-        expect {
-          described_class.call(transaction)
-        }.to change { income.reload.last_received_at }.to(nil)
-      end
-    end
+        subject
 
-    context 'when the transaction is an expense transaction' do
-      let(:expense) { create(:expense, user: user, account: account, last_expensed_at: 1.day.ago) }
-      let!(:transaction) { create(:transaction, :expense, user: user, account: account, item: expense) }
-
-      it 'calls the Expenses::MarkAsPending service' do
-        expect(Expenses::MarkAsPending).to receive(:call).with(expense, transaction)
-        described_class.call(transaction)
-      end
-
-      it 'marks the expense as pending' do
-        expect {
-          described_class.call(transaction)
-        }.to change { expense.reload.last_expensed_at }.to(nil)
+        expect(account.reload.balance).to eq(initial_balance - transaction.amount)
       end
     end
 
-    context 'when the transaction type is neither income nor expense' do
-      let!(:deposit_transaction) { create(:transaction, :deposit, user: user, account: account) }
-      let!(:withdrawal_transaction) { create(:transaction, :withdrawal, user: user, account: account) }
-      let!(:transfer_transaction) { create(:transaction, :transfer, user: user, account: account) }
+    context 'when transaction type is withdrawal' do
+      let!(:transaction) { create(:transaction, :withdrawal, user: user, account: account) }
 
-      it 'only destroys the deposit transaction without calling MarkAsPending' do
-        expect(Incomes::MarkAsPending).not_to receive(:call)
-        expect(Expenses::MarkAsPending).not_to receive(:call)
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
 
-        expect {
-          described_class.call(deposit_transaction)
-        }.to change(Transaction, :count).by(-1)
-      end
+        subject
 
-      it 'only destroys the withdrawal transaction without calling MarkAsPending' do
-        expect(Incomes::MarkAsPending).not_to receive(:call)
-        expect(Expenses::MarkAsPending).not_to receive(:call)
-
-        expect {
-          described_class.call(withdrawal_transaction)
-        }.to change(Transaction, :count).by(-1)
-      end
-
-      it 'only destroys the transfer transaction without calling MarkAsPending' do
-        expect(Incomes::MarkAsPending).not_to receive(:call)
-        expect(Expenses::MarkAsPending).not_to receive(:call)
-
-        expect {
-          described_class.call(transfer_transaction)
-        }.to change(Transaction, :count).by(-1)
+        expect(account.reload.balance).to eq(initial_balance + transaction.amount)
       end
     end
 
-    context 'when an error occurs during rollback' do
-      let(:income) { create(:income, user: user, account: account, last_received_at: 1.day.ago) }
-      let!(:transaction) { create(:transaction, :income, user: user, account: account, item: income) }
+    context 'when transaction type is transfer' do
+      let(:recipient_account) { create(:account, user: user) }
+      let!(:transaction) { create(:transaction, :transfer, user: user, account: account, recipient_account: recipient_account) }
 
-      before do
-        allow(Incomes::MarkAsPending).to receive(:call).and_raise(StandardError.new('Error during rollback'))
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
+        initial_recipient_balance = recipient_account.balance
+
+        subject
+
+        expect(account.reload.balance).to eq(initial_balance + transaction.amount)
+        expect(recipient_account.reload.balance).to eq(initial_recipient_balance - transaction.amount)
       end
+    end
 
-      it 'rolls back the whole transaction' do
-        result = described_class.call(transaction)
+    context 'when transaction type is payment' do
+      let!(:transaction) { create(:transaction, :payment, user: user, account: account) }
 
-        expect(result[:success]).to be false
-        expect(result[:errors]).to include('Error during rollback')
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
+
+        subject
+
+        expect(account.reload.balance).to eq(initial_balance + transaction.amount)
+      end
+    end
+
+    context 'when transaction type is income' do
+      let!(:transaction) { create(:transaction, :income, user: user, account: account) }
+
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
+
+        subject
+
+        expect(account.reload.balance).to eq(initial_balance - transaction.amount)
+      end
+    end
+
+    context 'when transaction type is expense' do
+      let!(:transaction) { create(:transaction, :expense, user: user, account: account) }
+
+      it 'rolls back the transaction' do
+        initial_balance = account.balance
+
+        subject
+
+        expect(account.reload.balance).to eq(initial_balance - transaction.amount)
       end
     end
   end

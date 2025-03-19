@@ -124,7 +124,7 @@ RSpec.describe User, type: :model do
       user = create(:user, password: 'password123')
       original_digest = user.password_digest
 
-      user.update(password: 'newpassword123', password_confirmation: 'newpassword123')
+      user.update!(password: 'newpassword123', password_confirmation: 'newpassword123')
       expect(user.password_digest).not_to eq(original_digest)
     end
   end
