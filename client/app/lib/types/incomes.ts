@@ -11,6 +11,7 @@ export interface Income {
   name: string;
   amount: number;
   frequency: IncomeFrequency;
+  account_id: string;
   created_at: string;
   updated_at: string;
   last_received_at: string | null;

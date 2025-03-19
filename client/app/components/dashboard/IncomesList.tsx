@@ -1,5 +1,6 @@
 import { Loader2, Check } from "lucide-react"
 import type { Income } from "../../lib/types/incomes"
+import type { Account } from "../../lib/types/accounts"
 import { IncomeItem } from "./IncomeItem"
 
 interface IncomesListProps {
@@ -7,6 +8,7 @@ interface IncomesListProps {
     isLoading: boolean
     markingReceived: string | null
     onAction: (id: string) => void
+    accounts: Account[]
 }
 
 export function IncomesList({
@@ -14,6 +16,7 @@ export function IncomesList({
     isLoading,
     markingReceived,
     onAction,
+    accounts,
 }: IncomesListProps) {
     return (
         <div className="bg-white rounded-lg shadow-lg p-5 lg:p-8">
@@ -40,6 +43,7 @@ export function IncomesList({
                         <IncomeItem
                             key={income.id}
                             income={income}
+                            accounts={accounts}
                             isMarking={markingReceived === income.id}
                             onAction={onAction}
                         />

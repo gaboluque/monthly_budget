@@ -2,15 +2,18 @@ import { DollarSign, Check, Undo, Loader2 } from "lucide-react"
 import { Button } from "../ui/Button"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Income } from "../../lib/types/incomes"
+import type { Account } from "../../lib/types/accounts"
 
 interface IncomeItemProps {
     income: Income
+    accounts: Account[]
     isMarking: boolean
     onAction: (id: string) => void
 }
 
-export function IncomeItem({ income, isMarking, onAction }: IncomeItemProps) {
+export function IncomeItem({ income, accounts, isMarking, onAction }: IncomeItemProps) {
     const isPending = !income.last_received_at;
+    const account = accounts.find((account) => account.id === income.account_id)
 
     const iconBgColor = isPending ? "bg-blue-100" : "bg-green-100"
     const iconColor = isPending ? "text-blue-600" : "text-green-600"
@@ -28,6 +31,9 @@ export function IncomeItem({ income, isMarking, onAction }: IncomeItemProps) {
                     </div>
                     <div>
                         <h3 className="text-base font-medium text-gray-900">{income.name}</h3>
+                    </div>
+                    <div>
+                        <p className="text-xs text-gray-500 capitalize">{account?.name}</p>
                     </div>
                 </div>
 
@@ -57,6 +63,9 @@ export function IncomeItem({ income, isMarking, onAction }: IncomeItemProps) {
                         </div>
                         <div>
                             <h3 className="text-base font-medium text-gray-900">{income.name}</h3>
+                        </div>
+                        <div>
+                            <p className="text-xs text-gray-500 capitalize">{account?.name}</p>
                         </div>
                     </div>
                 </div>

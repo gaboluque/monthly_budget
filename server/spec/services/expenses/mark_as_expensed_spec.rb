@@ -32,6 +32,19 @@ RSpec.describe Expenses::MarkAsExpensed, type: :service do
         expect(result[:expense]).to eq(expense)
         expect(result[:expense].last_expensed_at).to be_within(1.second).of(DateTime.current)
       end
+
+      it 'creates a transaction record' do
+        expect {
+          result = Expenses::MarkAsExpensed.call(expense)
+        }.to change(Transaction, :count).by(1)
+
+        transaction = Transaction.last
+        expect(transaction.user).to eq(user)
+        expect(transaction.account).to eq(account)
+        expect(transaction.amount).to eq(expense.amount)
+        expect(transaction.transaction_type).to eq('expense')
+        expect(transaction.description).to eq("Expense: #{expense.name}")
+      end
     end
 
     context 'when the expense is already expensed' do
@@ -47,6 +60,12 @@ RSpec.describe Expenses::MarkAsExpensed, type: :service do
         expect(account.balance).to eq(original_balance)
         expect(expensed_expense.last_expensed_at).to eq(expensed_date)
       end
+
+      it 'does not create a transaction record' do
+        expect {
+          result = Expenses::MarkAsExpensed.call(expensed_expense)
+        }.not_to change(Transaction, :count)
+      end
     end
 
     context 'when an exception occurs' do
@@ -59,6 +78,27 @@ RSpec.describe Expenses::MarkAsExpensed, type: :service do
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')
+      end
+    end
+
+    context 'when transaction creation fails' do
+      before do
+        allow_any_instance_of(Transactions::Create).to receive(:call).and_return({
+          success: false,
+          errors: [ 'Transaction creation failed' ]
+        })
+      end
+
+      it 'rolls back the changes and returns error' do
+        expect {
+          result = Expenses::MarkAsExpensed.call(expense)
+
+          expect(result[:success]).to be false
+          expect(result[:errors]).to include('Failed to create transaction')
+
+          expense.reload
+          expect(expense.last_expensed_at).to be_nil
+        }.not_to change(Transaction, :count)
       end
     end
   end

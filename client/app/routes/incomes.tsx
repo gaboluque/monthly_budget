@@ -11,6 +11,8 @@ import type { Income, CreateIncomeData } from "../lib/types/incomes"
 import { Loader2, DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
+import { useAccounts } from "../hooks/useAccounts"
+
 export const meta: MetaFunction = () => {
   return [{ title: "Incomes | Monthly Budget" }, { name: "description", content: "Manage your income sources" }]
 }
@@ -19,6 +21,7 @@ export default function Incomes() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedIncome, setSelectedIncome] = useState<Income | null>(null)
   const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome } = useIncomes()
+  const { accounts } = useAccounts();
 
   const handleSubmit = async (data: CreateIncomeData) => {
     try {
@@ -80,6 +83,7 @@ export default function Incomes() {
               <IncomeItem
                 key={income.id}
                 income={income}
+                accounts={accounts}
                 onEdit={(income) => {
                   setSelectedIncome(income)
                   setIsModalOpen(true)

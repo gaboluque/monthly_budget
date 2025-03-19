@@ -1,0 +1,9 @@
+json.id account.id
+json.name account.name
+json.balance account.balance
+json.account_type account.account_type
+json.currency account.currency
+json.description account.description
+json.is_owned account.is_owned
+json.created_at account.created_at
+json.updated_at account.updated_at

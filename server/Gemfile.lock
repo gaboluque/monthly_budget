@@ -72,6 +72,7 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    annotaterb (4.14.0)
     ast (2.4.2)
     base64 (0.2.0)
     bcrypt (3.1.20)
@@ -132,6 +133,9 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jbuilder (2.13.0)
+      actionview (>= 5.0.0)
+      activesupport (>= 5.0.0)
     json (2.10.1)
     jwt (2.10.1)
       base64
@@ -160,7 +164,7 @@ GEM
     marcel (1.0.4)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.25.4)
+    minitest (5.25.5)
     msgpack (1.8.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
@@ -341,6 +345,7 @@ GEM
     thruster (0.1.12-arm64-darwin)
     thruster (0.1.12-x86_64-darwin)
     thruster (0.1.12-x86_64-linux)
+    timecop (0.9.6)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -368,6 +373,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  annotaterb
   bcrypt
   bootsnap
   brakeman
@@ -378,6 +384,7 @@ DEPENDENCIES
   factory_bot_rails
   faker
   httparty
+  jbuilder
   jwt
   kamal
   pg (~> 1.1)
@@ -393,6 +400,7 @@ DEPENDENCIES
   solid_cache
   solid_queue
   thruster
+  timecop
 
 BUNDLED WITH
    2.5.21

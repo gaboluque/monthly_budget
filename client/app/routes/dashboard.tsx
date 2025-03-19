@@ -5,6 +5,7 @@ import { ExpensesList } from "../components/dashboard/ExpensesList"
 import { useDashboard } from "../hooks/useDashboard"
 import { IncomesList } from "../components/dashboard/IncomesList"
 import { ui } from "../lib/ui"
+import { useAccounts } from "../hooks/useAccounts"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Dashboard | Monthly Budget" }, { name: "description", content: "Your Monthly Budget Dashboard" }]
@@ -24,6 +25,7 @@ export default function Dashboard() {
     handleMarkExpenseAsExpensed,
     handleMarkIncomeAsReceived,
   } = useDashboard()
+  const { accounts } = useAccounts();
 
   return (
     <Layout>
@@ -33,6 +35,7 @@ export default function Dashboard() {
         <IncomesList
           incomes={pendingIncomes}
           isLoading={isLoading}
+          accounts={accounts}
           markingReceived={markingReceived}
           onAction={(id: string) => {
             const income = pendingIncomes.find((i) => i.id === id)

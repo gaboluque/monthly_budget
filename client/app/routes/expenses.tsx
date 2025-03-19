@@ -4,13 +4,13 @@ import { Layout } from "../components/ui/Layout"
 import { Button } from "../components/ui/Button"
 import { Modal } from "../components/ui/Modal"
 import { ExpenseForm } from "../components/expenses/ExpenseForm"
-import { ExpenseHeader } from "../components/expenses/ExpenseHeader"
 import { ExpenseSummary } from "../components/expenses/ExpenseSummary"
 import { ExpenseCategory } from "../components/expenses/ExpenseCategory"
 import { useExpenses } from "../hooks/useExpenses"
 import type { Expense, CreateExpenseData } from "../lib/types/expenses"
 import { Loader2, PlusCircle } from "lucide-react"
 import { ui } from "../lib/ui/manager"
+import { PageHeader } from "../components/ui/PageHeader"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Expenses | Monthly Budget" }, { name: "description", content: "Manage your monthly expenses" }]
@@ -89,9 +89,14 @@ export default function Expenses() {
   return (
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
-        <ExpenseHeader onAddExpense={() => handleAddExpense()} />
+        <PageHeader
+          title="Monthly Expenses"
+          description="A list of all your expenses organized by category."
+          buttonText="Add Expense"
+          buttonColor="blue"
+          onAction={() => handleAddExpense()}
+        />
 
-        {/* Summary Cards */}
         {!isLoading && expenses.length > 0 && (
           <ExpenseSummary
             totalExpenses={totalExpenses}
@@ -100,7 +105,6 @@ export default function Expenses() {
           />
         )}
 
-        {/* Loading state */}
         {isLoading ? (
           <div className="py-12 flex justify-center items-center text-gray-500">
             <Loader2 className="w-6 h-6 animate-spin mr-2" />
@@ -119,7 +123,6 @@ export default function Expenses() {
             </Button>
           </div>
         ) : (
-          /* Expenses list grouped by category */
           <div className="space-y-4">
             {categories.map((category) => (
               <ExpenseCategory

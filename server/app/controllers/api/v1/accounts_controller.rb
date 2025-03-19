@@ -5,28 +5,19 @@ module Api
 
       # GET /api/v1/accounts
       def index
-        result = Accounts::Filter.call(current_user, params)
-
-        if result[:success]
-          render json: {
-            data: result[:accounts]
-          }
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
+        @accounts = current_user.accounts.order(created_at: :desc)
       end
 
       # GET /api/v1/accounts/:id
-      def show
-        render json: @account
-      end
+      def show; end
 
       # POST /api/v1/accounts
       def create
         result = Accounts::Create.call(current_user, account_params)
 
         if result[:success]
-          render json: result[:account], status: :created
+          @account = result[:account]
+          render :show, status: :created
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -37,7 +28,8 @@ module Api
         result = Accounts::Update.call(@account, account_params)
 
         if result[:success]
-          render json: result[:account]
+          @account = result[:account]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -48,21 +40,18 @@ module Api
         result = Accounts::Destroy.call(@account)
 
         if result[:success]
-          render json: result[:account], status: :ok
+          @account = result[:account]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
       end
 
       # GET /api/v1/accounts/types
-      def types
-        render json: { data: Account::ACCOUNT_TYPES }
-      end
+      def types; end
 
       # GET /api/v1/accounts/currencies
-      def currencies
-        render json: { data: Account::CURRENCIES }
-      end
+      def currencies; end
 
       private
 

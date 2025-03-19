@@ -1,14 +1,18 @@
 import { Edit2, Trash2, DollarSign } from "lucide-react"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Income } from "../../lib/types/incomes"
+import type { Account } from "../../lib/types/accounts"
 
 interface IncomeItemProps {
   income: Income
+  accounts: Account[]
   onEdit: (income: Income) => void
   onDelete: (id: string) => void
 }
 
-export function IncomeItem({ income, onEdit, onDelete }: IncomeItemProps) {
+export function IncomeItem({ income, accounts, onEdit, onDelete }: IncomeItemProps) {
+  const account = accounts.find((account) => account.id === income.account_id)
+
   return (
     <div className="bg-gray-50 border border-gray-100 rounded-lg p-5 hover:shadow-sm transition-shadow">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -26,6 +30,10 @@ export function IncomeItem({ income, onEdit, onDelete }: IncomeItemProps) {
             <div className="flex items-center">
               <span className="text-xs text-gray-500 mr-1">Frequency:</span>
               <span className="text-sm text-gray-700 capitalize">{income.frequency}</span>
+            </div>
+            <div className="flex items-center">
+              <span className="text-xs text-gray-500 mr-1">To:</span>
+              <span className="text-sm text-gray-700 capitalize">{account?.name}</span>
             </div>
           </div>
         </div>

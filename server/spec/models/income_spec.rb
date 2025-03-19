@@ -1,3 +1,27 @@
+# == Schema Information
+#
+# Table name: incomes
+#
+#  id               :bigint           not null, primary key
+#  amount           :decimal(15, 2)   not null
+#  frequency        :string           not null
+#  last_received_at :datetime
+#  name             :string           not null
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  account_id       :bigint           not null
+#  user_id          :bigint           not null
+#
+# Indexes
+#
+#  index_incomes_on_account_id  (account_id)
+#  index_incomes_on_user_id     (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (account_id => accounts.id)
+#  fk_rails_...  (user_id => users.id)
+#
 require 'rails_helper'
 
 RSpec.describe Income, type: :model do
@@ -13,11 +37,34 @@ RSpec.describe Income, type: :model do
   describe 'associations' do
     it { should belong_to(:user) }
     it { should belong_to(:account) }
+    it { should have_many(:transactions).dependent(:nullify) }
   end
 
   describe 'factory' do
     it 'has a valid factory' do
       expect(build(:income)).to be_valid
+    end
+  end
+
+  describe 'with transactions' do
+    let(:user) { create(:user) }
+    let(:account) { create(:account, user: user) }
+    let(:income) { create(:income, user: user, account: account) }
+
+    it 'can have associated transactions' do
+      transaction = create(:transaction, :income, user: user, account: account, item: income)
+      expect(income.transactions).to include(transaction)
+      expect(transaction.item).to eq(income)
+    end
+
+    it 'keeps transactions when income is destroyed but sets item to nil' do
+      transaction = create(:transaction, :income, user: user, account: account, item: income)
+      transaction_id = transaction.id
+      income.destroy
+
+      reloaded_transaction = Transaction.find(transaction_id)
+      expect(reloaded_transaction).to be_present
+      expect(reloaded_transaction.item).to be_nil
     end
   end
 

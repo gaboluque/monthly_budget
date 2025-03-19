@@ -1,0 +1,33 @@
+import { Account } from "./accounts";
+
+export interface Transaction {
+  id: string;
+  account_id: string;
+  recipient_account_id?: string;
+  amount: number;
+  transaction_type: string;
+  description: string;
+  executed_at: string;
+  frequency: string;
+  category?: string;
+  created_at: string;
+  updated_at: string;
+  account_name?: string;
+  recipient_account_name?: string;
+  account?: Account;
+  recipient_account?: Account;
+}
+
+export type TransactionType = string;
+
+export interface TransactionsFilterParams {
+  account_id?: string;
+  transaction_type?: string;
+  start_date?: string;
+  end_date?: string;
+  search?: string;
+  frequency?: string;
+  category?: string;
+  page?: number;
+  per_page?: number;
+}

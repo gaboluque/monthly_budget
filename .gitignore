@@ -26,3 +26,6 @@
 # Ignore bundler config.
 **/.bundle
 /.bundle
+
+# Ignore the byebug history file
+**/.byebug_history

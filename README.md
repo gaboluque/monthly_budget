@@ -113,3 +113,18 @@ Account {
   updatedAt: datetime
 }
 ```
+
+### Transactions
+
+```
+Transaction {
+  user_id: references    // required, foreign key
+  recipient_id: references // required, foreign key
+  origin_id: references  // required, foreign key
+  amount: decimal       // required, precision: 10, scale: 2
+  type: string          // required, enum of supported transaction types (e.g., Deposit, Withdrawal, Transfer, Payment)
+  description: text     // nullable
+  createdAt: datetime
+  updatedAt: datetime
+}
+```

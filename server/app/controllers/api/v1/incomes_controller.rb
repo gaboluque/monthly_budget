@@ -5,28 +5,18 @@ module Api
 
       # GET /api/v1/incomes
       def index
-        result = Incomes::Filter.call(current_user, params)
-
-        if result[:success]
-          render json: {
-            data: result[:incomes]
-          }
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
+        @incomes = current_user.incomes.order(created_at: :desc)
       end
 
       # GET /api/v1/incomes/:id
-      def show
-        render json: @income
-      end
+      def show; end
 
       # POST /api/v1/incomes
       def create
         result = Incomes::Create.call(current_user, income_params)
 
         if result[:success]
-          render json: result[:income], status: :created
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -37,7 +27,7 @@ module Api
         result = Incomes::Update.call(@income, income_params)
 
         if result[:success]
-          render json: result[:income]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -48,7 +38,7 @@ module Api
         result = Incomes::Destroy.call(@income)
 
         if result[:success]
-          render json: result[:income], status: :ok
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -59,7 +49,7 @@ module Api
         result = Incomes::MarkAsReceived.call(@income)
 
         if result[:success]
-          render json: result[:income]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -70,7 +60,7 @@ module Api
         result = Incomes::MarkAsPending.call(@income)
 
         if result[:success]
-          render json: result[:income]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -86,9 +76,7 @@ module Api
         result = Incomes::FetchPending.call(current_user)
 
         if result[:success]
-          render json: {
-            data: result[:incomes]
-          }
+          render json: { data: result[:incomes] }
         else
           render_error(result[:errors], :unprocessable_entity)
         end

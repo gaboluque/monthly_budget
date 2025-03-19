@@ -3,59 +3,32 @@ require 'rails_helper'
 RSpec.describe Incomes::MarkAsPending, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
-    let(:account) { create(:account, user: user) }
-    let(:income) { create(:income, user: user, account: account, last_received_at: Time.current) }
+    let(:account) { create(:account, user: user, balance: 100) }
+    let!(:transaction) { create(:transaction, user: user, account: account, amount: income.amount, transaction_type: 'income', description: "Income: #{income.name}", item: income) }
 
-    context 'when income exists and is received' do
-      it 'marks the income as pending' do
-        expect(income.last_received_at).not_to be_nil
+    context 'when income is pending' do
+      let!(:income) { create(:pending_income, user: user, account: account, amount: 10) }
 
-        result = Incomes::MarkAsPending.call(income)
-        income.reload
+      it 'returns success' do
+        initial_last_received_at = income.last_received_at
 
-        expect(income.last_received_at).to be_nil
-      end
-
-      it 'returns success and the updated income' do
-        result = Incomes::MarkAsPending.call(income)
-
-        expect(result[:success]).to be true
-        expect(result[:income]).to eq(income)
-        expect(result[:income].last_received_at).to be_nil
+        result = described_class.call(income)
+        expect(result[:success]).to eq(true)
+        expect(result[:income].id).to eq(income.id)
+        expect(Transaction.count).to eq(1)
+        expect(income.reload.last_received_at).to eq(initial_last_received_at)
       end
     end
 
-    context 'when income is already pending' do
-      let(:pending_income) { create(:income, user: user, account: account, last_received_at: nil) }
+    context 'when income is has not been received' do
+      let!(:income) { create(:received_income, user: user, account: account, last_received_at: 1.day.ago, amount: 10) }
 
-      it 'keeps the income as pending' do
-        expect(pending_income.last_received_at).to be_nil
-
-        result = Incomes::MarkAsPending.call(pending_income)
-        pending_income.reload
-
-        expect(pending_income.last_received_at).to be_nil
-      end
-
-      it 'returns success and the unchanged income' do
-        result = Incomes::MarkAsPending.call(pending_income)
-
-        expect(result[:success]).to be true
-        expect(result[:income]).to eq(pending_income)
-        expect(result[:income].last_received_at).to be_nil
-      end
-    end
-
-    context 'when an exception occurs' do
-      before do
-        allow(income).to receive(:update!).and_raise(StandardError.new('Test error'))
-      end
-
-      it 'returns failure and the error message' do
-        result = Incomes::MarkAsPending.call(income)
-
-        expect(result[:success]).to be false
-        expect(result[:errors]).to eq('Test error')
+      it 'marks income as pending' do
+        result = described_class.call(income)
+        expect(result[:success]).to eq(true)
+        expect(result[:income].id).to eq(income.id)
+        expect(Transaction.count).to eq(0)
+        expect(income.reload.last_received_at).to be_nil
       end
     end
   end
