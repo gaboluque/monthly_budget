@@ -6,15 +6,7 @@ module Api
 
       # GET /api/v1/transactions
       def index
-        result = Transactions::Filter.call(current_user, params)
-
-        if result[:success]
-          render json: {
-            data: result[:transactions]
-          }
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
+        @transactions = current_user.transactions.order(created_at: :desc)
       end
 
       # POST /api/v1/transactions
@@ -22,7 +14,7 @@ module Api
         result = Transactions::Create.call(current_user, transaction_params)
 
         if result[:success]
-          render json: result[:transaction], status: :created
+          render :show, status: :created
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -33,7 +25,7 @@ module Api
         result = Transactions::Formatter.call(@transaction)
 
         if result[:success]
-          render json: result[:formatted_transaction]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -44,7 +36,7 @@ module Api
         result = Transactions::Destroy.call(@transaction)
 
         if result[:success]
-          render json: @transaction, status: :no_content
+          render :show, status: :no_content
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -52,13 +44,7 @@ module Api
 
       # GET /api/v1/transactions/types
       def types
-        result = Transactions::FetchTypes.call
-
-        if result[:success]
-          render json: { types: result[:types] }
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
+        render json: { types: Transaction.transaction_types.keys }
       end
 
       # GET /api/v1/transactions/frequencies

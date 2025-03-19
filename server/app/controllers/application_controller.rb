@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   include JsonWebToken
+  include ActionController::MimeResponds
 
   rescue_from StandardError do |e|
     render_error(e.message, :internal_server_error)

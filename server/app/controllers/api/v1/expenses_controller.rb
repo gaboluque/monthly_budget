@@ -6,20 +6,11 @@ module Api
 
       # GET /api/v1/expenses
       def index
-        result = Expenses::Filter.call(current_user, params)
-
-        if result[:success]
-          render json: {
-            data: result[:expenses]
-          }
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
+        @expenses = current_user.expenses.order(created_at: :desc)
       end
 
       # GET /api/v1/expenses/:id
       def show
-        render json: @expense
       end
 
       # POST /api/v1/expenses
@@ -27,7 +18,8 @@ module Api
         result = Expenses::Create.call(current_user, expense_params)
 
         if result[:success]
-          render json: result[:expense], status: :created
+          @expense = result[:expense]
+          render :show, status: :created
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -38,7 +30,8 @@ module Api
         result = Expenses::Update.call(@expense, expense_params)
 
         if result[:success]
-          render json: result[:expense]
+          @expense = result[:expense]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -49,7 +42,8 @@ module Api
         result = Expenses::Destroy.call(@expense)
 
         if result[:success]
-          render json: result[:expense], status: :ok
+          @expense = result[:expense]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -57,7 +51,6 @@ module Api
 
       # GET /api/v1/expenses/categories
       def categories
-        render json: { data: Expense::DEFAULT_CATEGORIES }
       end
 
       # GET /api/v1/expenses/pending
@@ -65,9 +58,7 @@ module Api
         result = Expenses::FetchPending.call(current_user)
 
         if result[:success]
-          render json: {
-            data: result[:expenses]
-          }
+          @expenses = result[:expenses]
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -78,9 +69,7 @@ module Api
         result = Expenses::FetchExpensed.call(current_user)
 
         if result[:success]
-          render json: {
-            data: result[:expenses]
-          }
+          @expenses = result[:expenses]
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -91,7 +80,8 @@ module Api
         result = Expenses::MarkAsExpensed.call(@expense)
 
         if result[:success]
-          render json: result[:expense]
+          @expense = result[:expense]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -102,7 +92,8 @@ module Api
         result = Expenses::MarkAsPending.call(@expense)
 
         if result[:success]
-          render json: result[:expense]
+          @expense = result[:expense]
+          render :show
         else
           render_error(result[:errors], :unprocessable_entity)
         end
