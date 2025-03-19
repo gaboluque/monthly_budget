@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "../ui/Button";
 import { Account } from "../../lib/types/accounts";
 import { TransactionType, TransactionsFilterParams } from "../../lib/types/transactions";
@@ -7,6 +7,7 @@ import { Filter, X } from "lucide-react";
 interface TransactionFiltersProps {
     accounts: Account[];
     transactionTypes: TransactionType[];
+    frequencies: string[];
     onApplyFilters: (filters: TransactionsFilterParams) => void;
     onClearFilters: () => void;
     currentFilters: TransactionsFilterParams;
@@ -15,6 +16,7 @@ interface TransactionFiltersProps {
 export function TransactionFilters({
     accounts,
     transactionTypes,
+    frequencies,
     onApplyFilters,
     onClearFilters,
     currentFilters
@@ -41,6 +43,16 @@ export function TransactionFilters({
     };
 
     const hasActiveFilters = Object.values(currentFilters).some(value => value !== undefined && value !== "");
+
+    const frequencyOptions = useMemo(() => {
+        return frequencies.map(frequency => ({
+            value: frequency,
+            label: frequency
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')
+        }));
+    }, [frequencies]);
 
     return (
         <div className="bg-white shadow sm:rounded-lg mb-6">
@@ -102,8 +114,28 @@ export function TransactionFilters({
                                 >
                                     <option value="">All Types</option>
                                     {transactionTypes.map((type) => (
-                                        <option key={type.id} value={type.id}>
-                                            {type.name}
+                                        <option key={type} value={type}>
+                                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div>
+                                <label htmlFor="frequency" className="block text-sm font-medium text-gray-700">
+                                    Frequency
+                                </label>
+                                <select
+                                    id="frequency"
+                                    name="frequency"
+                                    value={filters.frequency || ""}
+                                    onChange={handleInputChange}
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                                >
+                                    <option value="">All Frequencies</option>
+                                    {frequencyOptions.map((option) => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
                                         </option>
                                     ))}
                                 </select>

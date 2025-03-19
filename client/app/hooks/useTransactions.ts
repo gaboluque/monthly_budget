@@ -18,6 +18,7 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
     []
   );
+  const [frequencies, setFrequencies] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filterParams, setFilterParams] = useState<TransactionsFilterParams>(
@@ -28,14 +29,17 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [transactionData, accountsData, typesData] = await Promise.all([
-          transactionsApi.getAll(filterParams),
-          accountsApi.getAll(),
-          transactionsApi.getTypes(),
-        ]);
+        const [transactionData, accountsData, typesData, frequenciesData] =
+          await Promise.all([
+            transactionsApi.getAll(filterParams),
+            accountsApi.getAll(),
+            transactionsApi.getTypes(),
+            transactionsApi.getFrequencies(),
+          ]);
         setTransactions(transactionData);
         setAccounts(accountsData);
         setTransactionTypes(typesData);
+        setFrequencies(frequenciesData);
       } catch (error) {
         ui.notify({
           message: "Failed to load transactions data",
@@ -107,6 +111,7 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     transactions,
     accounts,
     transactionTypes,
+    frequencies,
     isLoading,
     isSubmitting,
     filterParams,

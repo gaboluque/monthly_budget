@@ -61,6 +61,11 @@ module Api
         end
       end
 
+      # GET /api/v1/transactions/frequencies
+      def frequencies
+        render json: { frequencies: Transaction.frequencies.keys }
+      end
+
       private
 
       def set_transaction
@@ -76,7 +81,8 @@ module Api
           :amount,
           :transaction_type,
           :description,
-          :executed_at
+          :executed_at,
+          :frequency
         )
       end
 

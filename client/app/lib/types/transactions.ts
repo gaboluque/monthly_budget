@@ -6,6 +6,7 @@ export interface Transaction {
   transaction_type: string;
   description: string;
   executed_at: string;
+  frequency: string;
   created_at: string;
   updated_at: string;
   account_name?: string;
@@ -20,6 +21,7 @@ export interface TransactionsFilterParams {
   start_date?: string;
   end_date?: string;
   search?: string;
+  frequency?: string;
   page?: number;
   per_page?: number;
 }

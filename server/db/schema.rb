@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_17_211430) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_19_011225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,7 +68,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_17_211430) do
     t.datetime "updated_at", null: false
     t.string "item_type"
     t.bigint "item_id"
+    t.string "frequency", default: "one_time"
     t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["frequency"], name: "index_transactions_on_frequency"
     t.index ["item_type", "item_id"], name: "index_transactions_on_item"
     t.index ["recipient_account_id"], name: "index_transactions_on_recipient_account_id"
     t.index ["transaction_type"], name: "index_transactions_on_transaction_type"

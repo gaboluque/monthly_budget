@@ -23,6 +23,7 @@ export default function Transactions() {
         transactions,
         accounts,
         transactionTypes,
+        frequencies,
         isLoading,
         isSubmitting,
         filterParams,
@@ -91,6 +92,7 @@ export default function Transactions() {
                     <TransactionFilters
                         accounts={accounts}
                         transactionTypes={transactionTypes}
+                        frequencies={frequencies}
                         onApplyFilters={applyFilters}
                         onClearFilters={clearFilters}
                         currentFilters={filterParams}
@@ -110,6 +112,7 @@ export default function Transactions() {
                 onClose={handleCloseModal}
                 accounts={accounts}
                 transactionTypes={transactionTypes}
+                frequencies={frequencies}
                 transaction={transaction}
                 isSubmitting={isSubmitting}
                 title={isNewTransaction ? "New Transaction" : "Transaction"}

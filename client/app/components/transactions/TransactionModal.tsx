@@ -10,6 +10,7 @@ interface TransactionModalProps {
     onClose: () => void
     accounts: Account[]
     transactionTypes: string[]
+    frequencies: string[]
     transaction: Transaction | undefined
     isSubmitting: boolean
     title: string
@@ -22,6 +23,7 @@ export function TransactionModal({
     onClose,
     accounts,
     transactionTypes,
+    frequencies,
     transaction,
     isSubmitting,
     title,
@@ -53,6 +55,7 @@ export function TransactionModal({
                         onCancel={onClose}
                         accounts={accounts}
                         transactionTypes={transactionTypes}
+                        frequencies={frequencies}
                         isSubmitting={isSubmitting}
                     />
                 ) : (

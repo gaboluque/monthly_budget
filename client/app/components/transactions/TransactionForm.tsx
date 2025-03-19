@@ -12,6 +12,7 @@ interface TransactionFormProps {
     onCancel: () => void;
     accounts: Account[];
     transactionTypes: string[];
+    frequencies: string[];
     transaction?: Transaction | null;
     isSubmitting: boolean;
 }
@@ -23,6 +24,7 @@ export function TransactionForm({
     onCancel,
     accounts,
     transactionTypes,
+    frequencies,
     transaction,
     isSubmitting
 }: TransactionFormProps) {
@@ -42,6 +44,16 @@ export function TransactionForm({
         }));
     }, [transactionTypes]);
 
+    const frequencyOptions = useMemo(() => {
+        return frequencies.map(frequency => ({
+            value: frequency,
+            label: frequency
+                .split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ')
+        }));
+    }, [frequencies]);
+
     // Default values for the form
     const defaultValues: Partial<CreateTransactionData> = {
         account_id: transaction?.account_id ?? undefined,
@@ -50,6 +62,7 @@ export function TransactionForm({
         transaction_type: transaction?.transaction_type ?? undefined,
         description: transaction?.description ?? undefined,
         executed_at: transaction?.executed_at ? new Date(transaction.executed_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+        frequency: transaction?.frequency ?? 'one_time',
     };
 
     const handleSubmit: SubmitHandler<CreateTransactionData> = async (data) => {
@@ -137,6 +150,16 @@ export function TransactionForm({
             required: true,
             validation: {
                 required: 'Date is required'
+            }
+        },
+        {
+            name: 'frequency',
+            label: 'Frequency',
+            type: 'select',
+            options: frequencyOptions,
+            required: true,
+            validation: {
+                required: 'Frequency is required'
             }
         },
     ];

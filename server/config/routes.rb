@@ -38,6 +38,7 @@ Rails.application.routes.draw do
       resources :transactions, only: [ :index, :show, :destroy, :create ] do
         collection do
           get :types
+          get :frequencies
         end
       end
       resources :insights, only: [ :index ]

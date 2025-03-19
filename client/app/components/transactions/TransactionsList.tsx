@@ -45,6 +45,9 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                 Type
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Frequency
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Account
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -72,6 +75,18 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                                     'bg-gray-100 text-gray-800'}`}>
                                         {transaction.transaction_type.charAt(0).toUpperCase() + transaction.transaction_type.slice(1)}
                                     </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.frequency === 'one_time' ? (
+                                        <span className="text-gray-500">One Time</span>
+                                    ) : (
+                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                            {transaction.frequency
+                                                .split('_')
+                                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                                .join(' ')}
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {transaction.account_name}

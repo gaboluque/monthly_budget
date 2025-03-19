@@ -6,6 +6,7 @@
 #  amount               :decimal(10, 2)   not null
 #  description          :text
 #  executed_at          :datetime         not null
+#  frequency            :string           default("one_time")
 #  item_type            :string
 #  transaction_type     :string           not null
 #  created_at           :datetime         not null
@@ -18,6 +19,7 @@
 # Indexes
 #
 #  index_transactions_on_account_id            (account_id)
+#  index_transactions_on_frequency             (frequency)
 #  index_transactions_on_item                  (item_type,item_id)
 #  index_transactions_on_recipient_account_id  (recipient_account_id)
 #  index_transactions_on_transaction_type      (transaction_type)
@@ -48,6 +50,16 @@ class Transaction < ApplicationRecord
     expense: 'expense'
   }
 
+  enum :frequency, {
+    one_time: 'one_time',
+    daily: 'daily',
+    weekly: 'weekly',
+    bi_weekly: 'bi_weekly',
+    monthly: 'monthly',
+    quarterly: 'quarterly',
+    yearly: 'yearly'
+  }, default: :one_time
+
   scope :by_type, ->(type) { where(transaction_type: type) }
   scope :deposits, -> { where(transaction_type: :deposit) }
   scope :withdrawals, -> { where(transaction_type: :withdrawal) }
@@ -56,6 +68,8 @@ class Transaction < ApplicationRecord
   scope :incomes, -> { where(transaction_type: :income) }
   scope :expenses, -> { where(transaction_type: :expense) }
   scope :by_date_range, ->(start_date, end_date) { where(executed_at: start_date..end_date) }
+  scope :by_frequency, ->(frequency) { where(frequency: frequency) }
+  scope :recurring, -> { where.not(frequency: :one_time) }
 
   validate :validate_transfer_recipient
   validate :validate_item_association
