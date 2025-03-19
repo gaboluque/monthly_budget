@@ -11,6 +11,7 @@ interface TransactionModalProps {
     accounts: Account[]
     transactionTypes: string[]
     frequencies: string[]
+    categories: string[]
     transaction: Transaction | undefined
     isSubmitting: boolean
     title: string
@@ -24,6 +25,7 @@ export function TransactionModal({
     accounts,
     transactionTypes,
     frequencies,
+    categories,
     transaction,
     isSubmitting,
     title,
@@ -56,6 +58,7 @@ export function TransactionModal({
                         accounts={accounts}
                         transactionTypes={transactionTypes}
                         frequencies={frequencies}
+                        categories={categories}
                         isSubmitting={isSubmitting}
                     />
                 ) : (
@@ -100,6 +103,12 @@ export function TransactionModal({
                                                 {transaction.transaction_type}
                                             </p>
                                         </div>
+                                        {transaction.category && (
+                                            <div>
+                                                <p className="text-xs text-gray-500">Category</p>
+                                                <p className="font-medium text-gray-900">{transaction.category}</p>
+                                            </div>
+                                        )}
                                         {transaction.description && (
                                             <div className="col-span-2">
                                                 <p className="text-xs text-gray-500">Description</p>

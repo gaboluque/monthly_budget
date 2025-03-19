@@ -4,6 +4,7 @@
 #
 #  id                   :bigint           not null, primary key
 #  amount               :decimal(10, 2)   not null
+#  category             :string
 #  description          :text
 #  executed_at          :datetime         not null
 #  frequency            :string           default("one_time")
@@ -19,6 +20,7 @@
 # Indexes
 #
 #  index_transactions_on_account_id            (account_id)
+#  index_transactions_on_category              (category)
 #  index_transactions_on_frequency             (frequency)
 #  index_transactions_on_item                  (item_type,item_id)
 #  index_transactions_on_recipient_account_id  (recipient_account_id)

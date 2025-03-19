@@ -13,6 +13,7 @@ interface TransactionFormProps {
     accounts: Account[];
     transactionTypes: string[];
     frequencies: string[];
+    categories: string[];
     transaction?: Transaction | null;
     isSubmitting: boolean;
 }
@@ -25,6 +26,7 @@ export function TransactionForm({
     accounts,
     transactionTypes,
     frequencies,
+    categories,
     transaction,
     isSubmitting
 }: TransactionFormProps) {
@@ -40,7 +42,7 @@ export function TransactionForm({
     const transactionTypeOptions = useMemo(() => {
         return transactionTypes.map(type => ({
             value: type,
-            label: type.charAt(0).toUpperCase() + type.slice(1)
+            label: type
         }));
     }, [transactionTypes]);
 
@@ -48,11 +50,15 @@ export function TransactionForm({
         return frequencies.map(frequency => ({
             value: frequency,
             label: frequency
-                .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')
         }));
     }, [frequencies]);
+
+    const categoryOptions = useMemo(() => {
+        return categories.map(category => ({
+            value: category,
+            label: category
+        }));
+    }, [categories]);
 
     // Default values for the form
     const defaultValues: Partial<CreateTransactionData> = {
@@ -63,6 +69,7 @@ export function TransactionForm({
         description: transaction?.description ?? undefined,
         executed_at: transaction?.executed_at ? new Date(transaction.executed_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         frequency: transaction?.frequency ?? 'one_time',
+        category: transaction?.category ?? undefined,
     };
 
     const handleSubmit: SubmitHandler<CreateTransactionData> = async (data) => {
@@ -122,6 +129,12 @@ export function TransactionForm({
                     value: ['transfer']
                 }
             ]
+        },
+        {
+            name: 'category',
+            label: 'Category',
+            type: 'select',
+            options: categoryOptions
         },
         {
             name: 'amount',

@@ -31,6 +31,7 @@ export default function Transactions() {
         deleteTransaction,
         applyFilters,
         clearFilters,
+        categories,
     } = useTransactions();
 
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
@@ -113,6 +114,7 @@ export default function Transactions() {
                 accounts={accounts}
                 transactionTypes={transactionTypes}
                 frequencies={frequencies}
+                categories={categories}
                 transaction={transaction}
                 isSubmitting={isSubmitting}
                 title={isNewTransaction ? "New Transaction" : "Transaction"}

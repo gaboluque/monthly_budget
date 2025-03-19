@@ -14,6 +14,7 @@ export interface CreateTransactionData {
   description?: string;
   executed_at?: string;
   frequency?: string;
+  category?: string;
 }
 
 export const transactionsApi = {
@@ -58,5 +59,10 @@ export const transactionsApi = {
   getFrequencies: async (): Promise<string[]> => {
     const response = await apiClient.get("/transactions/frequencies");
     return response.frequencies || [];
+  },
+
+  getCategories: async (): Promise<string[]> => {
+    const response = await apiClient.get("/transactions/categories");
+    return response.categories || [];
   },
 };

@@ -2,7 +2,7 @@ import { Eye, Undo2 } from "lucide-react";
 import { Transaction } from "../../lib/types/transactions";
 import { formatCurrency, formatDate } from "../../lib/utils/formatters";
 import { Button } from "../ui/Button";
-
+import { transactionTypeColor } from "../../lib/ui/colorHelpers";
 interface TransactionsListProps {
     transactions: Transaction[];
     isLoading: boolean;
@@ -53,6 +53,9 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Amount
                             </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Category
+                            </th>
                             <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Actions
                             </th>
@@ -68,12 +71,8 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                     {transaction.description}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${transaction.transaction_type === 'income' ? 'bg-green-100 text-green-800' :
-                                            transaction.transaction_type === 'expense' ? 'bg-red-100 text-red-800' :
-                                                transaction.transaction_type === 'transfer' ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-gray-100 text-gray-800'}`}>
-                                        {transaction.transaction_type.charAt(0).toUpperCase() + transaction.transaction_type.slice(1)}
+                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${transactionTypeColor(transaction.transaction_type)}-100 text-${transactionTypeColor(transaction.transaction_type)}-800`}>
+                                        {transaction.transaction_type}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -81,10 +80,7 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                         <span className="text-gray-500">One Time</span>
                                     ) : (
                                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
-                                            {transaction.frequency
-                                                .split('_')
-                                                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                                                .join(' ')}
+                                            {transaction.frequency}
                                         </span>
                                     )}
                                 </td>
@@ -95,13 +91,12 @@ export function TransactionsList({ transactions, isLoading, onOpen, onDelete }: 
                                     )}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <span className={
-                                        transaction.transaction_type === 'income' ? 'text-green-600' :
-                                            transaction.transaction_type === 'expense' ? 'text-red-600' :
-                                                'text-gray-900'
-                                    }>
+                                    <span className={`text-${transactionTypeColor(transaction.transaction_type)}-600`}>
                                         {formatCurrency(transaction.amount)}
                                     </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {transaction.category}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <div className="flex justify-end space-x-2">

@@ -48,9 +48,6 @@ export function TransactionFilters({
         return frequencies.map(frequency => ({
             value: frequency,
             label: frequency
-                .split('_')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ')
         }));
     }, [frequencies]);
 
@@ -115,7 +112,7 @@ export function TransactionFilters({
                                     <option value="">All Types</option>
                                     {transactionTypes.map((type) => (
                                         <option key={type} value={type}>
-                                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                                            {type}
                                         </option>
                                     ))}
                                 </select>

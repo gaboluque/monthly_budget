@@ -7,6 +7,7 @@ export interface Transaction {
   description: string;
   executed_at: string;
   frequency: string;
+  category?: string;
   created_at: string;
   updated_at: string;
   account_name?: string;
@@ -22,6 +23,7 @@ export interface TransactionsFilterParams {
   end_date?: string;
   search?: string;
   frequency?: string;
+  category?: string;
   page?: number;
   per_page?: number;
 }

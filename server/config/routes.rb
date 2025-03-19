@@ -39,6 +39,7 @@ Rails.application.routes.draw do
         collection do
           get :types
           get :frequencies
+          get :categories
         end
       end
       resources :insights, only: [ :index ]
