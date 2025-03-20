@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react";
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date';
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio';
 
 export type ConditionalRule<T extends FieldValues> = {
     field: Path<T>;
@@ -104,6 +104,33 @@ export const Form = <T extends FieldValues>({
                             </option>
                         ))}
                     </select>
+                );
+
+            case 'radio':
+                return (
+                    <div className="flex w-full">
+                        {options?.map((option, index) => (
+                            <label
+                                key={option.value}
+                                className="flex-1 flex items-center"
+                            >
+                                <input
+                                    type="radio"
+                                    value={option.value}
+                                    {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                                    className="sr-only" // Hide the actual radio input
+                                />
+                                <span className={`w-full text-center px-4 py-2 text-sm font-medium cursor-pointer transition-colors
+                                    ${index === 0 ? 'rounded-l' : ''} 
+                                    ${index === options.length - 1 ? 'rounded-r' : ''}
+                                    ${values?.[name as string] === option.value
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}>
+                                    {option.label}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
                 );
 
             case 'textarea':

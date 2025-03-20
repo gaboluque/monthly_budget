@@ -7,7 +7,7 @@ const formatLargeNumber = (num: number): string => {
     return (num / 1e6).toFixed(1) + "M";
   }
   if (absNum >= 1e3) {
-    return (num / 1e3).toFixed(1) + "K";
+    return (num / 1e3).toFixed(3);
   }
   return num.toString();
 };
