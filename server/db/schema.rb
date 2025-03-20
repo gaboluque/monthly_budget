@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_19_013925) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_19_212556) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -27,7 +27,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_013925) do
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
-  create_table "expenses", force: :cascade do |t|
+  create_table "budget_items", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.decimal "amount", precision: 15, scale: 2, null: false
@@ -36,11 +36,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_013925) do
     t.string "frequency", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_expensed_at"
-    t.index ["account_id"], name: "index_expenses_on_account_id"
-    t.index ["category"], name: "index_expenses_on_category"
-    t.index ["frequency"], name: "index_expenses_on_frequency"
-    t.index ["user_id"], name: "index_expenses_on_user_id"
+    t.datetime "last_paid_at"
+    t.index ["account_id"], name: "index_budget_items_on_account_id"
+    t.index ["category"], name: "index_budget_items_on_category"
+    t.index ["frequency"], name: "index_budget_items_on_frequency"
+    t.index ["user_id"], name: "index_budget_items_on_user_id"
   end
 
   create_table "incomes", force: :cascade do |t|
@@ -88,8 +88,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_013925) do
   end
 
   add_foreign_key "accounts", "users"
-  add_foreign_key "expenses", "accounts"
-  add_foreign_key "expenses", "users"
+  add_foreign_key "budget_items", "accounts"
+  add_foreign_key "budget_items", "users"
   add_foreign_key "incomes", "accounts"
   add_foreign_key "incomes", "users"
   add_foreign_key "transactions", "accounts"

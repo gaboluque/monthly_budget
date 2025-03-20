@@ -5,13 +5,13 @@ import { CategoryDistribution } from "../CategoryDistribution"
 interface FinancialSummaryProps {
   summaryData: {
     totalIncome: number
-    totalExpenses: number
-    totalPendingExpenses: number
+    totalBudgetItems: number
+    totalPendingBudgetItems: number
     balance: number
-    expenseCategories: number
+    budgetItemCategories: number
     incomeCount: number
-    pendingExpensesCount: number
-    expensesByCategory: {
+    pendingBudgetItemsCount: number
+    budgetItemsByCategory: {
       [key: string]: number
     }
   }
@@ -29,9 +29,8 @@ export function FinancialSummary({ summaryData }: FinancialSummaryProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
-          className={`rounded-lg p-5 ${
-            summaryData.balance >= 0 ? "bg-green-50 border border-green-100" : "bg-red-50 border border-red-100"
-          }`}
+          className={`rounded-lg p-5 ${summaryData.balance >= 0 ? "bg-green-50 border border-green-100" : "bg-red-50 border border-red-100"
+            }`}
         >
           <div className="flex items-center justify-between mb-2">
             <h3 className={`text-sm font-medium ${summaryData.balance >= 0 ? "text-green-700" : "text-red-700"}`}>
@@ -48,21 +47,21 @@ export function FinancialSummary({ summaryData }: FinancialSummaryProps) {
               <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalIncome, false)}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">Expenses</p>
-              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalExpenses, false)}</p>
+              <p className="text-xs text-gray-500">Budget Items</p>
+              <p className="text-sm font-medium text-gray-900">{formatCurrency(summaryData.totalBudgetItems, false)}</p>
             </div>
             <div>
               <p className="text-xs text-gray-500">Pending</p>
-              <p className="text-sm font-medium text-gray-900">{summaryData.pendingExpensesCount}</p>
+              <p className="text-sm font-medium text-gray-900">{summaryData.pendingBudgetItemsCount}</p>
             </div>
           </div>
         </div>
 
         <div className="rounded-lg p-5 bg-gray-50 border border-gray-100">
-          <h3 className="text-sm font-medium text-gray-700 mb-4">Expense Categories</h3>
-          <CategoryDistribution 
-            categories={summaryData.expensesByCategory} 
-            total={summaryData.totalExpenses} 
+          <h3 className="text-sm font-medium text-gray-700 mb-4">Budget Item Categories</h3>
+          <CategoryDistribution
+            categories={summaryData.budgetItemsByCategory}
+            total={summaryData.totalBudgetItems}
           />
         </div>
       </div>

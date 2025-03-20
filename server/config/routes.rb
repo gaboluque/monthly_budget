@@ -18,14 +18,14 @@ Rails.application.routes.draw do
           put :mark_as_pending
         end
       end
-      resources :expenses do
+      resources :budget_items do
         collection do
           get :categories
           get :pending
-          get :expensed
+          get :paid
         end
         member do
-          put :mark_as_expensed
+          put :mark_as_paid
           put :mark_as_pending
         end
       end

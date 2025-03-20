@@ -40,7 +40,7 @@ RSpec.describe Transaction, type: :model do
   let(:account) { create(:account, user: user) }
   let(:recipient_account) { create(:account, user: user) }
   let(:income) { create(:income, user: user, account: account) }
-  let(:expense) { create(:expense, user: user, account: account) }
+  let(:budget_item) { create(:budget_item, user: user, account: account) }
 
   describe 'validations' do
     it { should validate_presence_of(:amount) }
@@ -93,29 +93,9 @@ RSpec.describe Transaction, type: :model do
       end
 
       it 'is invalid with a non-income item' do
-        transaction.item = expense
+        transaction.item = budget_item
         expect(transaction).not_to be_valid
         expect(transaction.errors[:item]).to include('must be an Income for income transactions')
-      end
-    end
-
-    context 'when transaction is an expense' do
-      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:expense], user: user, account: account) }
-
-      it 'requires an expense item' do
-        expect(transaction).not_to be_valid
-        expect(transaction.errors[:item]).to include('must be associated with an expense')
-      end
-
-      it 'is valid with an expense item' do
-        transaction.item = expense
-        expect(transaction).to be_valid
-      end
-
-      it 'is invalid with a non-expense item' do
-        transaction.item = income
-        expect(transaction).not_to be_valid
-        expect(transaction.errors[:item]).to include('must be an Expense for expense transactions')
       end
     end
   end
@@ -132,17 +112,6 @@ RSpec.describe Transaction, type: :model do
     end
   end
 
-  describe '#expense' do
-    it 'returns the item when it is an expense transaction with an expense item' do
-      transaction = build(:transaction, :expense, user: user, account: account, item: expense)
-      expect(transaction.expense).to eq(expense)
-    end
-
-    it 'returns nil when not an expense transaction' do
-      transaction = build(:transaction, :income, user: user, account: account, item: income)
-      expect(transaction.expense).to be_nil
-    end
-  end
 
   describe '#item_name' do
     it 'returns the name of the associated item' do

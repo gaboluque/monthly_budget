@@ -7,7 +7,7 @@
 
 ## 📝 Overview
 
-A modern Progressive Web App (PWA) for managing your monthly budget effectively. Track your income sources and expenses, categorize your spending, and maintain a clear view of your financial health.
+A modern Progressive Web App (PWA) for managing your monthly budget effectively. Track your income sources and budget, categorize your spending, and maintain a clear view of your financial health.
 
 ### 🎯 Purpose
 

@@ -81,15 +81,10 @@ class Transaction < ApplicationRecord
   scope :by_category, ->(category) { where(category: category) }
 
   validate :validate_transfer_recipient
-  validate :validate_item_association
 
   # Helper methods for item associations
   def income
     item if income? && item.is_a?(Income)
-  end
-
-  def expense
-    item if expense? && item.is_a?(Expense)
   end
 
   def item_name
@@ -101,23 +96,6 @@ class Transaction < ApplicationRecord
   def validate_transfer_recipient
     if transfer? && recipient_account.nil?
       errors.add(:recipient_account, "must be present for transfer transactions")
-    end
-  end
-
-  def validate_item_association
-    case transaction_type
-    when 'income'
-      if item.nil?
-        errors.add(:item, "must be associated with an income")
-      elsif !item.is_a?(Income)
-        errors.add(:item, "must be an Income for income transactions")
-      end
-    when 'expense'
-      if item.nil?
-        errors.add(:item, "must be associated with an expense")
-      elsif !item.is_a?(Expense)
-        errors.add(:item, "must be an Expense for expense transactions")
-      end
     end
   end
 end

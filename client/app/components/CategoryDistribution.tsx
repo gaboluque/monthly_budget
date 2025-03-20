@@ -1,5 +1,5 @@
 import { formatCurrency } from "../lib/utils/currency"
-import { CATEGORY_COLORS } from "../lib/types/expenses"
+import { CATEGORY_COLORS } from "../lib/types/budget_items"
 
 interface CategoryDistributionProps {
   categories: Record<string, number>

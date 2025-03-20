@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node"
 import { Layout } from "../components/ui/Layout"
 import { FinancialSummary } from "../components/dashboard/FinancialSummary"
-import { ExpensesList } from "../components/dashboard/ExpensesList"
+import { BudgetItemList } from "../components/dashboard/BudgetItemList"
 import { useDashboard } from "../hooks/useDashboard"
 import { IncomesList } from "../components/dashboard/IncomesList"
 import { ui } from "../lib/ui"
@@ -13,19 +13,24 @@ export const meta: MetaFunction = () => {
 
 export default function Dashboard() {
   const {
-    pendingExpenses,
-    expensedExpenses,
+    pendingBudgetItems,
+    paidBudgetItems,
     pendingIncomes,
     isLoading,
-    markingExpensed,
-    markingReceived,
+    markingBudgetItemPaid,
+    markingIncomeReceived,
     summaryData,
-    handleMarkExpenseAsPending,
+    handleMarkBudgetItemAsPaid,
     handleMarkIncomeAsPending,
-    handleMarkExpenseAsExpensed,
+    handleMarkBudgetItemAsPending,
     handleMarkIncomeAsReceived,
   } = useDashboard()
   const { accounts } = useAccounts();
+
+  console.log({
+    pendingBudgetItems,
+    paidBudgetItems
+  })
 
   return (
     <Layout>
@@ -36,7 +41,7 @@ export default function Dashboard() {
           incomes={pendingIncomes}
           isLoading={isLoading}
           accounts={accounts}
-          markingReceived={markingReceived}
+          markingReceived={markingIncomeReceived}
           onAction={(id: string) => {
             const income = pendingIncomes.find((i) => i.id === id)
             if (income?.last_received_at) {
@@ -54,16 +59,16 @@ export default function Dashboard() {
 
       <br />
 
-      <ExpensesList
-        expenses={[...pendingExpenses, ...expensedExpenses]}
+      <BudgetItemList
+        budgetItems={[...pendingBudgetItems, ...paidBudgetItems]}
         isLoading={isLoading}
-        markingExpensed={markingExpensed}
+        markingBudgetItemPaid={markingBudgetItemPaid}
         onAction={(id: string) => {
-          const isExpensed = expensedExpenses.some((e) => e.id === id)
-          if (isExpensed) {
-            handleMarkExpenseAsPending(id)
+          const isPaid = paidBudgetItems.some((e) => e.id === id)
+          if (isPaid) {
+            handleMarkBudgetItemAsPending(id)
           } else {
-            handleMarkExpenseAsExpensed(id)
+            handleMarkBudgetItemAsPaid(id)
           }
         }}
       />

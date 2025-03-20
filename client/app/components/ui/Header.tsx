@@ -20,8 +20,8 @@ const navigationLinks = [
     activeClass: "bg-green-50 text-green-700",
   },
   {
-    path: "/expenses",
-    label: "Expenses",
+    path: "/budget",
+    label: "Budget",
     icon: CreditCard,
     activeClass: "bg-blue-50 text-blue-700",
   },

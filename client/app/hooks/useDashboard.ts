@@ -1,40 +1,52 @@
 import { useState, useEffect } from "react";
-import { expensesApi } from "../lib/api/expenses";
+import { budgetItemsApi } from "../lib/api/budget_items";
 import { incomesApi } from "../lib/api/incomes";
-import type { Expense } from "../lib/types/expenses";
+import type { BudgetItem } from "../lib/types/budget_items";
 import { ui } from "../lib/ui/manager";
 import { Income } from "../lib/types/incomes";
 
 export function useDashboard() {
-  const [pendingExpenses, setPendingExpenses] = useState<Expense[]>([]);
-  const [expensedExpenses, setExpensedExpenses] = useState<Expense[]>([]);
+  const [pendingBudgetItems, setPendingBudgetItems] = useState<BudgetItem[]>(
+    []
+  );
+  const [paidBudgetItems, setPaidBudgetItems] = useState<BudgetItem[]>([]);
   const [pendingIncomes, setPendingIncomes] = useState<Income[]>([]);
   const [receivedIncomes, setReceivedIncomes] = useState<Income[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [markingExpensed, setMarkingExpensed] = useState<string | null>(null);
-  const [markingReceived, setMarkingReceived] = useState<string | null>(null);
+  const [markingBudgetItemPending, setMarkingBudgetItemPending] = useState<
+    string | null
+  >(null);
+  const [markingBudgetItemPaid, setMarkingBudgetItemPaid] = useState<
+    string | null
+  >(null);
+  const [markingIncomePending, setMarkingIncomePending] = useState<
+    string | null
+  >(null);
+  const [markingIncomeReceived, setMarkingIncomeReceived] = useState<
+    string | null
+  >(null);
   const [summaryData, setSummaryData] = useState({
     totalIncome: 0,
-    totalExpenses: 0,
-    totalPendingExpenses: 0,
+    totalBudgetItems: 0,
+    totalPendingBudgetItems: 0,
     balance: 0,
-    expenseCategories: 0,
+    budgetItemCategories: 0,
     incomeCount: 0,
-    pendingExpensesCount: 0,
-    expensesByCategory: {} as Record<string, number>,
+    pendingBudgetItemsCount: 0,
+    budgetItemsByCategory: {} as Record<string, number>,
   });
 
-  const fetchExpenses = async () => {
+  const fetchBudgetItems = async () => {
     try {
-      const [pending, expensed] = await Promise.all([
-        expensesApi.getPending(),
-        expensesApi.getExpensed(),
+      const [pending, paid] = await Promise.all([
+        budgetItemsApi.getPending(),
+        budgetItemsApi.getPaid(),
       ]);
-      setPendingExpenses(pending);
-      setExpensedExpenses(expensed);
+      setPendingBudgetItems(pending);
+      setPaidBudgetItems(paid);
     } catch (err) {
       ui.notify({
-        message: "Failed to load expenses",
+        message: "Failed to load budget items",
         type: "error",
       });
     } finally {
@@ -44,19 +56,19 @@ export function useDashboard() {
 
   const fetchSummaryData = async () => {
     try {
-      // Fetch all expenses and incomes to calculate summary data
-      const [pendingExpenses, expenses, incomes] = await Promise.all([
-        expensesApi.getPending(),
-        expensesApi.getAll(),
+      // Fetch all budget items and incomes to calculate summary data
+      const [pendingBudgetItems, budgetItems, incomes] = await Promise.all([
+        budgetItemsApi.getPending(),
+        budgetItemsApi.getAll(),
         incomesApi.getAll(),
       ]);
 
-      const totalExpenses = expenses.reduce(
-        (sum, expense) => sum + Number(expense.amount),
+      const totalBudgetItems = budgetItems.reduce(
+        (sum, budgetItem) => sum + Number(budgetItem.amount),
         0
       );
-      const totalPendingExpenses = pendingExpenses.reduce(
-        (sum, expense) => sum + Number(expense.amount),
+      const totalPendingBudgetItems = pendingBudgetItems.reduce(
+        (sum, budgetItem) => sum + Number(budgetItem.amount),
         0
       );
 
@@ -80,29 +92,29 @@ export function useDashboard() {
       setPendingIncomes(pendingIncomes);
       setReceivedIncomes(receivedIncomes);
 
-      // Calculate expenses by category
-      const expensesByCategory = expenses.reduce((acc, expense) => {
-        if (!acc[expense.category]) {
-          acc[expense.category] = 0;
+      // Calculate budget items by category
+      const budgetItemsByCategory = budgetItems.reduce((acc, budgetItem) => {
+        if (!acc[budgetItem.category]) {
+          acc[budgetItem.category] = 0;
         }
-        acc[expense.category] += Number(expense.amount);
+        acc[budgetItem.category] += Number(budgetItem.amount);
         return acc;
       }, {} as Record<string, number>);
 
       // Get unique categories
       const categories = [
-        ...new Set(expenses.map((expense) => expense.category)),
+        ...new Set(budgetItems.map((budgetItem) => budgetItem.category)),
       ];
 
       setSummaryData({
         totalIncome,
-        totalExpenses,
-        totalPendingExpenses,
-        balance: totalIncome - (totalExpenses - totalPendingExpenses),
-        expenseCategories: categories.length,
+        totalBudgetItems,
+        totalPendingBudgetItems,
+        balance: totalIncome - (totalBudgetItems - totalPendingBudgetItems),
+        budgetItemCategories: categories.length,
         incomeCount: incomes.length,
-        pendingExpensesCount: pendingExpenses.length,
-        expensesByCategory,
+        pendingBudgetItemsCount: pendingBudgetItems.length,
+        budgetItemsByCategory,
       });
     } catch (err) {
       ui.notify({
@@ -113,41 +125,41 @@ export function useDashboard() {
     }
   };
 
-  const handleMarkExpenseAsExpensed = async (expenseId: string) => {
+  const handleMarkBudgetItemAsPaid = async (budgetItemId: string) => {
     try {
-      setMarkingExpensed(expenseId);
-      await expensesApi.markAsExpensed(expenseId);
-      await fetchExpenses(); // Refresh both lists
+      setMarkingBudgetItemPaid(budgetItemId);
+      await budgetItemsApi.markAsPaid(budgetItemId);
+      await fetchBudgetItems(); // Refresh both lists
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
       ui.notify({
-        message: "Failed to mark expense as expensed",
+        message: "Failed to mark budget item as paid",
         type: "error",
       });
     } finally {
-      setMarkingExpensed(null);
+      setMarkingBudgetItemPaid(null);
     }
   };
 
-  const handleMarkExpenseAsPending = async (expenseId: string) => {
+  const handleMarkBudgetItemAsPending = async (budgetItemId: string) => {
     try {
-      setMarkingExpensed(expenseId);
-      await expensesApi.markAsPending(expenseId);
-      await fetchExpenses(); // Refresh both lists
+      setMarkingBudgetItemPending(budgetItemId);
+      await budgetItemsApi.markAsPending(budgetItemId);
+      await fetchBudgetItems(); // Refresh both lists
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
       ui.notify({
-        message: "Failed to mark expense as pending",
+        message: "Failed to mark budget item as pending",
         type: "error",
       });
     } finally {
-      setMarkingExpensed(null);
+      setMarkingBudgetItemPending(null);
     }
   };
 
   const handleMarkIncomeAsReceived = async (incomeId: string) => {
     try {
-      setMarkingReceived(incomeId);
+      setMarkingIncomeReceived(incomeId);
       await incomesApi.markAsReceived(incomeId);
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
@@ -156,13 +168,13 @@ export function useDashboard() {
         type: "error",
       });
     } finally {
-      setMarkingReceived(null);
+      setMarkingIncomeReceived(null);
     }
   };
 
   const handleMarkIncomeAsPending = async (incomeId: string) => {
     try {
-      setMarkingReceived(incomeId);
+      setMarkingIncomePending(incomeId);
       await incomesApi.markAsPending(incomeId);
       await fetchSummaryData(); // Refresh summary data
     } catch (err) {
@@ -171,26 +183,28 @@ export function useDashboard() {
         type: "error",
       });
     } finally {
-      setMarkingReceived(null);
+      setMarkingIncomePending(null);
     }
   };
 
   useEffect(() => {
-    fetchExpenses();
+    fetchBudgetItems();
     fetchSummaryData();
   }, []);
 
   return {
-    pendingExpenses,
-    expensedExpenses,
+    pendingBudgetItems,
+    paidBudgetItems,
     pendingIncomes,
     receivedIncomes,
     isLoading,
-    markingExpensed,
-    markingReceived,
+    markingBudgetItemPending,
+    markingBudgetItemPaid,
+    markingIncomePending,
+    markingIncomeReceived,
     summaryData,
-    handleMarkExpenseAsExpensed,
-    handleMarkExpenseAsPending,
+    handleMarkBudgetItemAsPending,
+    handleMarkBudgetItemAsPaid,
     handleMarkIncomeAsReceived,
     handleMarkIncomeAsPending,
   };

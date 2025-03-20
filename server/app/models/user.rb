@@ -21,7 +21,7 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }
 
   has_many :incomes, dependent: :destroy
-  has_many :expenses, dependent: :destroy
+  has_many :budget_items, dependent: :destroy
   has_many :accounts, dependent: :destroy
   has_many :transactions, dependent: :destroy
 

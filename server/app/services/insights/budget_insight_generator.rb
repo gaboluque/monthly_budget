@@ -64,7 +64,8 @@ module Insights
         @user = user
 
       @incomes = user.incomes
-      @expenses = user.expenses
+      @budget_items = user.budget_items
+      @transactions = user.transactions
     end
 
     def generate
@@ -90,8 +91,11 @@ module Insights
         Income Data:
         #{incomes_data.to_json}
 
-        Expense Data:
-        #{expenses_data.to_json}
+        Budget Item Data:
+        #{budget_items_data.to_json}
+
+        Transaction Data:
+        #{transactions_data.to_json}
 
         Focus on identifying patterns, anomalies, and providing actionable recommendations#{' '}
         for better budget management.
@@ -108,13 +112,24 @@ module Insights
       end
     end
 
-    def expenses_data
-      @expenses_data ||= @expenses.map do |expense|
+    def budget_items_data
+      @budget_items_data ||= @budget_items.map do |budget_item|
         {
-          name: expense.name,
-          amount: expense.amount,
-          category: expense.category,
-          frequency: expense.frequency
+          name: budget_item.name,
+          amount: budget_item.amount,
+          category: budget_item.category,
+          frequency: budget_item.frequency
+        }
+      end
+    end
+
+    def transactions_data
+      @transactions_data ||= @transactions.map do |transaction|
+        {
+          amount: transaction.amount,
+          category: transaction.category,
+          frequency: transaction.frequency,
+          executed_at: transaction.executed_at
         }
       end
     end
