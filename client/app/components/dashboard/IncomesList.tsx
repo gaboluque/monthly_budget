@@ -1,14 +1,12 @@
 import { Loader2, Check } from "lucide-react"
 import type { Income } from "../../lib/types/incomes"
-import type { Account } from "../../lib/types/accounts"
 import { IncomeItem } from "./IncomeItem"
-
+import { PageHeader } from "../ui/PageHeader"
 interface IncomesListProps {
     incomes: Income[]
     isLoading: boolean
     markingReceived: string | null
     onAction: (id: string) => void
-    accounts: Account[]
 }
 
 export function IncomesList({
@@ -16,10 +14,11 @@ export function IncomesList({
     isLoading,
     markingReceived,
     onAction,
-    accounts,
 }: IncomesListProps) {
     return (
         <div className="bg-white rounded-lg shadow-lg p-5 lg:p-8">
+            <PageHeader title="Incomes" />
+
             {isLoading ? (
                 <div className="py-12 flex justify-center items-center text-gray-500">
                     <Loader2 className="w-6 h-6 animate-spin mr-2" />
@@ -43,7 +42,6 @@ export function IncomesList({
                         <IncomeItem
                             key={income.id}
                             income={income}
-                            accounts={accounts}
                             isMarking={markingReceived === income.id}
                             onAction={onAction}
                         />

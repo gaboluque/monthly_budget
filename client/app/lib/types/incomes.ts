@@ -1,3 +1,5 @@
+import type { Account } from "./accounts";
+
 export type IncomeFrequency =
   | "monthly"
   | "bi-weekly"
@@ -15,6 +17,7 @@ export interface Income {
   created_at: string;
   updated_at: string;
   last_received_at: string | null;
+  account: Account | null;
 }
 
 export interface CreateIncomeData {

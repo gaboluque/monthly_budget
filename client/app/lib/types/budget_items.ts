@@ -1,3 +1,5 @@
+import { Account } from "./accounts";
+
 export type BudgetItemFrequency = "monthly" | "bi-weekly" | "weekly";
 
 export interface BudgetItem {
@@ -10,6 +12,9 @@ export interface BudgetItem {
   last_paid_at?: string;
   created_at: string;
   updated_at: string;
+  is_paid: boolean;
+  is_pending: boolean;
+  account?: Account;
 }
 
 export interface CreateBudgetItemData {

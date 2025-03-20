@@ -5,7 +5,6 @@ import { BudgetItemList } from "../components/dashboard/BudgetItemList"
 import { useDashboard } from "../hooks/useDashboard"
 import { IncomesList } from "../components/dashboard/IncomesList"
 import { ui } from "../lib/ui"
-import { useAccounts } from "../hooks/useAccounts"
 import { PageHeader } from "../components/ui/PageHeader"
 
 export const meta: MetaFunction = () => {
@@ -26,7 +25,6 @@ export default function Dashboard() {
     handleMarkBudgetItemAsPending,
     handleMarkIncomeAsReceived,
   } = useDashboard()
-  const { accounts } = useAccounts();
 
   return (
     <Layout>
@@ -37,7 +35,6 @@ export default function Dashboard() {
         <IncomesList
           incomes={pendingIncomes}
           isLoading={isLoading}
-          accounts={accounts}
           markingReceived={markingIncomeReceived}
           onAction={(id: string) => {
             const income = pendingIncomes.find((i) => i.id === id)
