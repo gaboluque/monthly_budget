@@ -10,9 +10,10 @@ json.pending budget_item.pending?
 json.created_at budget_item.created_at
 json.updated_at budget_item.updated_at
 
-if budget_item.account.present?
-  json.account do
-    json.id budget_item.account.id
-    json.name budget_item.account.name
+json.account do
+  if budget_item.account.present?
+    json.partial! 'api/v1/accounts/account', account: budget_item.account
+  else
+    json.null
   end
 end

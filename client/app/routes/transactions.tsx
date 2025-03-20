@@ -7,10 +7,10 @@ import { TransactionsList } from "../components/transactions/TransactionsList";
 import { TransactionModal } from "../components/transactions/TransactionModal";
 import { TransactionFilters } from "../components/transactions/TransactionFilters";
 import { useTransactions } from "../hooks/useTransactions";
-import { ui } from "../lib/ui/manager";
 import { Transaction } from "../lib/types/transactions";
 import { CreateTransactionData } from "../lib/api/transactions";
 import { PageHeader } from "../components/ui/PageHeader";
+import { ui } from "../lib/ui";
 
 export const meta: MetaFunction = () => {
     return [
@@ -37,7 +37,6 @@ export default function Transactions() {
     } = useTransactions();
 
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
-    const [isNewTransaction, setIsNewTransaction] = useState(false);
 
     // Check for 'new=true' in URL and open modal if present
     useEffect(() => {
@@ -46,34 +45,16 @@ export default function Transactions() {
         }
     }, [searchParams]);
 
-    const handleOpenModal = (id: string) => {
-        setIsNewTransaction(false);
-        const transaction = transactions.find((t) => t.id === id);
-        if (transaction) {
-            setTransaction(transaction);
-        }
+    const handleOpenModal = (transaction: Transaction) => {
+        setTransaction(transaction);
     };
 
     const handleNewTransaction = () => {
-        setIsNewTransaction(true);
-        setTransaction(undefined);
-        // Remove the 'new' parameter from URL if it exists
-        if (searchParams.get('new') === 'true') {
-            const newSearchParams = new URLSearchParams(searchParams);
-            newSearchParams.delete('new');
-            window.history.replaceState(null, '',
-                `${window.location.pathname}${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`
-            );
-        }
+        setTransaction({} as Transaction);
     };
 
     const handleCreateTransaction = async (data: CreateTransactionData) => {
-        try {
-            await createTransaction(data);
-            setIsNewTransaction(false); // Close the modal
-        } catch (error) {
-            // Error is already handled in the hook
-        }
+        await createTransaction(data);
     };
 
     const handleDeleteTransaction = (id: string) => {
@@ -81,18 +62,14 @@ export default function Transactions() {
             title: "Rollback Transaction",
             message: "Are you sure you want to rollback this transaction?",
             onConfirm: async () => {
-                try {
-                    await deleteTransaction(id);
-                } catch (error) {
-                    // Error is already handled in the hook
-                }
+                await deleteTransaction(id);
+                handleCloseModal();
             },
         });
     };
 
     const handleCloseModal = () => {
         setTransaction(undefined);
-        setIsNewTransaction(false);
     };
 
     return (
@@ -119,12 +96,11 @@ export default function Transactions() {
                     transactions={transactions}
                     isLoading={isLoading}
                     onOpen={handleOpenModal}
-                    onDelete={handleDeleteTransaction}
                 />
             </div>
 
             <TransactionModal
-                isOpen={!!transaction || isNewTransaction}
+                isOpen={!!transaction}
                 onClose={handleCloseModal}
                 accounts={accounts}
                 transactionTypes={transactionTypes}
@@ -132,9 +108,9 @@ export default function Transactions() {
                 categories={categories}
                 transaction={transaction}
                 isSubmitting={isSubmitting}
-                title={isNewTransaction ? "New Transaction" : "Transaction"}
+                title="Transaction"
                 onSubmit={handleCreateTransaction}
-                isNewTransaction={isNewTransaction}
+                onDelete={handleDeleteTransaction}
             />
         </Layout>
     );

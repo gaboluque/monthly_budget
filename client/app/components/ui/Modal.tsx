@@ -9,6 +9,10 @@ interface ModalProps {
 }
 
 export function Modal({ isOpen, onClose, title, children, type = 'standard' }: ModalProps) {
+
+  const isModal = type === 'standard';
+  const isPopup = type === 'popup';
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -28,8 +32,7 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
+    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-10"} overflow-y-auto`}>
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
         onClick={onClose}
@@ -42,18 +45,14 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
         }}
       />
 
-      {/* Modal */}
-      <div className={`flex min-h-full ${type === 'standard' ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
-        <div className={`relative bg-white shadow-xl ${type === 'standard' ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${type === 'popup' ? 'rounded-lg max-w-lg w-full' : ''}`}>
-          {/* Header */}
+      <div className={`flex min-h-full ${isModal ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
+        <div className={`relative bg-white shadow-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-full' : ''}`}>
           <div className="flex items-center justify-between mb-8 align-center">
 
-            {/* Title */}
             <h3 className="text-lg font-semibold text-gray-900">
               {title}
             </h3>
 
-            {/* Close button */}
             <button
               type="button"
               className="text-gray-400 hover:text-gray-500"
@@ -66,7 +65,6 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
             </button>
           </div>
 
-          {/* Content */}
           {children}
         </div>
       </div>

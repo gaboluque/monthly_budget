@@ -70,7 +70,7 @@ module Api
         result = BudgetItems::MarkAsPaid.call(@budget_item)
 
         if result[:success]
-          @budget_item = result[:budget_item]
+          @budget_item.reload
           render :show
         else
           render_error(result[:errors], :unprocessable_entity)
@@ -82,7 +82,7 @@ module Api
         result = BudgetItems::MarkAsPending.call(@budget_item)
 
         if result[:success]
-          @budget_item = result[:budget_item]
+          @budget_item.reload
           render :show
         else
           render_error(result[:errors], :unprocessable_entity)

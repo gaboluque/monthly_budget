@@ -22,10 +22,6 @@ export function BudgetItemItem({ budgetItem, isMarking, onAction }: BudgetItemIt
     // If last paid at is not on this month, it's pending
     const lastPaidAt = new Date(budgetItem.last_paid_at);
 
-    console.log("lastPaidAt", lastPaidAt)
-    console.log("new Date()", new Date())
-    console.log("lastPaidAt.getMonth() !== new Date().getMonth()", lastPaidAt.getMonth() !== new Date().getMonth())
-
     return lastPaidAt.getMonth() !== new Date().getMonth()
   }, [budgetItem.last_paid_at])
 

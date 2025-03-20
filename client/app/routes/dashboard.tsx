@@ -28,11 +28,6 @@ export default function Dashboard() {
   } = useDashboard()
   const { accounts } = useAccounts();
 
-  console.log({
-    pendingBudgetItems,
-    paidBudgetItems
-  })
-
   return (
     <Layout>
       <PageHeader title="Dashboard" description="Your Monthly Budget Dashboard" buttonText="Add Transaction" />
