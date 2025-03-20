@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { MetaFunction } from "@remix-run/node";
+import { useSearchParams } from "@remix-run/react";
 
 import { Layout } from "../components/ui/Layout";
 import { TransactionsList } from "../components/transactions/TransactionsList";
@@ -19,6 +20,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Transactions() {
+    const [searchParams] = useSearchParams();
     const {
         transactions,
         accounts,
@@ -37,6 +39,13 @@ export default function Transactions() {
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
     const [isNewTransaction, setIsNewTransaction] = useState(false);
 
+    // Check for 'new=true' in URL and open modal if present
+    useEffect(() => {
+        if (searchParams.get('new') === 'true') {
+            handleNewTransaction();
+        }
+    }, [searchParams]);
+
     const handleOpenModal = (id: string) => {
         setIsNewTransaction(false);
         const transaction = transactions.find((t) => t.id === id);
@@ -48,6 +57,14 @@ export default function Transactions() {
     const handleNewTransaction = () => {
         setIsNewTransaction(true);
         setTransaction(undefined);
+        // Remove the 'new' parameter from URL if it exists
+        if (searchParams.get('new') === 'true') {
+            const newSearchParams = new URLSearchParams(searchParams);
+            newSearchParams.delete('new');
+            window.history.replaceState(null, '',
+                `${window.location.pathname}${newSearchParams.toString() ? `?${newSearchParams.toString()}` : ''}`
+            );
+        }
     };
 
     const handleCreateTransaction = async (data: CreateTransactionData) => {
