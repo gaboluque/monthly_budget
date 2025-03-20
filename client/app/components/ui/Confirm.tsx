@@ -23,7 +23,7 @@ export function Confirm({
   confirmVariant = "primary",
 }: ConfirmProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title}>
+    <Modal isOpen={isOpen} onClose={onClose} title={title} type="popup">
       <div className="space-y-4">
         <p className="text-gray-600">{message}</p>
         <div className="flex justify-end gap-3">

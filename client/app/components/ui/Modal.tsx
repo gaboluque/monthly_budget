@@ -5,9 +5,10 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  type?: 'standard' | 'popup';
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, type = 'standard' }: ModalProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -42,8 +43,8 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       />
 
       {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
+      <div className={`flex min-h-full ${type === 'standard' ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
+        <div className={`relative bg-white shadow-xl ${type === 'standard' ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${type === 'popup' ? 'rounded-lg max-w-lg w-full' : ''}`}>
           {/* Header */}
           <div className="flex items-center justify-between mb-8 align-center">
 
