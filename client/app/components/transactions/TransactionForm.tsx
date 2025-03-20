@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import type { CreateTransactionData } from '../../lib/api/transactions';
 import { Transaction } from '../../lib/types/transactions';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
@@ -8,6 +7,7 @@ import { Account } from '../../lib/types/accounts';
 import { Spinner } from '../ui/Spinner';
 import { formatCurrency } from '../../lib/utils/currency';
 import { formatLabel } from '../../lib/utils/formatters';
+import { FormActions } from '../ui/FormActions';
 
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
@@ -82,11 +82,6 @@ export function TransactionForm({
             setError(err instanceof Error ? err.message : 'An error occurred while saving');
             throw err;
         }
-    };
-
-    const submitForm = () => {
-        const form = document.getElementById(FORM_ID) as HTMLFormElement;
-        if (form) form.requestSubmit();
     };
 
     if (!accounts.length || !transactionTypes.length) {
@@ -195,19 +190,12 @@ export function TransactionForm({
                 defaultValues={defaultValues as DefaultValues<CreateTransactionData>}
             />
 
-            <div className="flex justify-end space-x-2 mt-4">
-                <Button type="button" variant="outline" onClick={onCancel}>
-                    Cancel
-                </Button>
-
-                <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    onClick={submitForm}
-                >
-                    {isSubmitting ? 'Saving...' : (transaction?.id ? 'Update' : 'Create')}
-                </Button>
-            </div>
+            <FormActions
+                isSubmitting={isSubmitting}
+                onCancel={onCancel}
+                formId={FORM_ID}
+                isEditing={!!transaction?.id}
+            />
         </div>
     );
 } 

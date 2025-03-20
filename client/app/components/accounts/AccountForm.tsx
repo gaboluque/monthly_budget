@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import type { CreateAccountData, Account, AccountType, Currency } from '../../lib/types/accounts';
+import { FormActions } from '../ui/FormActions';
 
 interface AccountFormProps {
   onSubmit: (data: CreateAccountData) => Promise<void>;
@@ -59,11 +59,6 @@ export function AccountForm({
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const submitForm = () => {
-    const form = document.getElementById(FORM_ID) as HTMLFormElement;
-    if (form) form.requestSubmit();
   };
 
   const formFields: FormField<CreateAccountData>[] = [
@@ -138,18 +133,12 @@ export function AccountForm({
         defaultValues={defaultValues}
       />
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={submitForm}
-        >
-          {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
-        </Button>
-      </div>
+      <FormActions
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+        formId={FORM_ID}
+        isEditing={!!initialData?.id}
+      />
     </div>
   );
 } 

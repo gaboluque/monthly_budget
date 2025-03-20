@@ -5,6 +5,7 @@ import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useBudgetItems } from '../../hooks/useBudgetItems';
 import { Spinner } from '../ui/Spinner';
+import { FormActions } from '../ui/FormActions';
 
 interface BudgetItemFormProps {
   onSubmit: (data: CreateBudgetItemData) => Promise<void>;
@@ -144,30 +145,23 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
         defaultValues={defaultValues}
       />
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-
-        {!initialData?.id && (
+      <FormActions
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+        formId={FORM_ID}
+        isEditing={!!initialData?.id}
+        additionalActions={!initialData?.id && (
           <Button
             type="button"
             variant="secondary"
             disabled={isSubmitting}
             onClick={submitForm}
+            className="w-full md:w-auto"
           >
             {isSubmitting ? 'Saving...' : 'Create & Add Another'}
           </Button>
         )}
-
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={submitForm}
-        >
-          {isSubmitting ? 'Saving...' : (initialData?.id ? 'Update' : 'Create')}
-        </Button>
-      </div>
+      />
     </div>
   );
 } 
