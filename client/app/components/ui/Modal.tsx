@@ -32,7 +32,7 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-10"} overflow-y-auto`}>
+    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-20"} overflow-y-auto`}>
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
         onClick={onClose}

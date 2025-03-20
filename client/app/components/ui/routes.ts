@@ -15,10 +15,10 @@ export const navigationLinks = [
     activeClass: "bg-blue-50 text-blue-700",
   },
   {
-    path: "/incomes",
-    label: "Incomes",
-    icon: DollarSign,
-    activeClass: "bg-green-50 text-green-700",
+    path: "/transactions",
+    label: "Transactions",
+    icon: ArrowLeftRight,
+    activeClass: "bg-purple-50 text-purple-700",
   },
   {
     path: "/budget",
@@ -27,10 +27,10 @@ export const navigationLinks = [
     activeClass: "bg-blue-50 text-blue-700",
   },
   {
-    path: "/transactions",
-    label: "Transactions",
-    icon: ArrowLeftRight,
-    activeClass: "bg-purple-50 text-purple-700",
+    path: "/incomes",
+    label: "Incomes",
+    icon: DollarSign,
+    activeClass: "bg-green-50 text-green-700",
   },
   {
     path: "/accounts",

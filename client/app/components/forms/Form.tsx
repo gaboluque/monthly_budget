@@ -145,12 +145,21 @@ export const Form = <T extends FieldValues>({
 
             case 'checkbox':
                 return (
-                    <input
-                        type="checkbox"
-                        id={name.toString()}
-                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id={name.toString()}
+                            {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors cursor-pointer"
+                        />
+                        <label
+                            htmlFor={name.toString()}
+                            className="ml-2 text-sm text-gray-700 cursor-pointer"
+                        >
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                    </div>
                 );
 
             default:
@@ -171,13 +180,15 @@ export const Form = <T extends FieldValues>({
         <form id={id} onSubmit={handleSubmit(onSubmit)} className={className}>
             {visibleFields.map((field) => (
                 <div key={field.name.toString()} className="mb-4">
-                    <label
-                        htmlFor={field.name.toString()}
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                        {field.label}
-                        {field.required && <span className="text-red-500 ml-1">*</span>}
-                    </label>
+                    {field.type !== 'checkbox' && (
+                        <label
+                            htmlFor={field.name.toString()}
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                    )}
 
                     {renderField(field)}
 

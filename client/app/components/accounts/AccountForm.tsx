@@ -108,8 +108,6 @@ export function AccountForm({
       type: 'textarea',
       placeholder: 'Optional description for this account'
     },
-    // Note: checkbox handling might need special attention in the NewForm component
-    // This assumes the NewForm component can handle checkbox inputs
     {
       name: 'is_owned',
       label: 'I own this account',
@@ -132,6 +130,7 @@ export function AccountForm({
         className="space-y-4"
         defaultValues={defaultValues}
       />
+      <br />
 
       <FormActions
         isSubmitting={isSubmitting}
