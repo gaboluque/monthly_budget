@@ -6,6 +6,7 @@ import { useDashboard } from "../hooks/useDashboard"
 import { IncomesList } from "../components/dashboard/IncomesList"
 import { ui } from "../lib/ui"
 import { useAccounts } from "../hooks/useAccounts"
+import { PageHeader } from "../components/ui/PageHeader"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Dashboard | Monthly Budget" }, { name: "description", content: "Your Monthly Budget Dashboard" }]
@@ -34,6 +35,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
+      <PageHeader title="Dashboard" description="Your Monthly Budget Dashboard" buttonText="Add Transaction" />
       <FinancialSummary summaryData={summaryData} />
 
       {pendingIncomes.length > 0 && (

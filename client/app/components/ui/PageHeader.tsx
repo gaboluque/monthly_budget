@@ -22,13 +22,13 @@ export function PageHeader({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 border-b pb-6">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 border-b">
       <div className="mb-4 sm:mb-0">
         <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         <p className="mt-1 text-sm text-gray-600">{description}</p>
       </div>
       {onAction && (
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
           <Button
             onClick={onAction}
             className={`flex items-center justify-center gap-2 ${buttonColorClasses[buttonColor]} text-white px-4 py-2 rounded-lg transition-colors`}

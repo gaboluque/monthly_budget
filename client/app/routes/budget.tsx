@@ -88,57 +88,55 @@ export default function BudgetItems() {
 
   return (
     <Layout>
-      <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
-        <PageHeader
-          title="Monthly Budget"
-          description="A list of all your budget items organized by category."
-          buttonText="Add Budget Item"
-          buttonColor="blue"
-          onAction={() => handleAddBudgetItem()}
+      <PageHeader
+        title="Monthly Budget"
+        description="A list of all your budget items organized by category."
+        buttonText="Add Budget Item"
+        buttonColor="blue"
+        onAction={() => handleAddBudgetItem()}
+      />
+
+      {!isLoading && budgetItems.length > 0 && (
+        <BudgetSummary
+          totalBudgetItems={totalBudgetItems}
+          budgetItemCount={budgetItems.length}
+          budgetItemsByCategory={budgetItemsByCategory}
         />
+      )}
 
-        {!isLoading && budgetItems.length > 0 && (
-          <BudgetSummary
-            totalBudgetItems={totalBudgetItems}
-            budgetItemCount={budgetItems.length}
-            budgetItemsByCategory={budgetItemsByCategory}
-          />
-        )}
-
-        {isLoading ? (
-          <div className="py-12 flex justify-center items-center text-gray-500">
-            <Loader2 className="w-6 h-6 animate-spin mr-2" />
-            <span>Loading budget items...</span>
+      {isLoading ? (
+        <div className="py-12 flex justify-center items-center text-gray-500">
+          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <span>Loading budget items...</span>
+        </div>
+      ) : budgetItems.length === 0 ? (
+        <div className="py-12 text-center">
+          <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+            <PlusCircle className="w-8 h-8 text-gray-400" />
           </div>
-        ) : budgetItems.length === 0 ? (
-          <div className="py-12 text-center">
-            <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-              <PlusCircle className="w-8 h-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No budget items yet</h3>
-            <p className="text-gray-500 mb-4">Get started by adding your first budget item</p>
-            <Button onClick={() => handleAddBudgetItem()} className="inline-flex items-center justify-center gap-2">
-              <PlusCircle className="w-4 h-4" />
-              <span>Add Budget Item</span>
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {categories.map((category) => (
-              <BudgetItemCategory
-                key={category}
-                category={category}
-                budgetItems={budgetItemsByCategory[category] || []}
-                isExpanded={expandedCategories[category]}
-                onToggle={toggleCategory}
-                onAddBudgetItem={handleAddBudgetItem}
-                onEditBudgetItem={setSelectedBudgetItem}
-                onDeleteBudgetItem={handleDeleteBudgetItem}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-1">No budget items yet</h3>
+          <p className="text-gray-500 mb-4">Get started by adding your first budget item</p>
+          <Button onClick={() => handleAddBudgetItem()} className="inline-flex items-center justify-center gap-2">
+            <PlusCircle className="w-4 h-4" />
+            <span>Add Budget Item</span>
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {categories.map((category) => (
+            <BudgetItemCategory
+              key={category}
+              category={category}
+              budgetItems={budgetItemsByCategory[category] || []}
+              isExpanded={expandedCategories[category]}
+              onToggle={toggleCategory}
+              onAddBudgetItem={handleAddBudgetItem}
+              onEditBudgetItem={setSelectedBudgetItem}
+              onDeleteBudgetItem={handleDeleteBudgetItem}
+            />
+          ))}
+        </div>
+      )}
 
       <Modal
         isOpen={!!selectedBudgetItem}

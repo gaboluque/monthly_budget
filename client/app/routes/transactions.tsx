@@ -97,32 +97,30 @@ export default function Transactions() {
 
     return (
         <Layout>
-            <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
-                <PageHeader
-                    title="Transactions"
-                    description="A list of all your transactions across accounts."
-                    buttonText="Add Transaction"
-                    buttonColor="blue"
-                    onAction={handleNewTransaction}
+            <PageHeader
+                title="Transactions"
+                description="A list of all your transactions across accounts."
+                buttonText="Add Transaction"
+                buttonColor="blue"
+                onAction={handleNewTransaction}
+            />
+
+            <div className="mt-6">
+                <TransactionFilters
+                    accounts={accounts}
+                    transactionTypes={transactionTypes}
+                    frequencies={frequencies}
+                    onApplyFilters={applyFilters}
+                    onClearFilters={clearFilters}
+                    currentFilters={filterParams}
                 />
 
-                <div className="mt-6">
-                    <TransactionFilters
-                        accounts={accounts}
-                        transactionTypes={transactionTypes}
-                        frequencies={frequencies}
-                        onApplyFilters={applyFilters}
-                        onClearFilters={clearFilters}
-                        currentFilters={filterParams}
-                    />
-
-                    <TransactionsList
-                        transactions={transactions}
-                        isLoading={isLoading}
-                        onOpen={handleOpenModal}
-                        onDelete={handleDeleteTransaction}
-                    />
-                </div>
+                <TransactionsList
+                    transactions={transactions}
+                    isLoading={isLoading}
+                    onOpen={handleOpenModal}
+                    onDelete={handleDeleteTransaction}
+                />
             </div>
 
             <TransactionModal

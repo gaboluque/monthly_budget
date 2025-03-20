@@ -3,7 +3,6 @@ import type { MetaFunction } from "@remix-run/node";
 import { Layout } from "../components/ui/Layout";
 import { Modal } from "../components/ui/Modal";
 import { Loader2 } from "lucide-react";
-import { AccountHeader } from "../components/accounts/AccountHeader";
 import { AccountSummary } from "../components/accounts/AccountSummary";
 import { AccountList } from "../components/accounts/AccountList";
 import { EmptyAccountState } from "../components/accounts/EmptyAccountState";
@@ -11,6 +10,7 @@ import { AccountForm } from "../components/accounts/AccountForm";
 import { useAccounts } from "../hooks/useAccounts";
 import { ui } from "../lib/ui/manager";
 import type { Account, CreateAccountData } from "../lib/types/accounts";
+import { PageHeader } from "../components/ui/PageHeader";
 
 export const meta: MetaFunction = () => {
   return [
@@ -69,69 +69,73 @@ export default function AccountsPage() {
 
   return (
     <Layout>
-      <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
-        <AccountHeader onAddAccount={() => setIsAddModalOpen(true)} />
+      <PageHeader
+        title="Accounts"
+        description="Manage your financial accounts and track your balances."
+        buttonText="Add Account"
+        buttonColor="blue"
+        onAction={() => setIsAddModalOpen(true)}
+      />
 
-        {/* Account Summary */}
-        {!isLoading && accounts.length > 0 && (
-          <AccountSummary
-            totalBalance={totalBalance}
-            accountCount={accounts.length}
-            accountsByType={accountsByType}
-          />
-        )}
+      {/* Account Summary */}
+      {!isLoading && accounts.length > 0 && (
+        <AccountSummary
+          totalBalance={totalBalance}
+          accountCount={accounts.length}
+          accountsByType={accountsByType}
+        />
+      )}
 
-        {/* Loading state */}
-        {isLoading ? (
-          <div className="py-12 flex justify-center items-center text-gray-500">
-            <Loader2 className="w-6 h-6 animate-spin mr-2" />
-            <span>Loading accounts...</span>
-          </div>
-        ) : accounts.length === 0 ? (
-          <EmptyAccountState onAddAccount={() => setIsAddModalOpen(true)} />
-        ) : (
-          <AccountList
-            accounts={accounts}
-            onEditAccount={openEditModal}
-            onDeleteAccount={handleDeleteAccount}
-          />
-        )}
+      {/* Loading state */}
+      {isLoading ? (
+        <div className="py-12 flex justify-center items-center text-gray-500">
+          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <span>Loading accounts...</span>
+        </div>
+      ) : accounts.length === 0 ? (
+        <EmptyAccountState onAddAccount={() => setIsAddModalOpen(true)} />
+      ) : (
+        <AccountList
+          accounts={accounts}
+          onEditAccount={openEditModal}
+          onDeleteAccount={handleDeleteAccount}
+        />
+      )}
 
-        {/* Add Account Modal */}
-        <Modal
-          isOpen={isAddModalOpen}
-          onClose={() => setIsAddModalOpen(false)}
-          title="Add New Account"
-        >
-          <AccountForm
-            onSubmit={handleAddAccount}
-            onCancel={() => setIsAddModalOpen(false)}
-            accountTypes={accountTypes}
-            currencies={currencies}
-          />
-        </Modal>
+      {/* Add Account Modal */}
+      <Modal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        title="Add New Account"
+      >
+        <AccountForm
+          onSubmit={handleAddAccount}
+          onCancel={() => setIsAddModalOpen(false)}
+          accountTypes={accountTypes}
+          currencies={currencies}
+        />
+      </Modal>
 
-        {/* Edit Account Modal */}
-        <Modal
-          isOpen={isEditModalOpen}
-          onClose={() => {
+      {/* Edit Account Modal */}
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedAccount(null);
+        }}
+        title="Edit Account"
+      >
+        <AccountForm
+          initialData={selectedAccount ?? undefined}
+          onSubmit={handleEditAccount}
+          onCancel={() => {
             setIsEditModalOpen(false);
             setSelectedAccount(null);
           }}
-          title="Edit Account"
-        >
-          <AccountForm
-            initialData={selectedAccount ?? undefined}
-            onSubmit={handleEditAccount}
-            onCancel={() => {
-              setIsEditModalOpen(false);
-              setSelectedAccount(null);
-            }}
-            accountTypes={accountTypes}
-            currencies={currencies}
-          />
-        </Modal>
-      </div>
+          accountTypes={accountTypes}
+          currencies={currencies}
+        />
+      </Modal>
     </Layout>
   );
 } 
