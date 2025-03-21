@@ -40,24 +40,20 @@ export function TransactionsList({ transactions, isLoading, onOpen }: Transactio
                         className="w-full p-4 flex justify-between items-center text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
                         onClick={() => onOpen(transaction)}
                     >
-                        <div className="flex-grow">
-                            <div className="font-medium text-gray-900 truncate">{transaction.description}</div>
-                            <div>
-                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${transactionTypeColor(transaction.transaction_type)}-100 text-${transactionTypeColor(transaction.transaction_type)}-800`}>
-                                    {transaction.transaction_type}
-                                </span>
-                            </div>
-                            <div className="text-sm text-gray-500">{formatDate(transaction.executed_at)}</div>
-                            <div className="text-gray-700">
+                        <div className="flex-grow flex flex-col gap-1">
+                            <div className="font-medium text-gray-900 truncate text-sm">{transaction.description}</div>
+                            <div className="text-gray-700 text-sm">
                                 {transaction.account?.name}
-                                {transaction.recipient_account?.name && (
-                                    <span> → {transaction.recipient_account?.name}</span>
-                                )}
+                                {transaction.recipient_account?.name && (<span> → {transaction.recipient_account?.name}</span>)}
                             </div>
+                            <div className="text-xs text-gray-500">{formatDate(transaction.executed_at)}</div>
                         </div>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex flex-col items-end space-x-3">
                             <span className={`text-${transactionTypeColor(transaction.transaction_type)}-600 font-medium`}>
                                 {formatCurrency(transaction.amount)}
+                            </span>
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${transactionTypeColor(transaction.transaction_type)}-100 text-${transactionTypeColor(transaction.transaction_type)}-800`}>
+                                {transaction.transaction_type}
                             </span>
                         </div>
                     </button>

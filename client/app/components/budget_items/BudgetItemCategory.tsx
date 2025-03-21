@@ -24,7 +24,7 @@ export function BudgetItemCategory({
   onDeleteBudgetItem,
 }: BudgetItemCategoryProps) {
   const totalAmount = budgetItems.reduce((sum, budgetItem) => sum + (Number(budgetItem.amount || 0)), 0)
-  const categoryColor = CATEGORY_COLORS[category] || "#6b7280" // Default to gray if category not found
+  const categoryColor = CATEGORY_COLORS[category.toLowerCase()] || CATEGORY_COLORS.other
 
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden">

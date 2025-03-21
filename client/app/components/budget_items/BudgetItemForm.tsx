@@ -1,5 +1,4 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import type { CreateBudgetItemData, BudgetItem } from '../../lib/types/budget_items';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
@@ -41,7 +40,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     }));
   }, [categories]);
 
-  // Default values for the form
   const defaultValues: CreateBudgetItemData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
@@ -57,15 +55,10 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
       await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
-      throw err; // Re-throw to let react-hook-form handle the error
+      throw err;
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const submitForm = () => {
-    const form = document.getElementById(FORM_ID) as HTMLFormElement;
-    if (form) form.requestSubmit();
   };
 
   if (isAccountsLoading || isCategoriesLoading) {
@@ -150,17 +143,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
         onCancel={onCancel}
         formId={FORM_ID}
         isEditing={!!initialData?.id}
-        additionalActions={!initialData?.id && (
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isSubmitting}
-            onClick={submitForm}
-            className="w-full md:w-auto"
-          >
-            {isSubmitting ? 'Saving...' : 'Create & Add Another'}
-          </Button>
-        )}
       />
     </div>
   );

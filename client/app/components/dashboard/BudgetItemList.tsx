@@ -1,10 +1,10 @@
 import { Loader2, Check } from "lucide-react"
-import type { BudgetItem } from "../../lib/types/budget_items"
-import { BudgetItemItem } from "./BudgetItem"
+import type { BudgetItem as BudgetItemType } from "../../lib/types/budget_items"
+import { BudgetItem } from "./BudgetItem"
 import { PageHeader } from "../ui/PageHeader"
 
 interface BudgetItemListProps {
-  budgetItems: BudgetItem[]
+  budgetItems: BudgetItemType[]
   isLoading: boolean
   markingBudgetItemPaid: string | null
   onAction: (id: string) => void
@@ -34,13 +34,13 @@ export function BudgetItemList({
             All caught up!
           </h3>
           <p className="text-gray-500">
-            You haven&apos;t marked any budget items as paid yet
+            You have paid all your budget items for this month
           </p>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {budgetItems.map((budgetItem) => (
-            <BudgetItemItem
+            <BudgetItem
               key={budgetItem.id}
               budgetItem={budgetItem}
               isMarking={markingBudgetItemPaid === budgetItem.id}

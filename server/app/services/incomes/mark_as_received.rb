@@ -8,7 +8,7 @@ module Incomes
     end
 
     def call
-      return { success: true, income: income } if income.received_this_month?
+      return { success: true, income: income } if income.paid?
 
       ActiveRecord::Base.transaction do
         transaction = create_transaction(income.last_received_at)

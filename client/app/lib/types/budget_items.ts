@@ -33,9 +33,11 @@ export interface BudgetItemsByCategory {
 }
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  Needs: "#2563eb", // Blue
-  Wants: "#dc2626", // Red
-  Savings: "#16a34a", // Green
-  Debt: "#9333ea", // Purple
-  Investment: "#f59e0b", // Amber
+  needs: "#2563eb", // Blue
+  wants: "#dc2626", // Red
+  savings: "#16a34a", // Green
+  debt: "#9333ea", // Purple
+  investment: "#f59e0b", // Amber
+  income: "#16a34a", // Black
+  other: "#6b7280", // Gray
 };

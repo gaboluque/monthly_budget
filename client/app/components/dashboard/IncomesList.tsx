@@ -33,11 +33,11 @@ export function IncomesList({
                         All caught up!
                     </h3>
                     <p className="text-gray-500">
-                        You haven&apos;t marked any incomes as received yet
+                        You have received all your incomes for this month
                     </p>
                 </div>
             ) : (
-                <div className="divide-y divide-gray-200 border border-gray-200 rounded-lg overflow-hidden">
+                <div className="space-y-4">
                     {incomes.map((income) => (
                         <IncomeItem
                             key={income.id}
