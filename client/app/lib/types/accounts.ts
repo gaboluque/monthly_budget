@@ -1,10 +1,10 @@
 export type AccountType =
-  | "Checking"
-  | "Savings"
-  | "Credit Card"
-  | "Loan"
-  | "Investment"
-  | "Other";
+  | "checking"
+  | "savings"
+  | "credit_card"
+  | "loan"
+  | "investment"
+  | "other";
 
 export type Currency = "COP" | "USD" | "EUR";
 

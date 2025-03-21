@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import type { CreateBudgetItemData, BudgetItem } from '../../lib/types/budget_items';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
-import { useAccounts } from '../../hooks/useAccounts';
 import { useBudgetItems } from '../../hooks/useBudgetItems';
 import { Spinner } from '../ui/Spinner';
 import { FormActions } from '../ui/FormActions';
@@ -12,26 +11,12 @@ interface BudgetItemFormProps {
   initialData?: BudgetItem | CreateBudgetItemData | null;
 }
 
-const FREQUENCY_OPTIONS = [
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'bi-weekly', label: 'Bi-weekly' },
-  { value: 'weekly', label: 'Weekly' },
-];
-
 const FORM_ID = 'budgetItem-form';
 
 export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFormProps) {
-  const { accounts, isLoading: isAccountsLoading } = useAccounts();
   const { categories, isLoading: isCategoriesLoading } = useBudgetItems();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const accountOptions = useMemo(() => {
-    return accounts.map((account) => ({
-      value: account.id,
-      label: `${account.name} (${account.account_type})`
-    }));
-  }, [accounts]);
 
   const categoryOptions = useMemo(() => {
     return categories.map((cat: string) => ({
@@ -44,8 +29,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
     category: initialData?.category ?? undefined,
-    account_id: initialData?.account_id ?? undefined,
-    frequency: initialData?.frequency ?? undefined,
   };
 
   const handleSubmit: SubmitHandler<CreateBudgetItemData> = async (data) => {
@@ -61,7 +44,7 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     }
   };
 
-  if (isAccountsLoading || isCategoriesLoading) {
+  if (isCategoriesLoading) {
     return <Spinner />
   }
 
@@ -98,26 +81,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
       required: true,
       validation: {
         required: 'Category is required'
-      }
-    },
-    {
-      name: 'account_id',
-      label: 'Account',
-      type: 'select',
-      options: accountOptions,
-      required: true,
-      validation: {
-        required: 'Account is required'
-      }
-    },
-    {
-      name: 'frequency',
-      label: 'Frequency',
-      type: 'select',
-      options: FREQUENCY_OPTIONS,
-      required: true,
-      validation: {
-        required: 'Frequency is required'
       }
     },
   ];

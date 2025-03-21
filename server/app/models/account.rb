@@ -34,13 +34,20 @@ class Account < ApplicationRecord
   validates :currency, presence: true
   validates :is_owned, inclusion: { in: [ true, false ] }
 
-  # Enums for account types
-  ACCOUNT_TYPES = %w[Checking Savings Credit\ Card Loan Investment Other].freeze
-  validates :account_type, inclusion: { in: ACCOUNT_TYPES }
+  enum :account_type, {
+    savings: 'savings',
+    checking: 'checking',
+    credit_card: 'credit_card',
+    loan: 'loan',
+    investment: 'investment',
+    other: 'other'
+  }, default: :savings
 
-  # Enums for currencies
-  CURRENCIES = %w[COP USD EUR].freeze
-  validates :currency, inclusion: { in: CURRENCIES }
+  enum :currency, {
+    cop: 'cop',
+    usd: 'usd',
+    eur: 'eur'
+  }, default: :cop
 
   # Scopes
   scope :by_type, ->(type) { where(account_type: type) }

@@ -68,7 +68,7 @@ module Api
 
       # GET /api/v1/incomes/categories
       def categories
-        render json: { data: Income::FREQUENCIES }
+        render json: { data: Income::CATEGORIES }
       end
 
       # GET /api/v1/incomes/pending

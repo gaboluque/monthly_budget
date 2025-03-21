@@ -1,1 +1,1 @@
-json.data Account::ACCOUNT_TYPES
+json.data Account.account_types.keys

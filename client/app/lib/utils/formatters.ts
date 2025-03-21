@@ -31,3 +31,7 @@ export function formatDateTime(dateString: string): string {
 export function formatLabel(label: string): string {
   return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, " ");
 }
+
+export function formatISODate(dateString: string): string {
+  return new Date(dateString).toISOString().split("T")[0];
+}

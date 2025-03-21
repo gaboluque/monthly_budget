@@ -29,7 +29,7 @@ puts "Creating accounts..."
 savings_params = {
   name: 'Savings',
   balance: 15000.00,
-  account_type: 'Savings',
+  account_type: Account.account_types[:savings],
   currency: 'COP',
   description: 'Emergency fund',
   is_owned: true
@@ -40,7 +40,7 @@ savings = savings_result[:account]
 investments_params = {
   name: 'Investments',
   balance: 10000.00,
-  account_type: 'Investments',
+  account_type: Account.account_types[:investments],
   currency: 'COP',
   description: 'Investments',
   is_owned: true
@@ -51,7 +51,7 @@ investments = investments_result[:account]
 credit_card_params = {
   name: 'Credit Card',
   balance: 1000.00,
-  account_type: 'Credit Card',
+  account_type: Account.account_types[:credit_card],
   currency: 'COP',
   description: 'Primary credit card',
   is_owned: true
@@ -63,8 +63,7 @@ puts "Creating incomes..."
 salary_params = {
   name: 'Monthly Salary',
   amount: 3500.00,
-  frequency: 'monthly',
-  account_id: savings.id
+  frequency: 'monthly'
 }
 salary_result = Incomes::Create.call(test_user, salary_params)
 salary = salary_result[:income]
@@ -72,8 +71,7 @@ salary = salary_result[:income]
 freelance_params = {
   name: 'Freelance Work',
   amount: 500.00,
-  frequency: 'monthly',
-  account_id: savings.id
+  frequency: 'monthly'
 }
 freelance_result = Incomes::Create.call(test_user, freelance_params)
 freelance = freelance_result[:income]
@@ -82,9 +80,8 @@ puts "Creating budget items..."
 rent_params = {
   name: 'Rent',
   amount: 1200.00,
-  category: 'Needs',
-  frequency: 'monthly',
-  account_id: savings.id
+  category: 'needs',
+  frequency: 'monthly'
 }
 rent_result = BudgetItems::Create.call(test_user, rent_params)
 rent = rent_result[:budget_item]
@@ -92,12 +89,20 @@ rent = rent_result[:budget_item]
 groceries_params = {
   name: 'Groceries',
   amount: 400.00,
-  category: 'Needs',
-  frequency: 'bi-weekly',
-  account_id: savings.id
+  category: 'needs',
+  frequency: 'monthly'
 }
 groceries_result = BudgetItems::Create.call(test_user, groceries_params)
 groceries = groceries_result[:budget_item]
+
+going_out_params = {
+  name: 'Eating Out',
+  amount: 200.00,
+  category: 'wants',
+  frequency: 'monthly'
+}
+going_out_result = BudgetItems::Create.call(test_user, going_out_params)
+going_out = going_out_result[:budget_item]
 
 puts "Marking budget items as paid..."
 result = BudgetItems::MarkAsPaid.call(groceries)

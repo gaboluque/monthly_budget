@@ -6,7 +6,7 @@ module Api
 
       # GET /api/v1/budget_items
       def index
-        @budget_items = current_user.budget_items.order(created_at: :desc)
+        @budget_items = current_user.budget_items.order(created_at: :desc, category: :asc)
       end
 
       # GET /api/v1/budget_items/:id

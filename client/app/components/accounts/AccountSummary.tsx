@@ -3,21 +3,18 @@ import { StatCard } from "../ui/StatCard"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { AccountsByType } from "../../hooks/useAccounts"
 
-// Color mapping for different account types
 const accountTypeColors: Record<string, string> = {
-  Checking: "bg-blue-500",
-  Savings: "bg-green-500",
-  Credit: "bg-purple-500",
-  Investment: "bg-amber-500",
-  Loan: "bg-red-500",
-  Cash: "bg-emerald-500",
-  // Default color for any other account types
-  default: "bg-gray-500"
+  checking: "bg-blue-500",
+  savings: "bg-green-500",
+  credit_card: "bg-purple-500",
+  investment: "bg-amber-500",
+  loan: "bg-red-500",
+  cash: "bg-emerald-500",
+  other: "bg-gray-500"
 }
 
-// Function to get the color for an account type
 const getAccountTypeColor = (type: string): string => {
-  return accountTypeColors[type] || accountTypeColors.default
+  return accountTypeColors[type] || accountTypeColors.other
 }
 
 interface AccountSummaryProps {

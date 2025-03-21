@@ -38,7 +38,7 @@ export function BudgetItemCategory({
           ) : (
             <ChevronRight className="w-4 h-4" style={{ color: categoryColor }} />
           )}
-          <h3 className="text-lg font-semibold text-gray-900">{category}</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{category.charAt(0).toUpperCase() + category.slice(1)}</h3>
           <span
             className="text-xs font-medium px-2 py-1 rounded-full"
             style={{

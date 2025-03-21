@@ -6,18 +6,19 @@ import { DefaultValues } from 'react-hook-form';
 import { Account } from '../../lib/types/accounts';
 import { Spinner } from '../ui/Spinner';
 import { formatCurrency } from '../../lib/utils/currency';
-import { formatLabel } from '../../lib/utils/formatters';
+import { formatISODate, formatLabel } from '../../lib/utils/formatters';
 import { FormActions } from '../ui/FormActions';
-
+import { BudgetItem } from '../../lib/types/budget_items';
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
     onCancel: () => void;
     accounts: Account[];
     transactionTypes: string[];
-    frequencies: string[];
     categories: string[];
     transaction?: Transaction | null;
     isSubmitting: boolean;
+    isBudgetItemsLoading: boolean;
+    budgetItems: BudgetItem[];
 }
 
 const FORM_ID = 'transaction-form';
@@ -27,10 +28,10 @@ export function TransactionForm({
     onCancel,
     accounts,
     transactionTypes,
-    frequencies,
-    categories,
     transaction,
-    isSubmitting
+    isSubmitting,
+    isBudgetItemsLoading,
+    budgetItems
 }: TransactionFormProps) {
     const [error, setError] = useState<string | null>(null);
 
@@ -48,19 +49,12 @@ export function TransactionForm({
         }));
     }, [transactionTypes]);
 
-    const frequencyOptions = useMemo(() => {
-        return frequencies.map(frequency => ({
-            value: frequency,
-            label: formatLabel(frequency)
+    const budgetItemOptions = useMemo(() => {
+        return budgetItems.map(budgetItem => ({
+            value: budgetItem.id,
+            label: `${budgetItem.name} (${budgetItem.category})`
         }));
-    }, [frequencies]);
-
-    const categoryOptions = useMemo(() => {
-        return categories.map(category => ({
-            value: category,
-            label: formatLabel(category)
-        }));
-    }, [categories]);
+    }, [budgetItems]);
 
     // Default values for the form
     const defaultValues: Partial<CreateTransactionData> = {
@@ -69,9 +63,8 @@ export function TransactionForm({
         amount: transaction?.amount ?? undefined,
         transaction_type: transaction?.transaction_type ?? "expense",
         description: transaction?.description ?? undefined,
-        executed_at: transaction?.executed_at ? new Date(transaction.executed_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        frequency: transaction?.frequency ?? 'one_time',
-        category: transaction?.category ?? "wants",
+        executed_at: formatISODate(transaction?.executed_at ?? new Date().toISOString()),
+        budget_item_id: transaction?.budget_item?.id ?? undefined,
     };
 
     const handleSubmit: SubmitHandler<CreateTransactionData> = async (data) => {
@@ -84,7 +77,7 @@ export function TransactionForm({
         }
     };
 
-    if (!accounts.length || !transactionTypes.length) {
+    if (!accounts.length || !transactionTypes.length || isBudgetItemsLoading) {
         return <Spinner />;
     }
 
@@ -148,10 +141,10 @@ export function TransactionForm({
             ]
         },
         {
-            name: 'category',
-            label: 'Category',
+            name: 'budget_item_id',
+            label: 'Budget Item',
             type: 'select',
-            options: categoryOptions
+            options: budgetItemOptions
         },
         {
             name: 'executed_at',
@@ -160,16 +153,6 @@ export function TransactionForm({
             required: true,
             validation: {
                 required: 'Date is required'
-            }
-        },
-        {
-            name: 'frequency',
-            label: 'Frequency',
-            type: 'select',
-            options: frequencyOptions,
-            required: true,
-            validation: {
-                required: 'Frequency is required'
             }
         },
     ];

@@ -11,7 +11,7 @@ import { Transaction } from "../lib/types/transactions";
 import { CreateTransactionData } from "../lib/api/transactions";
 import { PageHeader } from "../components/ui/PageHeader";
 import { ui } from "../lib/ui";
-
+import { useBudgetItems } from "../hooks/useBudgetItems";
 export const meta: MetaFunction = () => {
     return [
         { title: "Transactions | Monthly Budget" },
@@ -25,7 +25,6 @@ export default function Transactions() {
         transactions,
         accounts,
         transactionTypes,
-        frequencies,
         isLoading,
         isSubmitting,
         filterParams,
@@ -35,6 +34,7 @@ export default function Transactions() {
         clearFilters,
         categories,
     } = useTransactions();
+    const { budgetItems, isLoading: isBudgetItemsLoading } = useBudgetItems();
 
     const [transaction, setTransaction] = useState<Transaction | undefined>(undefined);
 
@@ -86,7 +86,6 @@ export default function Transactions() {
                 <TransactionFilters
                     accounts={accounts}
                     transactionTypes={transactionTypes}
-                    frequencies={frequencies}
                     onApplyFilters={applyFilters}
                     onClearFilters={clearFilters}
                     currentFilters={filterParams}
@@ -104,10 +103,11 @@ export default function Transactions() {
                 onClose={handleCloseModal}
                 accounts={accounts}
                 transactionTypes={transactionTypes}
-                frequencies={frequencies}
                 categories={categories}
                 transaction={transaction}
                 isSubmitting={isSubmitting}
+                isBudgetItemsLoading={isBudgetItemsLoading}
+                budgetItems={budgetItems}
                 title="Transaction"
                 onSubmit={handleCreateTransaction}
                 onDelete={handleDeleteTransaction}

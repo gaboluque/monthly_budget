@@ -60,20 +60,11 @@ class Transaction < ApplicationRecord
   }
 
   enum :frequency, {
-    one_time: 'one_time',
-    daily: 'daily',
-    weekly: 'weekly',
-    bi_weekly: 'bi_weekly',
-    monthly: 'monthly',
-    quarterly: 'quarterly',
-    yearly: 'yearly'
+    one_time: 'one_time'
   }, default: :one_time
 
   scope :by_type, ->(type) { where(transaction_type: type) }
-  scope :deposits, -> { where(transaction_type: :deposit) }
-  scope :withdrawals, -> { where(transaction_type: :withdrawal) }
   scope :transfers, -> { where(transaction_type: :transfer) }
-  scope :payments, -> { where(transaction_type: :payment) }
   scope :incomes, -> { where(transaction_type: :income) }
   scope :expenses, -> { where(transaction_type: :expense) }
   scope :by_date_range, ->(start_date, end_date) { where(executed_at: start_date..end_date) }

@@ -18,7 +18,6 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
     []
   );
-  const [frequencies, setFrequencies] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,23 +29,16 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const [
-          transactionData,
-          accountsData,
-          typesData,
-          frequenciesData,
-          categoriesData,
-        ] = await Promise.all([
-          transactionsApi.getAll(filterParams),
-          accountsApi.getAll(),
-          transactionsApi.getTypes(),
-          transactionsApi.getFrequencies(),
-          transactionsApi.getCategories(),
-        ]);
+        const [transactionData, accountsData, typesData, categoriesData] =
+          await Promise.all([
+            transactionsApi.getAll(filterParams),
+            accountsApi.getAll(),
+            transactionsApi.getTypes(),
+            transactionsApi.getCategories(),
+          ]);
         setTransactions(transactionData);
         setAccounts(accountsData);
         setTransactionTypes(typesData);
-        setFrequencies(frequenciesData);
         setCategories(categoriesData);
       } catch (error) {
         ui.notify({
@@ -119,7 +111,6 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
     transactions,
     accounts,
     transactionTypes,
-    frequencies,
     categories,
     isLoading,
     isSubmitting,

@@ -5,8 +5,7 @@ class CreateBudgetItems < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.decimal :amount, null: false, precision: 15, scale: 2
       t.string :category, null: false
-      t.references :account, null: false, foreign_key: true
-      t.string :frequency, null: false
+      t.string :frequency, null: false, default: "monthly"
       t.datetime :last_paid_at
 
       t.timestamps

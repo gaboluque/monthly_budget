@@ -20,19 +20,13 @@ module Transactions
 
     def rollback_transaction!
       case transaction.transaction_type
-      when Transaction.transaction_types[:deposit]
-        transaction.account.update!(balance: transaction.account.balance - transaction.amount)
-      when Transaction.transaction_types[:withdrawal]
-        transaction.account.update!(balance: transaction.account.balance + transaction.amount)
       when Transaction.transaction_types[:transfer]
         transaction.account.update!(balance: transaction.account.balance + transaction.amount)
         transaction.recipient_account.update!(balance: transaction.recipient_account.balance - transaction.amount)
-      when Transaction.transaction_types[:payment]
-        transaction.account.update!(balance: transaction.account.balance + transaction.amount)
       when Transaction.transaction_types[:income]
         transaction.account.update!(balance: transaction.account.balance - transaction.amount)
       when Transaction.transaction_types[:expense]
-        transaction.account.update!(balance: transaction.account.balance - transaction.amount)
+        transaction.account.update!(balance: transaction.account.balance + transaction.amount)
       else
         raise "Unsupported transaction type: #{transaction.transaction_type}"
       end

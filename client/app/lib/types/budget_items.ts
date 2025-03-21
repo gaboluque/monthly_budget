@@ -1,20 +1,13 @@
-import { Account } from "./accounts";
-
-export type BudgetItemFrequency = "monthly" | "bi-weekly" | "weekly";
-
 export interface BudgetItem {
   id: string;
   name: string;
   amount: number;
   category: string;
-  account_id: string;
-  frequency: BudgetItemFrequency;
   last_paid_at?: string;
   created_at: string;
   updated_at: string;
   is_paid: boolean;
   is_pending: boolean;
-  account?: Account;
 }
 
 export interface CreateBudgetItemData {
@@ -22,8 +15,6 @@ export interface CreateBudgetItemData {
   name?: string;
   amount?: number;
   category?: string;
-  account_id?: string;
-  frequency?: BudgetItem["frequency"];
 }
 
 export interface UpdateBudgetItemData extends Partial<CreateBudgetItemData> {}

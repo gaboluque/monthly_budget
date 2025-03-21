@@ -1,1 +1,1 @@
-json.data Account::CURRENCIES
+json.data Account.currencies.keys

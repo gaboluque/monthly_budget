@@ -4,19 +4,21 @@ import type { Account } from "../../lib/types/accounts"
 import { formatCurrency } from "../../lib/utils/formatters"
 import { TransactionForm } from "./TransactionForm"
 import { CreateTransactionData } from "../../lib/api/transactions"
+import { BudgetItem } from "../../lib/types/budget_items"
 
 interface TransactionModalProps {
     isOpen: boolean
     onClose: () => void
     accounts: Account[]
     transactionTypes: string[]
-    frequencies: string[]
     categories: string[]
     transaction: Transaction | undefined
     isSubmitting: boolean
     title: string
     onSubmit?: (data: CreateTransactionData) => Promise<void>
     onDelete?: (id: string) => void
+    isBudgetItemsLoading: boolean
+    budgetItems: BudgetItem[]
 }
 
 export function TransactionModal({
@@ -24,13 +26,14 @@ export function TransactionModal({
     onClose,
     accounts,
     transactionTypes,
-    frequencies,
     categories,
     transaction,
     isSubmitting,
     title,
     onSubmit,
     onDelete,
+    isBudgetItemsLoading,
+    budgetItems,
 }: TransactionModalProps) {
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title}>
@@ -47,9 +50,10 @@ export function TransactionModal({
                         onCancel={onClose}
                         accounts={accounts}
                         transactionTypes={transactionTypes}
-                        frequencies={frequencies}
                         categories={categories}
                         isSubmitting={isSubmitting}
+                        isBudgetItemsLoading={isBudgetItemsLoading}
+                        budgetItems={budgetItems}
                     />
                 ) : (
                     // Show the transaction details for viewing
