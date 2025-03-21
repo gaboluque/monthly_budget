@@ -74,15 +74,6 @@ class Transaction < ApplicationRecord
 
   validate :validate_transfer_recipient
 
-  # Helper methods for item associations
-  def income
-    item if income? && item.is_a?(Income)
-  end
-
-  def item_name
-    item&.name
-  end
-
   private
 
   def validate_transfer_recipient

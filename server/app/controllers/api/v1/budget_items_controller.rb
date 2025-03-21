@@ -2,7 +2,7 @@ module Api
   module V1
     class BudgetItemsController < ApplicationController
       before_action :authenticate_user!
-      before_action :set_budget_item, only: [ :show, :update, :destroy, :mark_as_paid, :mark_as_pending ]
+      before_action :set_budget_item, only: [ :show, :update, :destroy ]
 
       # GET /api/v1/budget_items
       def index
@@ -63,30 +63,6 @@ module Api
       def paid
         @budget_items = current_user.budget_items.paid
         render :index
-      end
-
-      # PUT /api/v1/budget_items/:id/mark_as_paid
-      def mark_as_paid
-        result = BudgetItems::MarkAsPaid.call(@budget_item)
-
-        if result[:success]
-          @budget_item.reload
-          render :show
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
-      end
-
-      # PUT /api/v1/budget_items/:id/mark_as_pending
-      def mark_as_pending
-        result = BudgetItems::MarkAsPending.call(@budget_item)
-
-        if result[:success]
-          @budget_item.reload
-          render :show
-        else
-          render_error(result[:errors], :unprocessable_entity)
-        end
       end
 
       private

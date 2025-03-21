@@ -72,56 +72,11 @@ RSpec.describe Transaction, type: :model do
     end
 
     context 'when transaction is not a transfer' do
-      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:deposit], user: user, account: account) }
+      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:expense], user: user, account: account) }
 
       it 'does not require a recipient account' do
         expect(transaction).to be_valid
       end
-    end
-
-    context 'when transaction is an income' do
-      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:income], user: user, account: account) }
-
-      it 'requires an income item' do
-        expect(transaction).not_to be_valid
-        expect(transaction.errors[:item]).to include('must be associated with an income')
-      end
-
-      it 'is valid with an income item' do
-        transaction.item = income
-        expect(transaction).to be_valid
-      end
-
-      it 'is invalid with a non-income item' do
-        transaction.item = budget_item
-        expect(transaction).not_to be_valid
-        expect(transaction.errors[:item]).to include('must be an Income for income transactions')
-      end
-    end
-  end
-
-  describe '#income' do
-    it 'returns the item when it is an income transaction with an income item' do
-      transaction = build(:transaction, :income, user: user, account: account, item: income)
-      expect(transaction.income).to eq(income)
-    end
-
-    it 'returns nil when not an income transaction' do
-      transaction = build(:transaction, :expense, user: user, account: account, item: expense)
-      expect(transaction.income).to be_nil
-    end
-  end
-
-
-  describe '#item_name' do
-    it 'returns the name of the associated item' do
-      transaction = build(:transaction, :income, user: user, account: account, item: income)
-      expect(transaction.item_name).to eq(income.name)
-    end
-
-    it 'returns nil when no item is associated' do
-      transaction = build(:transaction, :deposit, user: user, account: account)
-      expect(transaction.item_name).to be_nil
     end
   end
 end

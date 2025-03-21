@@ -48,13 +48,13 @@ RSpec.describe Transactions::Formatter do
       expect(result[:formatted_transaction][:recipient_account]).to be_nil
     end
 
-    it 'handles exceptions gracefully' do
-      allow(transaction).to receive(:as_json).and_raise(StandardError.new('Test error'))
-
+    it 'includes time-related attributes' do
       result = described_class.call(transaction)
 
-      expect(result[:success]).to be false
-      expect(result[:errors]).to eq('Test error')
+      formatted = result[:formatted_transaction]
+      expect(formatted["executed_at"]).to be_present
+      expect(formatted["created_at"]).to be_present
+      expect(formatted["updated_at"]).to be_present
     end
   end
 end

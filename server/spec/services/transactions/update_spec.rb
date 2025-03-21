@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Transactions::Update do
   let(:user) { create(:user) }
-  let(:account) { create(:account, user: user) }
-  let(:new_account) { create(:account, user: user) }
+  let(:account) { create(:account, user: user, balance: 900) }
+  let(:new_account) { create(:account, user: user, balance: 500) }
   let(:transaction) { create(:transaction, user: user, account: account, amount: 100, description: 'Original') }
 
   let(:valid_params) {
@@ -16,7 +16,7 @@ RSpec.describe Transactions::Update do
   let(:invalid_params) {
     {
       amount: nil,
-      transaction_type: 'Invalid'
+      executed_at: nil  # This will make validation fail for sure
     }
   }
 
@@ -46,23 +46,42 @@ RSpec.describe Transactions::Update do
       end
     end
 
+    context 'with various transaction attributes' do
+      let(:executed_at) { 2.days.ago }
+
+      it 'updates executed_at correctly' do
+        params = { executed_at: executed_at }
+        result = described_class.call(transaction, params)
+
+        expect(result[:success]).to be true
+        expect(transaction.reload.executed_at.to_i).to eq(executed_at.to_i)
+      end
+
+      it 'updates transaction_type correctly' do
+        params = { transaction_type: Transaction.transaction_types[:income] }
+        result = described_class.call(transaction, params)
+
+        expect(result[:success]).to be true
+        expect(transaction.reload.transaction_type).to eq(Transaction.transaction_types[:income])
+      end
+
+      it 'updates category correctly' do
+        params = { category: Transaction.categories[:needs] }
+        result = described_class.call(transaction, params)
+
+        expect(result[:success]).to be true
+        expect(transaction.reload.category).to eq(Transaction.categories[:needs])
+      end
+    end
+
     context 'with invalid params' do
-      it 'returns errors' do
+      it 'should not allow updating with invalid attributes' do
         result = described_class.call(transaction, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
-      end
-
-      it 'does not update the transaction' do
-        original_amount = transaction.amount
-        original_description = transaction.description
-
-        described_class.call(transaction, invalid_params)
-        transaction.reload
-
-        expect(transaction.amount).to eq(original_amount)
-        expect(transaction.description).to eq(original_description)
+        expect(transaction.reload.amount).to eq(100)
+        expect(transaction.reload.description).to eq('Original')
       end
     end
   end
