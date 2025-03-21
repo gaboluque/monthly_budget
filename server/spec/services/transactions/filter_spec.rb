@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe Transactions::Filter do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user) }
-  let!(:deposit) { create(:transaction, :deposit, user: user, account: account, created_at: 4.days.ago, executed_at: 4.days.ago) }
-  let!(:withdrawal) { create(:transaction, :withdrawal, user: user, account: account, created_at: 3.days.ago, executed_at: 3.days.ago) }
+  let!(:expense) { create(:transaction, :expense, user: user, account: account, created_at: 4.days.ago, executed_at: 4.days.ago) }
+  let!(:transfer) { create(:transaction, :transfer, user: user, account: account, created_at: 3.days.ago, executed_at: 3.days.ago) }
 
   describe '.call' do
     it 'returns all transactions for a user' do
@@ -12,15 +12,15 @@ RSpec.describe Transactions::Filter do
 
       expect(result[:success]).to be true
       expect(result[:transactions].count).to eq(2)
-      expect(result[:transactions]).to include(deposit, withdrawal)
+      expect(result[:transactions]).to include(expense, transfer)
     end
 
     it 'filters by transaction type' do
-      result = described_class.call(user, { transaction_type: Transaction.transaction_types[:deposit] })
+      result = described_class.call(user, { transaction_type: Transaction.transaction_types[:expense] })
 
       expect(result[:success]).to be true
       expect(result[:transactions].count).to eq(1)
-      expect(result[:transactions]).to include(deposit)
+        expect(result[:transactions]).to include(expense)
     end
 
     it 'filters by date range' do
@@ -39,8 +39,8 @@ RSpec.describe Transactions::Filter do
       expect(result[:success]).to be true
       expect(result[:transactions].count).to eq(2)
       expect(result[:transactions]).not_to include(old_transaction)
-      expect(result[:transactions].first).to eq(withdrawal)
-      expect(result[:transactions].last).to eq(deposit)
+      expect(result[:transactions].first).to eq(transfer)
+      expect(result[:transactions].last).to eq(expense)
     end
 
     it 'filters by account' do
@@ -64,7 +64,7 @@ RSpec.describe Transactions::Filter do
 
       result = described_class.call(user, {})
 
-      expect(result[:transactions].to_a).to eq([ withdrawal, deposit, old_transaction ])
+      expect(result[:transactions].to_a).to eq([ transfer, expense, old_transaction ])
     end
   end
 end

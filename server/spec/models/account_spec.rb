@@ -36,34 +36,66 @@ RSpec.describe Account, type: :model do
 
   describe 'associations' do
     it { should belong_to(:user) }
+    it { should have_many(:transactions).dependent(:destroy) }
+    it { should have_many(:incoming_transactions).dependent(:destroy) }
   end
 
   describe 'factory' do
     it 'has a valid factory' do
       expect(build(:account)).to be_valid
     end
+
+    it 'has valid traits for account types' do
+      expect(build(:account, :checking)).to be_valid
+      expect(build(:account, :savings)).to be_valid
+      expect(build(:account, :credit_card)).to be_valid
+      expect(build(:account, :investment)).to be_valid
+      expect(build(:account, :loan)).to be_valid
+      expect(build(:account, :other)).to be_valid
+    end
+
+    it 'has valid traits for currencies' do
+      expect(build(:account, :usd)).to be_valid
+      expect(build(:account, :eur)).to be_valid
+      expect(build(:account, :cop)).to be_valid
+    end
+
+    it 'has valid traits for ownership' do
+      expect(build(:account, :owned)).to be_valid
+      expect(build(:account, :not_owned)).to be_valid
+    end
+  end
+
+  describe 'enums' do
+    it 'defines account_type enum with correct values' do
+      expect(described_class.account_types.keys).to match_array(%w[savings checking credit_card loan investment other])
+    end
+
+    it 'defines currency enum with correct values' do
+      expect(described_class.currencies.keys).to match_array(%w[cop usd eur])
+    end
   end
 
   describe 'scopes' do
     let(:user) { create(:user) }
-    let!(:checking_account) { create(:account, account_type: 'Checking', user: user) }
-    let!(:savings_account) { create(:account, account_type: 'Savings', user: user) }
-    let!(:usd_account) { create(:account, currency: 'USD', user: user) }
-    let!(:eur_account) { create(:account, currency: 'EUR', user: user) }
+    let!(:checking_account) { create(:account, account_type: 'checking', user: user) }
+    let!(:savings_account) { create(:account, account_type: 'savings', user: user) }
+    let!(:usd_account) { create(:account, currency: 'usd', user: user) }
+    let!(:eur_account) { create(:account, currency: 'eur', user: user) }
     let!(:owned_account) { create(:account, is_owned: true, user: user) }
     let!(:not_owned_account) { create(:account, is_owned: false, user: user) }
 
     describe '.by_type' do
       it 'returns accounts of the specified type' do
-        expect(Account.by_type('Checking')).to include(checking_account)
-        expect(Account.by_type('Checking')).not_to include(savings_account)
+        expect(Account.by_type('checking')).to include(checking_account)
+        expect(Account.by_type('checking')).not_to include(savings_account)
       end
     end
 
     describe '.by_currency' do
       it 'returns accounts with the specified currency' do
-        expect(Account.by_currency('USD')).to include(usd_account)
-        expect(Account.by_currency('USD')).not_to include(eur_account)
+        expect(Account.by_currency('usd')).to include(usd_account)
+        expect(Account.by_currency('usd')).not_to include(eur_account)
       end
     end
 

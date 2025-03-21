@@ -72,7 +72,7 @@ RSpec.describe Transaction, type: :model do
     end
 
     context 'when transaction is not a transfer' do
-      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:deposit], user: user, account: account) }
+      let(:transaction) { build(:transaction, transaction_type: Transaction.transaction_types[:expense], user: user, account: account) }
 
       it 'does not require a recipient account' do
         expect(transaction).to be_valid
@@ -120,7 +120,7 @@ RSpec.describe Transaction, type: :model do
     end
 
     it 'returns nil when no item is associated' do
-      transaction = build(:transaction, :deposit, user: user, account: account)
+      transaction = build(:transaction, :expense, user: user, account: account)
       expect(transaction.item_name).to be_nil
     end
   end

@@ -25,9 +25,53 @@ FactoryBot.define do
   factory :account do
     name { "Test Account" }
     balance { 1000.00 }
-    account_type { "Savings" }
-    currency { "USD" }
+    account_type { "savings" }
+    currency { "usd" }
     is_owned { true }
     association :user
+
+    trait :checking do
+      account_type { "checking" }
+    end
+
+    trait :savings do
+      account_type { "savings" }
+    end
+
+    trait :credit_card do
+      account_type { "credit_card" }
+    end
+
+    trait :investment do
+      account_type { "investment" }
+    end
+
+    trait :loan do
+      account_type { "loan" }
+    end
+
+    trait :other do
+      account_type { "other" }
+    end
+
+    trait :cop do
+      currency { "cop" }
+    end
+
+    trait :usd do
+      currency { "usd" }
+    end
+
+    trait :eur do
+      currency { "eur" }
+    end
+
+    trait :owned do
+      is_owned { true }
+    end
+
+    trait :not_owned do
+      is_owned { false }
+    end
   end
 end

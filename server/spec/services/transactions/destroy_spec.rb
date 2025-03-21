@@ -20,30 +20,6 @@ RSpec.describe Transactions::Destroy do
       expect(account.reload.balance).not_to eq(initial_balance)
     end
 
-    context 'when transaction type is deposit' do
-      let!(:transaction) { create(:transaction, :deposit, user: user, account: account) }
-
-      it 'rolls back the transaction' do
-        initial_balance = account.balance
-
-        subject
-
-        expect(account.reload.balance).to eq(initial_balance - transaction.amount)
-      end
-    end
-
-    context 'when transaction type is withdrawal' do
-      let!(:transaction) { create(:transaction, :withdrawal, user: user, account: account) }
-
-      it 'rolls back the transaction' do
-        initial_balance = account.balance
-
-        subject
-
-        expect(account.reload.balance).to eq(initial_balance + transaction.amount)
-      end
-    end
-
     context 'when transaction type is transfer' do
       let(:recipient_account) { create(:account, user: user) }
       let!(:transaction) { create(:transaction, :transfer, user: user, account: account, recipient_account: recipient_account) }
@@ -56,18 +32,6 @@ RSpec.describe Transactions::Destroy do
 
         expect(account.reload.balance).to eq(initial_balance + transaction.amount)
         expect(recipient_account.reload.balance).to eq(initial_recipient_balance - transaction.amount)
-      end
-    end
-
-    context 'when transaction type is payment' do
-      let!(:transaction) { create(:transaction, :payment, user: user, account: account) }
-
-      it 'rolls back the transaction' do
-        initial_balance = account.balance
-
-        subject
-
-        expect(account.reload.balance).to eq(initial_balance + transaction.amount)
       end
     end
 
