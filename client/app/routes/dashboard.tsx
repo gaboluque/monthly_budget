@@ -1,7 +1,5 @@
 import type { MetaFunction } from "@remix-run/node"
 import { Layout } from "../components/ui/Layout"
-import { FinancialSummary } from "../components/dashboard/FinancialSummary"
-import { BudgetItemList } from "../components/dashboard/BudgetItemList"
 import { useDashboard } from "../hooks/useDashboard"
 import { IncomesList } from "../components/dashboard/IncomesList"
 import { ui } from "../lib/ui"
@@ -13,24 +11,19 @@ export const meta: MetaFunction = () => {
 
 export default function Dashboard() {
   const {
-    pendingBudgetItems,
     pendingIncomes,
-    isLoading,
-    markingBudgetItemPaid,
     markingIncomeReceived,
-    summaryData,
-    handleMarkBudgetItemAsPaid,
     handleMarkIncomeAsReceived,
+    incomesLoading,
   } = useDashboard()
 
   return (
     <Layout>
       <PageHeader title="Dashboard" description="Your Monthly Budget Dashboard" buttonText="Add Transaction" />
-      <FinancialSummary summaryData={summaryData} />
 
       <IncomesList
         incomes={pendingIncomes}
-        isLoading={isLoading}
+        isLoading={incomesLoading}
         markingReceived={markingIncomeReceived}
         onAction={(id: string) => {
           ui.confirm({
@@ -40,22 +33,6 @@ export default function Dashboard() {
           })
         }}
       />
-
-      <br />
-
-      <BudgetItemList
-        budgetItems={pendingBudgetItems}
-        isLoading={isLoading}
-        markingBudgetItemPaid={markingBudgetItemPaid}
-        onAction={(id: string) => {
-          ui.confirm({
-            title: "Mark as paid",
-            message: "Are you sure you have paid this budget item?",
-            onConfirm: () => handleMarkBudgetItemAsPaid(id)
-          })
-        }}
-      />
     </Layout>
   )
 }
-
