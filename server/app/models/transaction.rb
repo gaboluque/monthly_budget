@@ -49,8 +49,9 @@ class Transaction < ApplicationRecord
     savings: 'savings',
     debt: 'debt',
     investment: 'investment',
-    income: 'income'
-  }, default: :needs, prefix: true
+    income: 'income',
+    other: 'other'
+  }, default: :other, prefix: true
 
   enum :transaction_type, {
     transfer: 'transfer',

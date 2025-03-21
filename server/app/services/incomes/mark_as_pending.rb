@@ -1,28 +1,16 @@
 module Incomes
   class MarkAsPending < ApplicationService
-    attr_reader :income, :user, :account, :transaction
+    attr_reader :income, :transaction
 
     def initialize(income)
       @income = income
-      @user = income.user
-      @account = income.account
       @transaction = income.current_month_transaction
     end
 
     def call
       return { success: true, income: income } if income.pending?
 
-      ActiveRecord::Base.transaction do
-        result = Transactions::Destroy.call(transaction)
-
-        if result[:success]
-          income.update!(last_received_at: income.reload.last_executed_at)
-        else
-          return { success: false, errors: result[:errors] }
-        end
-
-        { success: true, income: income }
-      end
+      Transactions::Destroy.call(transaction)
     end
   end
 end

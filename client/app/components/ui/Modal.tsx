@@ -5,9 +5,14 @@ interface ModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  type?: 'standard' | 'popup';
 }
 
-export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, type = 'standard' }: ModalProps) {
+
+  const isModal = type === 'standard';
+  const isPopup = type === 'popup';
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -27,8 +32,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      {/* Backdrop */}
+    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-20"} overflow-y-auto`}>
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
         onClick={onClose}
@@ -41,18 +45,14 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         }}
       />
 
-      {/* Modal */}
-      <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative bg-white rounded-lg shadow-xl max-w-lg w-full p-6">
-          {/* Header */}
+      <div className={`flex min-h-full ${isModal ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
+        <div className={`relative bg-white shadow-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-[90%]' : ''}`}>
           <div className="flex items-center justify-between mb-8 align-center">
 
-            {/* Title */}
             <h3 className="text-lg font-semibold text-gray-900">
               {title}
             </h3>
 
-            {/* Close button */}
             <button
               type="button"
               className="text-gray-400 hover:text-gray-500"
@@ -65,7 +65,6 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
             </button>
           </div>
 
-          {/* Content */}
           {children}
         </div>
       </div>

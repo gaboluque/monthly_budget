@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import type { CreateAccountData, Account, AccountType, Currency } from '../../lib/types/accounts';
+import { FormActions } from '../ui/FormActions';
 
 interface AccountFormProps {
   onSubmit: (data: CreateAccountData) => Promise<void>;
@@ -61,11 +61,6 @@ export function AccountForm({
     }
   };
 
-  const submitForm = () => {
-    const form = document.getElementById(FORM_ID) as HTMLFormElement;
-    if (form) form.requestSubmit();
-  };
-
   const formFields: FormField<CreateAccountData>[] = [
     {
       name: 'name',
@@ -113,8 +108,6 @@ export function AccountForm({
       type: 'textarea',
       placeholder: 'Optional description for this account'
     },
-    // Note: checkbox handling might need special attention in the NewForm component
-    // This assumes the NewForm component can handle checkbox inputs
     {
       name: 'is_owned',
       label: 'I own this account',
@@ -137,19 +130,14 @@ export function AccountForm({
         className="space-y-4"
         defaultValues={defaultValues}
       />
+      <br />
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={submitForm}
-        >
-          {isSubmitting ? 'Saving...' : initialData?.id ? 'Update' : 'Create'}
-        </Button>
-      </div>
+      <FormActions
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+        formId={FORM_ID}
+        isEditing={!!initialData?.id}
+      />
     </div>
   );
 } 

@@ -1,7 +1,7 @@
 import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react";
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date';
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio';
 
 export type ConditionalRule<T extends FieldValues> = {
     field: Path<T>;
@@ -106,6 +106,33 @@ export const Form = <T extends FieldValues>({
                     </select>
                 );
 
+            case 'radio':
+                return (
+                    <div className="flex w-full">
+                        {options?.map((option, index) => (
+                            <label
+                                key={option.value}
+                                className="flex-1 flex items-center"
+                            >
+                                <input
+                                    type="radio"
+                                    value={option.value}
+                                    {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                                    className="sr-only" // Hide the actual radio input
+                                />
+                                <span className={`w-full text-center px-4 py-2 text-sm font-medium cursor-pointer transition-colors
+                                    ${index === 0 ? 'rounded-l' : ''} 
+                                    ${index === options.length - 1 ? 'rounded-r' : ''}
+                                    ${values?.[name as string] === option.value
+                                        ? 'bg-blue-500 text-white'
+                                        : 'bg-gray-100 hover:bg-gray-200 text-gray-700'}`}>
+                                    {option.label}
+                                </span>
+                            </label>
+                        ))}
+                    </div>
+                );
+
             case 'textarea':
                 return (
                     <textarea
@@ -118,12 +145,21 @@ export const Form = <T extends FieldValues>({
 
             case 'checkbox':
                 return (
-                    <input
-                        type="checkbox"
-                        id={name.toString()}
-                        {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                    />
+                    <div className="flex items-center">
+                        <input
+                            type="checkbox"
+                            id={name.toString()}
+                            {...register(name, validation as RegisterOptions<T, Path<T>>)}
+                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors cursor-pointer"
+                        />
+                        <label
+                            htmlFor={name.toString()}
+                            className="ml-2 text-sm text-gray-700 cursor-pointer"
+                        >
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                    </div>
                 );
 
             default:
@@ -144,13 +180,15 @@ export const Form = <T extends FieldValues>({
         <form id={id} onSubmit={handleSubmit(onSubmit)} className={className}>
             {visibleFields.map((field) => (
                 <div key={field.name.toString()} className="mb-4">
-                    <label
-                        htmlFor={field.name.toString()}
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                        {field.label}
-                        {field.required && <span className="text-red-500 ml-1">*</span>}
-                    </label>
+                    {field.type !== 'checkbox' && (
+                        <label
+                            htmlFor={field.name.toString()}
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                        </label>
+                    )}
 
                     {renderField(field)}
 

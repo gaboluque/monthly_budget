@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import type { CreateIncomeData, Income } from '../../lib/types/incomes';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
+import { FormActions } from '../ui/FormActions';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;
@@ -51,11 +51,6 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const submitForm = () => {
-    const form = document.getElementById(FORM_ID) as HTMLFormElement;
-    if (form) form.requestSubmit();
   };
 
   const formFields: FormField<CreateIncomeData>[] = [
@@ -120,18 +115,12 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
         defaultValues={defaultValues}
       />
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={submitForm}
-        >
-          {isSubmitting ? 'Saving...' : (initialData ? 'Update' : 'Create')}
-        </Button>
-      </div>
+      <FormActions
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+        formId={FORM_ID}
+        isEditing={!!initialData?.id}
+      />
     </div>
   );
 } 

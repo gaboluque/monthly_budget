@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import type { CreateBudgetItemData, BudgetItem } from '../../lib/types/budget_items';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useBudgetItems } from '../../hooks/useBudgetItems';
 import { Spinner } from '../ui/Spinner';
+import { FormActions } from '../ui/FormActions';
 
 interface BudgetItemFormProps {
   onSubmit: (data: CreateBudgetItemData) => Promise<void>;
@@ -40,7 +40,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     }));
   }, [categories]);
 
-  // Default values for the form
   const defaultValues: CreateBudgetItemData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
@@ -56,15 +55,10 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
       await onSubmit(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred while saving');
-      throw err; // Re-throw to let react-hook-form handle the error
+      throw err;
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const submitForm = () => {
-    const form = document.getElementById(FORM_ID) as HTMLFormElement;
-    if (form) form.requestSubmit();
   };
 
   if (isAccountsLoading || isCategoriesLoading) {
@@ -144,30 +138,12 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
         defaultValues={defaultValues}
       />
 
-      <div className="flex justify-end space-x-2 mt-4">
-        <Button type="button" variant="outline" onClick={onCancel}>
-          Cancel
-        </Button>
-
-        {!initialData?.id && (
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={isSubmitting}
-            onClick={submitForm}
-          >
-            {isSubmitting ? 'Saving...' : 'Create & Add Another'}
-          </Button>
-        )}
-
-        <Button
-          type="submit"
-          disabled={isSubmitting}
-          onClick={submitForm}
-        >
-          {isSubmitting ? 'Saving...' : (initialData?.id ? 'Update' : 'Create')}
-        </Button>
-      </div>
+      <FormActions
+        isSubmitting={isSubmitting}
+        onCancel={onCancel}
+        formId={FORM_ID}
+        isEditing={!!initialData?.id}
+      />
     </div>
   );
 } 

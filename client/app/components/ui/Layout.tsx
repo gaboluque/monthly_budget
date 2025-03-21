@@ -1,19 +1,35 @@
 import { type ReactNode } from 'react';
 import { Header } from './Header';
+import { MobileNavigation } from './MobileNavigation';
 import ProtectedRoute from '../ProtectedRoute';
+import { FloatingActionButton } from './FloatingActionButton';
+import { useLocation } from '@remix-run/react';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
+  const location = useLocation();
+  const showTransactionFAB = location.pathname !== '/transactions';
+  const minHeight = `calc(100vh-128px)`;
+
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+      <div className={`min-h-[${minHeight}] md:min-h-screen md:bg-gray-50`}>
         <Header />
-        <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 md:max-w-4xl">
-          {children}
+        <main className="container mx-auto px-0 sm:px-6 lg:px-8 py-0 md:py-6 md:max-w-4xl pb-40 md:pb-6">
+          <div className={`bg-white min-h-[${minHeight}] md:min-h-20 rounded-lg shadow-0 md:shadow-lg p-6 lg:p-8`}>
+            {children}
+          </div>
         </main>
+        {showTransactionFAB && (
+          <FloatingActionButton
+            to="/transactions?new=true"
+            ariaLabel="Add new transaction"
+          />
+        )}
+        <MobileNavigation />
       </div>
     </ProtectedRoute>
   );

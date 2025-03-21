@@ -27,3 +27,7 @@ export function formatDateTime(dateString: string): string {
     minute: "2-digit",
   }).format(date);
 }
+
+export function formatLabel(label: string): string {
+  return label.charAt(0).toUpperCase() + label.slice(1).replace(/_/g, " ");
+}

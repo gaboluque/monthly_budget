@@ -12,7 +12,7 @@ export function CategoryDistribution({ categories, total, className = "" }: Cate
     <div className={`space-y-2 ${className}`}>
       {Object.entries(categories).map(([category, amount]) => {
         const percentage = total > 0 ? (amount / total) * 100 : 0
-        const categoryColor = CATEGORY_COLORS[category] || "#6b7280"
+        const categoryColor = CATEGORY_COLORS[category.toLowerCase()] || CATEGORY_COLORS.other
 
         return (
           <div key={category} className="flex items-center gap-2">

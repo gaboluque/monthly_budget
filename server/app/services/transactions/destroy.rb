@@ -10,6 +10,7 @@ module Transactions
       ActiveRecord::Base.transaction do
         rollback_transaction!
         transaction.destroy!
+        mark_items_as_pending!
 
         { success: true, transaction: transaction }
       end
@@ -34,6 +35,18 @@ module Transactions
         transaction.account.update!(balance: transaction.account.balance - transaction.amount)
       else
         raise "Unsupported transaction type: #{transaction.transaction_type}"
+      end
+    end
+
+    def mark_items_as_pending!
+      item = transaction.item
+      return unless item
+
+      case item
+      when BudgetItem
+        item.update!(last_paid_at: item.reload.last_executed_at)
+      when Income
+        item.update!(last_received_at: item.reload.last_executed_at)
       end
     end
   end

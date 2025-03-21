@@ -20,13 +20,6 @@ interface FinancialSummaryProps {
 export function FinancialSummary({ summaryData }: FinancialSummaryProps) {
   return (
     <div className="bg-white rounded-lg shadow-lg p-5 lg:p-8 mb-6">
-      <div className="flex flex-col mb-6 pb-6 border-b">
-        <div>
-          <h2 className="text-xl font-bold text-gray-900">Financial Overview</h2>
-          <p className="mt-1 text-sm text-gray-600">Your monthly budget at a glance</p>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div
           className={`rounded-lg p-5 ${summaryData.balance >= 0 ? "bg-green-50 border border-green-100" : "bg-red-50 border border-red-100"

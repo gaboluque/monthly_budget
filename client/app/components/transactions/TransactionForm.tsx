@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Button } from '../ui/Button';
 import type { CreateTransactionData } from '../../lib/api/transactions';
 import { Transaction } from '../../lib/types/transactions';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { DefaultValues } from 'react-hook-form';
 import { Account } from '../../lib/types/accounts';
 import { Spinner } from '../ui/Spinner';
+import { formatCurrency } from '../../lib/utils/currency';
+import { formatLabel } from '../../lib/utils/formatters';
+import { FormActions } from '../ui/FormActions';
 
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
@@ -35,28 +37,28 @@ export function TransactionForm({
     const accountOptions = useMemo(() => {
         return accounts.map((account) => ({
             value: account.id,
-            label: `${account.name} (${account.account_type})`
+            label: `${account.name} (${formatCurrency(account.balance)})`
         }));
     }, [accounts]);
 
     const transactionTypeOptions = useMemo(() => {
         return transactionTypes.map(type => ({
             value: type,
-            label: type
+            label: formatLabel(type)
         }));
     }, [transactionTypes]);
 
     const frequencyOptions = useMemo(() => {
         return frequencies.map(frequency => ({
             value: frequency,
-            label: frequency
+            label: formatLabel(frequency)
         }));
     }, [frequencies]);
 
     const categoryOptions = useMemo(() => {
         return categories.map(category => ({
             value: category,
-            label: category
+            label: formatLabel(category)
         }));
     }, [categories]);
 
@@ -65,11 +67,11 @@ export function TransactionForm({
         account_id: transaction?.account_id ?? undefined,
         recipient_account_id: transaction?.recipient_account_id ?? undefined,
         amount: transaction?.amount ?? undefined,
-        transaction_type: transaction?.transaction_type ?? undefined,
+        transaction_type: transaction?.transaction_type ?? "expense",
         description: transaction?.description ?? undefined,
         executed_at: transaction?.executed_at ? new Date(transaction.executed_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         frequency: transaction?.frequency ?? 'one_time',
-        category: transaction?.category ?? undefined,
+        category: transaction?.category ?? "wants",
     };
 
     const handleSubmit: SubmitHandler<CreateTransactionData> = async (data) => {
@@ -82,11 +84,6 @@ export function TransactionForm({
         }
     };
 
-    const submitForm = () => {
-        const form = document.getElementById(FORM_ID) as HTMLFormElement;
-        if (form) form.requestSubmit();
-    };
-
     if (!accounts.length || !transactionTypes.length) {
         return <Spinner />;
     }
@@ -96,12 +93,18 @@ export function TransactionForm({
         {
             name: 'transaction_type',
             label: 'Transaction Type',
-            type: 'select',
+            type: 'radio',
             options: transactionTypeOptions,
             required: true,
             validation: {
                 required: 'Transaction type is required'
             }
+        },
+        {
+            name: 'description',
+            label: 'Description',
+            type: 'text',
+            placeholder: 'Enter transaction description',
         },
         {
             name: 'account_id',
@@ -111,6 +114,20 @@ export function TransactionForm({
             required: true,
             validation: {
                 required: 'Account is required'
+            }
+        },
+        {
+            name: 'amount',
+            label: 'Amount',
+            type: 'number',
+            placeholder: '$0.00',
+            required: true,
+            validation: {
+                required: 'Amount is required',
+                min: {
+                    value: 0.01,
+                    message: 'Amount must be greater than 0'
+                }
             }
         },
         {
@@ -135,26 +152,6 @@ export function TransactionForm({
             label: 'Category',
             type: 'select',
             options: categoryOptions
-        },
-        {
-            name: 'amount',
-            label: 'Amount',
-            type: 'number',
-            placeholder: '$0.00',
-            required: true,
-            validation: {
-                required: 'Amount is required',
-                min: {
-                    value: 0.01,
-                    message: 'Amount must be greater than 0'
-                }
-            }
-        },
-        {
-            name: 'description',
-            label: 'Description',
-            type: 'text',
-            placeholder: 'Enter transaction description',
         },
         {
             name: 'executed_at',
@@ -193,19 +190,12 @@ export function TransactionForm({
                 defaultValues={defaultValues as DefaultValues<CreateTransactionData>}
             />
 
-            <div className="flex justify-end space-x-2 mt-4">
-                <Button type="button" variant="outline" onClick={onCancel}>
-                    Cancel
-                </Button>
-
-                <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    onClick={submitForm}
-                >
-                    {isSubmitting ? 'Saving...' : (transaction?.id ? 'Update' : 'Create')}
-                </Button>
-            </div>
+            <FormActions
+                isSubmitting={isSubmitting}
+                onCancel={onCancel}
+                formId={FORM_ID}
+                isEditing={!!transaction?.id}
+            />
         </div>
     );
 } 
