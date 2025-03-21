@@ -27,10 +27,13 @@ FactoryBot.define do
     name { "Test Budget Item" }
     amount { 100.00 }
     frequency { "monthly" }
-    last_paid_at { DateTime.current }
+    last_paid_at { nil }
     category { "needs" }
     association :user
   end
+
+  # Add an alias for expense to make the transaction factory work
+  factory :expense, parent: :budget_item
 
   factory :paid_budget_item, parent: :budget_item do
     last_paid_at { DateTime.current }

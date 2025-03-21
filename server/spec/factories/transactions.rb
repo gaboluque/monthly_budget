@@ -49,12 +49,10 @@ FactoryBot.define do
 
     trait :income do
       transaction_type { Transaction.transaction_types[:income] }
-      association :item, factory: :income
     end
 
     trait :expense do
       transaction_type { Transaction.transaction_types[:expense] }
-      association :item, factory: :expense
     end
 
     trait :executed_in_current_month do
