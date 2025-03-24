@@ -27,13 +27,15 @@ class BudgetItem < ApplicationRecord
 
   belongs_to :user
 
-  FREQUENCIES = %w[monthly].freeze
   DEFAULT_CATEGORIES = %w[needs wants savings debt investment].freeze
 
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :category, presence: true
-  validates :frequency, inclusion: { in: FREQUENCIES }
+
+  enum :frequency, {
+    monthly: 'monthly'
+  }, default: :monthly
 
   scope :by_category, ->(category) { where(category: category) }
   scope :by_frequency, ->(frequency) { where(frequency: frequency) }

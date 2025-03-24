@@ -10,7 +10,6 @@ import type { Income, CreateIncomeData } from "../lib/types/incomes"
 import { Loader2, DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
-import { useAccounts } from "../hooks/useAccounts"
 import { PageHeader } from "../components/ui/PageHeader"
 
 export const meta: MetaFunction = () => {
@@ -18,10 +17,8 @@ export const meta: MetaFunction = () => {
 }
 
 export default function Incomes() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [selectedIncome, setSelectedIncome] = useState<Income | null>(null)
-  const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome } = useIncomes()
-  const { accounts } = useAccounts();
+  const [selectedIncome, setSelectedIncome] = useState<Income | CreateIncomeData | null>(null)
+  const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome, handleMarkAsReceived } = useIncomes()
 
   const handleSubmit = async (data: CreateIncomeData) => {
     try {
@@ -30,7 +27,6 @@ export default function Incomes() {
       } else {
         await createIncome(data)
       }
-      setIsModalOpen(false)
       setSelectedIncome(null)
     } catch (error) {
       ui.notify({
@@ -41,8 +37,11 @@ export default function Incomes() {
   }
 
   const handleAddIncome = () => {
-    setSelectedIncome(null)
-    setIsModalOpen(true)
+    setSelectedIncome({
+      name: "",
+      amount: 0,
+      frequency: "monthly",
+    } as Income)
   }
 
   return (
@@ -55,12 +54,10 @@ export default function Incomes() {
         onAction={handleAddIncome}
       />
 
-      {/* Summary Cards */}
       {!isLoading && incomes.length > 0 && (
         <IncomeSummary totalIncome={totalIncome} incomeCount={incomes.length} />
       )}
 
-      {/* Loading state */}
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
           <Loader2 className="w-6 h-6 animate-spin mr-2" />
@@ -82,36 +79,32 @@ export default function Incomes() {
           </Button>
         </div>
       ) : (
-        /* Income list */
         <div className="grid gap-4 sm:gap-6">
           {incomes.map((income) => (
             <IncomeItem
               key={income.id}
               income={income}
-              accounts={accounts}
               onEdit={(income) => {
-                setSelectedIncome(income)
-                setIsModalOpen(true)
+                setSelectedIncome({ ...income, account_id: income.account?.id } as CreateIncomeData)
               }}
               onDelete={deleteIncome}
+              onReceive={handleMarkAsReceived}
             />
           ))}
         </div>
       )}
 
       <Modal
-        isOpen={isModalOpen}
+        isOpen={!!selectedIncome}
         onClose={() => {
-          setIsModalOpen(false)
           setSelectedIncome(null)
         }}
         title={selectedIncome ? "Edit Income" : "Add Income"}
       >
         <IncomeForm
-          initialData={selectedIncome ?? undefined}
+          initialData={selectedIncome as Income}
           onSubmit={handleSubmit}
           onCancel={() => {
-            setIsModalOpen(false)
             setSelectedIncome(null)
           }}
         />

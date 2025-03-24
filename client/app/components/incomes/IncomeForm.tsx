@@ -3,6 +3,7 @@ import type { CreateIncomeData, Income } from '../../lib/types/incomes';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 import { FormActions } from '../ui/FormActions';
+import { Spinner } from '../ui/Spinner';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;
@@ -24,7 +25,7 @@ const FORM_ID = 'income-form';
 export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { accounts } = useAccounts();
+  const { accounts, isLoading: isAccountsLoading } = useAccounts();
 
   const accountOptions = useMemo(() => {
     return accounts.map((account) => ({
@@ -33,11 +34,11 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     }));
   }, [accounts]);
 
-  // Default values for the form
   const defaultValues: CreateIncomeData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
     frequency: initialData?.frequency ?? undefined,
+    account_id: initialData?.account_id ?? undefined,
   };
 
   const handleSubmit: SubmitHandler<CreateIncomeData> = async (data) => {
@@ -52,6 +53,9 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
       setIsSubmitting(false);
     }
   };
+
+  console.log(initialData);
+  console.log(accountOptions);
 
   const formFields: FormField<CreateIncomeData>[] = [
     {
@@ -98,6 +102,10 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
       }
     },
   ];
+
+  if (isAccountsLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="space-y-4">

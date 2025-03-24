@@ -7,7 +7,8 @@ json.updated_at income.updated_at
 json.last_received_at income.last_received_at
 json.account do
     if income.account.present?
-        json.partial! 'api/v1/accounts/account', account: income.account
+        @account = income.account
+        json.partial! 'api/v1/accounts/account', account: @account
     else
         json.null
     end

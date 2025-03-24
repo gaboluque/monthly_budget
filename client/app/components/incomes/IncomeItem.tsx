@@ -1,17 +1,16 @@
-import { Edit2, Trash2, DollarSign } from "lucide-react"
+import { Edit2, Trash2, DollarSign, CheckCircle } from "lucide-react"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { Income } from "../../lib/types/incomes"
-import type { Account } from "../../lib/types/accounts"
+import { formatDate } from "../../lib/utils/formatters"
 
 interface IncomeItemProps {
   income: Income
-  accounts: Account[]
   onEdit: (income: Income) => void
   onDelete: (id: string) => void
+  onReceive: (id: string) => void
 }
 
-export function IncomeItem({ income, accounts, onEdit, onDelete }: IncomeItemProps) {
-  const account = accounts.find((account) => account.id === income.account_id)
+export function IncomeItem({ income, onEdit, onDelete, onReceive }: IncomeItemProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-100 rounded-lg p-5 hover:shadow-sm transition-shadow">
@@ -28,12 +27,12 @@ export function IncomeItem({ income, accounts, onEdit, onDelete }: IncomeItemPro
               <span className="text-sm font-semibold text-gray-900">{formatCurrency(income.amount)}</span>
             </div>
             <div className="flex items-center">
-              <span className="text-xs text-gray-500 mr-1">Frequency:</span>
-              <span className="text-sm text-gray-700 capitalize">{income.frequency}</span>
+              <span className="text-xs text-gray-500 mr-1">Last Received:</span>
+              <span className="text-sm text-gray-700 capitalize">{income.last_received_at ? formatDate(income.last_received_at) : 'N/A'}</span>
             </div>
             <div className="flex items-center">
               <span className="text-xs text-gray-500 mr-1">To:</span>
-              <span className="text-sm text-gray-700 capitalize">{account?.name}</span>
+              <span className="text-sm text-gray-700 capitalize">{income.account?.name}</span>
             </div>
           </div>
         </div>
@@ -51,6 +50,13 @@ export function IncomeItem({ income, accounts, onEdit, onDelete }: IncomeItemPro
             aria-label="Delete income"
           >
             <Trash2 className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => onReceive(income.id)}
+            className="p-2 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+            aria-label="Receive income"
+          >
+            <CheckCircle className="w-4 h-4" />
           </button>
         </div>
       </div>

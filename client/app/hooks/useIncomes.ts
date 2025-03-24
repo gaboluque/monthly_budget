@@ -106,7 +106,7 @@ export function useIncomes() {
     async (id: string) => {
       setMarkingReceived(id);
       try {
-        await incomesApi.unmarkAsReceived(id);
+        await incomesApi.markAsPending(id);
         ui.notify({
           message: "Income marked as pending",
           type: "success",

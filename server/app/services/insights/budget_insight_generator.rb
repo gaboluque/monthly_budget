@@ -46,7 +46,7 @@ module Insights
       ### 🏦 Smart Money Moves (Beyond Budgeting)
       - **📈 Investment Readiness Check:** Based on current savings habits, you could allocate **$XX/month** to [investment type].
       - **📊 Debt-Free Faster:** Paying **$XX extra per month** on [loan name] could save **$X,XXX in interest** and cut **X months** off repayment time.
-      - **🔄 Automate Savings:** If you set up an automatic transfer of **$XX/week** into savings, you’ll have **$X,XXX extra in X months**.
+      - **🔄 Automate Savings:** If you set up an automatic transfer of **$XX/week** into savings, you'll have **$X,XXX extra in X months**.
 
       ---
 
@@ -60,12 +60,12 @@ module Insights
 
       PROMPT
 
-      def initialize(user)
-        @user = user
-
-      @incomes = user.incomes
+    def initialize(user)
+      @user = user
+      @incomes = user.incomes.includes(:account)
       @budget_items = user.budget_items
-      @transactions = user.transactions
+      @transactions = user.transactions.includes(:account, :recipient_account)
+      @accounts = user.accounts
     end
 
     def generate
@@ -88,6 +88,9 @@ module Insights
       <<~PROMPT
         Please analyze the following financial data and provide detailed insights:
 
+        Account Summary:
+        #{accounts_data.to_json}
+
         Income Data:
         #{incomes_data.to_json}
 
@@ -98,8 +101,21 @@ module Insights
         #{transactions_data.to_json}
 
         Focus on identifying patterns, anomalies, and providing actionable recommendations#{' '}
-        for better budget management.
+        for better budget management. Consider the relationships between accounts, transactions, and budget items.
       PROMPT
+    end
+
+    def accounts_data
+      @accounts_data ||= @accounts.map do |account|
+        {
+          name: account.name,
+          type: account.account_type,
+          balance: account.balance,
+          currency: account.currency,
+          is_owned: account.is_owned,
+          description: account.description
+        }
+      end
     end
 
     def incomes_data
@@ -107,7 +123,13 @@ module Insights
         {
           name: income.name,
           amount: income.amount,
-          frequency: income.frequency
+          frequency: income.frequency,
+          last_received_at: income.last_received_at,
+          account: {
+            name: income.account&.name,
+            type: income.account&.account_type,
+            currency: income.account&.currency
+          }
         }
       end
     end
@@ -118,7 +140,10 @@ module Insights
           name: budget_item.name,
           amount: budget_item.amount,
           category: budget_item.category,
-          frequency: budget_item.frequency
+          frequency: budget_item.frequency,
+          last_paid_at: budget_item.last_paid_at,
+          is_pending: budget_item.pending?,
+          is_paid: budget_item.paid?
         }
       end
     end
@@ -129,7 +154,19 @@ module Insights
           amount: transaction.amount,
           category: transaction.category,
           frequency: transaction.frequency,
-          executed_at: transaction.executed_at
+          executed_at: transaction.executed_at,
+          transaction_type: transaction.transaction_type,
+          description: transaction.description,
+          account: {
+            name: transaction.account.name,
+            type: transaction.account.account_type,
+            currency: transaction.account.currency
+          },
+          recipient_account: transaction.recipient_account ? {
+            name: transaction.recipient_account.name,
+            type: transaction.recipient_account.account_type,
+            currency: transaction.recipient_account.currency
+          } : nil
         }
       end
     end

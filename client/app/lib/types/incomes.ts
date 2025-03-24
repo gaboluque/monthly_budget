@@ -21,6 +21,7 @@ export interface Income {
 }
 
 export interface CreateIncomeData {
+  id?: string;
   name?: string;
   amount?: number;
   frequency?: IncomeFrequency;

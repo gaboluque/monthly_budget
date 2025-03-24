@@ -74,9 +74,10 @@ module Api
       # GET /api/v1/incomes/pending
       def pending
         result = Incomes::FetchPending.call(current_user)
+        @incomes = result[:incomes]
 
         if result[:success]
-          render json: { data: result[:incomes] }
+          render :index
         else
           render_error(result[:errors], :unprocessable_entity)
         end
@@ -85,11 +86,9 @@ module Api
       # GET /api/v1/incomes/received
       def received
         result = Incomes::FetchReceived.call(current_user)
-
+        @incomes = result[:incomes]
         if result[:success]
-          render json: {
-            data: result[:incomes]
-          }
+          render :index
         else
           render_error(result[:errors], :unprocessable_entity)
         end

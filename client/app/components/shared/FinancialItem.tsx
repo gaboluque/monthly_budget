@@ -44,13 +44,13 @@ export function FinancialItem({
 
     return (
         <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div className="flex items-center gap-3 mb-3 md:mb-0">
                     <div className={`hidden sm:flex flex-shrink-0 w-10 h-10 ${iconBgColor} rounded-full flex items-center justify-center`}>
                         <Icon className={`w-5 h-5 ${iconColor}`} />
                     </div>
                     <div className="w-full flex flex-row justify-between gap-3">
-                        <h3 className="text-base font-medium text-gray-900 w-24 truncate">{name}</h3>
+                        <h3 className="text-base font-medium text-gray-900 w-full truncate">{name}</h3>
                         <div className="block">
                             {badge}
                         </div>
@@ -58,15 +58,15 @@ export function FinancialItem({
                 </div>
                 <div className="flex flex-col md:flex-row md:items-center justify-between md:justify-end gap-3 md:gap-4">
                     <div className="flex flex-row items-center justify-between md:gap-3">
+                        {accountName && (
+                            <div>
+                                <p className="text-xs text-gray-500 capitalize">{accountName}</p>
+                            </div>
+                        )}
                         <div className="md:text-right">
                             <p className="text-lg font-semibold text-gray-900">{formatCurrency(amount)}</p>
                             <p className="text-xs text-gray-500 capitalize">{frequency}</p>
                         </div>
-                        {accountName && (
-                            <div className="md:hidden">
-                                <p className="text-xs text-gray-500 capitalize">{accountName}</p>
-                            </div>
-                        )}
                     </div>
                     <Button
                         onClick={() => onAction(id)}

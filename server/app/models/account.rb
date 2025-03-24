@@ -27,9 +27,8 @@ class Account < ApplicationRecord
   has_many :transactions, dependent: :destroy
   has_many :incoming_transactions, class_name: 'Transaction', foreign_key: 'recipient_account_id', dependent: :destroy
 
-  # Validations
   validates :name, presence: true
-  validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0 }
+  validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0, unless: :credit_card? }
   validates :account_type, presence: true
   validates :currency, presence: true
   validates :is_owned, inclusion: { in: [ true, false ] }
@@ -49,7 +48,6 @@ class Account < ApplicationRecord
     eur: 'eur'
   }, default: :cop
 
-  # Scopes
   scope :by_type, ->(type) { where(account_type: type) }
   scope :by_currency, ->(currency) { where(currency: currency) }
   scope :owned, -> { where(is_owned: true) }
