@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { useSearchParams } from "@remix-run/react";
+import { useSearchParams, useNavigate } from "@remix-run/react";
 
 import { Layout } from "../components/ui/Layout";
 import { TransactionsList } from "../components/transactions/TransactionsList";
@@ -21,6 +21,8 @@ export const meta: MetaFunction = () => {
 
 export default function Transactions() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const returnTo = searchParams.get('returnTo');
     const {
         transactions,
         accounts,
@@ -55,6 +57,13 @@ export default function Transactions() {
 
     const handleCreateTransaction = async (data: CreateTransactionData) => {
         await createTransaction(data);
+        
+        // Redirect back to original route if returnTo parameter exists
+        if (returnTo) {
+            navigate(returnTo);
+        } else {
+            handleCloseModal();
+        }
     };
 
     const handleDeleteTransaction = (id: string) => {

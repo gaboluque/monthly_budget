@@ -25,7 +25,7 @@ export function Layout({ children }: LayoutProps) {
         </main>
         {showTransactionFAB && (
           <FloatingActionButton
-            to="/transactions?new=true"
+            to={`/transactions?new=true&returnTo=${encodeURIComponent(location.pathname)}`}
             ariaLabel="Add new transaction"
           />
         )}
