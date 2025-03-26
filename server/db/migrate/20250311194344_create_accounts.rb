@@ -7,6 +7,7 @@ class CreateAccounts < ActiveRecord::Migration[8.0]
       t.string :account_type, null: false
       t.string :currency, null: false, default: 'COP'
       t.text :description
+      t.boolean :is_owned, null: false, default: true
 
       t.timestamps
     end

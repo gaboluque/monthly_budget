@@ -105,9 +105,15 @@ going_out_result = BudgetItems::Create.call(test_user, going_out_params)
 going_out = going_out_result[:budget_item]
 
 puts "Marking budget items as paid..."
-result = BudgetItems::MarkAsPaid.call(groceries)
-
-result = BudgetItems::MarkAsPaid.call(rent)
+result = Transactions::Create.call(test_user, {
+  amount: 1200.00,
+  budget_item_id: rent.id,
+  executed_at: Time.current
+})
 
 puts "Marking income as received..."
-result = Incomes::MarkAsReceived.call(salary)
+result = Transactions::Create.call(test_user, {
+  amount: 3500.00,
+  budget_item_id: rent.id,
+  executed_at: Time.current
+})

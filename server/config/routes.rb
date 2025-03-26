@@ -42,7 +42,11 @@ Rails.application.routes.draw do
           get :categories
         end
       end
-      resources :insights, only: [ :index ]
+      resources :insights, only: [ :index ] do
+        collection do
+          get :monthly_balance
+        end
+      end
     end
   end
 end

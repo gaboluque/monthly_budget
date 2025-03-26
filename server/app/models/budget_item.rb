@@ -23,15 +23,14 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class BudgetItem < ApplicationRecord
-  include TransactionItem
-
   belongs_to :user
-
-  DEFAULT_CATEGORIES = %w[needs wants savings debt investment].freeze
 
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :category, presence: true
+
+  DEFAULT_CATEGORIES = %w[needs wants savings debt investment other].freeze
+
+  enum :category, DEFAULT_CATEGORIES.map { |c| [ c, c ] }.to_h, default: :other, prefix: true
 
   enum :frequency, {
     monthly: 'monthly'
@@ -50,4 +49,12 @@ class BudgetItem < ApplicationRecord
     current_month_end = Time.current.end_of_month
     where('last_paid_at BETWEEN ? AND ?', current_month_start, current_month_end)
   }
+
+  def paid_this_month?
+    last_paid_at.present? && last_paid_at.between?(Time.current.beginning_of_month, Time.current.end_of_month)
+  end
+
+  def pending?
+    !paid_this_month?
+  end
 end

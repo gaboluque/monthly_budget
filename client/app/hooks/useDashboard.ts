@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { incomesApi } from "../lib/api/incomes";
 import { ui } from "../lib/ui/manager";
 import { Income } from "../lib/types/incomes";
+import { insightsApi } from "../lib/api/insights";
+import { MonthlyBalance } from "../lib/types/insights";
 
 export function useDashboard() {
   const [pendingIncomes, setPendingIncomes] = useState<Income[]>([]);
@@ -14,6 +16,13 @@ export function useDashboard() {
     string | null
   >(null);
 
+  const [monthlyBalanceLoading, setMonthlyBalanceLoading] = useState(true);
+  const [monthlyBalance, setMonthlyBalance] = useState<MonthlyBalance>({
+    incomes: [],
+    expenses: [],
+    balance: 0,
+  });
+
   const fetchIncomes = async () => {
     setIncomesLoading(true);
     const [pending, received] = await Promise.all([
@@ -25,8 +34,16 @@ export function useDashboard() {
     setIncomesLoading(false);
   };
 
+  const fetchMonthlyBalance = async () => {
+    setMonthlyBalanceLoading(true);
+    const balance = await insightsApi.getMonthlyBalance();
+    setMonthlyBalance(balance);
+    setMonthlyBalanceLoading(false);
+  };
+
   useEffect(() => {
     fetchIncomes();
+    fetchMonthlyBalance();
   }, []);
 
   const handleMarkIncomeAsReceived = async (incomeId: string) => {
@@ -40,6 +57,7 @@ export function useDashboard() {
       });
     } finally {
       setMarkingIncomeReceived(null);
+      fetchIncomes();
     }
   };
 
@@ -54,6 +72,7 @@ export function useDashboard() {
       });
     } finally {
       setMarkingIncomePending(null);
+      fetchIncomes();
     }
   };
 
@@ -65,5 +84,7 @@ export function useDashboard() {
     markingIncomeReceived,
     handleMarkIncomeAsReceived,
     handleMarkIncomeAsPending,
+    monthlyBalance,
+    monthlyBalanceLoading,
   };
 }

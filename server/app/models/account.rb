@@ -5,7 +5,7 @@
 #  id           :bigint           not null, primary key
 #  account_type :string           not null
 #  balance      :decimal(15, 2)   not null
-#  currency     :string           default("COP"), not null
+#  currency     :string           default("cop"), not null
 #  description  :text
 #  is_owned     :boolean          default(TRUE), not null
 #  name         :string           not null

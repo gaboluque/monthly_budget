@@ -11,6 +11,7 @@ module Transactions
         rollback_transaction!
         transaction.destroy!
         mark_items_as_pending!
+        update_budget_item!
 
         { success: true, transaction: transaction }
       end
@@ -42,6 +43,10 @@ module Transactions
       when Income
         item.update!(last_received_at: item.reload.last_executed_at)
       end
+    end
+
+    def update_budget_item!
+      transaction.budget_item.update!(last_paid_at: nil)
     end
   end
 end

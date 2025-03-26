@@ -13,6 +13,7 @@
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  account_id           :bigint           not null
+#  budget_item_id       :bigint           not null
 #  item_id              :bigint
 #  recipient_account_id :bigint
 #  user_id              :bigint           not null
@@ -20,6 +21,7 @@
 # Indexes
 #
 #  index_transactions_on_account_id            (account_id)
+#  index_transactions_on_budget_item_id        (budget_item_id)
 #  index_transactions_on_category              (category)
 #  index_transactions_on_frequency             (frequency)
 #  index_transactions_on_item                  (item_type,item_id)
@@ -30,6 +32,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (account_id => accounts.id)
+#  fk_rails_...  (budget_item_id => budget_items.id)
 #  fk_rails_...  (recipient_account_id => accounts.id)
 #  fk_rails_...  (user_id => users.id)
 #

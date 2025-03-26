@@ -6,6 +6,7 @@ class CreateIncomes < ActiveRecord::Migration[8.0]
       t.decimal :amount, precision: 15, scale: 2, null: false
       t.string :frequency, null: false
       t.references :account, null: false, foreign_key: true
+      t.datetime :last_received_at
       t.timestamps
     end
   end

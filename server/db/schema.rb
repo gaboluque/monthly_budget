@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_21_165808) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -68,7 +68,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_21_165808) do
     t.bigint "item_id"
     t.string "frequency", default: "one_time"
     t.string "category"
+    t.bigint "budget_item_id", null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
+    t.index ["budget_item_id"], name: "index_transactions_on_budget_item_id"
     t.index ["category"], name: "index_transactions_on_category"
     t.index ["frequency"], name: "index_transactions_on_frequency"
     t.index ["item_type", "item_id"], name: "index_transactions_on_item"
@@ -91,5 +93,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_21_165808) do
   add_foreign_key "incomes", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "accounts", column: "recipient_account_id"
+  add_foreign_key "transactions", "budget_items"
   add_foreign_key "transactions", "users"
 end

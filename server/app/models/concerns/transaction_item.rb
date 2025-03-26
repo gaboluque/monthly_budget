@@ -3,6 +3,10 @@ module TransactionItem
 
   included do
     has_many :transactions, as: :item, dependent: :nullify
+
+    scope :current_month, -> {
+      joins(:transactions).where(transactions: { executed_at: DateTime.current.beginning_of_month..DateTime.current.end_of_month })
+    }
   end
 
   def transaction_item?

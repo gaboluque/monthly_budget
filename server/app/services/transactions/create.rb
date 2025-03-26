@@ -13,6 +13,7 @@ module Transactions
         transaction.executed_at = Time.current if transaction.executed_at.blank?
 
         apply_transaction(transaction)
+        update_budget_item(transaction)
 
         if transaction.save
           { success: true, transaction: transaction }
@@ -34,6 +35,10 @@ module Transactions
       when Transaction.transaction_types[:expense]
         transaction.account.update!(balance: transaction.account.balance - transaction.amount)
       end
+    end
+
+    def update_budget_item(transaction)
+      transaction.budget_item.update!(last_paid_at: transaction.executed_at)
     end
   end
 end

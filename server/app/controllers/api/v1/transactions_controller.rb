@@ -55,7 +55,7 @@ module Api
 
       # GET /api/v1/transactions/categories
       def categories
-        render json: { categories: Transaction.categories.keys }
+        render json: { categories: BudgetItem::DEFAULT_CATEGORIES }
       end
 
       private
@@ -75,7 +75,8 @@ module Api
           :description,
           :executed_at,
           :frequency,
-          :category
+          :category,
+          :budget_item_id
         )
       end
 
