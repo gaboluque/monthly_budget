@@ -40,7 +40,7 @@ class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :account
   belongs_to :recipient_account, class_name: 'Account', optional: true
-  belongs_to :item, polymorphic: true, optional: true
+  belongs_to :item, polymorphic: true, optional: true # BudgetItem, Income
   belongs_to :budget_item
 
   validates :amount, presence: true, numericality: true

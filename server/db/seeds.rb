@@ -9,111 +9,165 @@
 # 5. Mark 2 budget items as paid (using MarkAsPaid service)
 # 6. Mark 1 income as received (using MarkAsReceived service)
 
-# Clear existing data
-puts "Clearing existing data..."
-Transaction.destroy_all
-Income.destroy_all
-BudgetItem.destroy_all
-Account.destroy_all
-User.destroy_all
+class Seeds
+  def self.run
+    new.run
+  end
 
-# # Create test user
-puts "Creating user..."
-test_user = User.create!(
-  email: 'user@test.com',
-  password: 'qwerty123',
-)
+  def run
+    puts "\n============ Starting Database Seeding Process ============\n\n"
+    clear_existing_data
+    create_test_user
+    create_accounts
+    create_incomes
+    create_budget_items
+    create_transactions
+    puts "\n============ Database Seeding Completed Successfully ============\n"
+  end
 
+  private
 
-puts "Creating accounts..."
-savings_params = {
-  name: 'Savings',
-  balance: 15000.00,
-  account_type: Account.account_types[:savings],
-  currency: 'COP',
-  description: 'Emergency fund',
-  is_owned: true
-}
-savings_result = Accounts::Create.call(test_user, savings_params)
-savings = savings_result[:account]
+  def clear_existing_data
+    puts "---------- 🗑️  Clearing Existing Data ----------"
+    Transaction.destroy_all
+    Income.destroy_all
+    BudgetItem.destroy_all
+    Account.destroy_all
+    User.destroy_all
+    puts "✅ All existing data cleared\n\n"
+  end
 
-investments_params = {
-  name: 'Investments',
-  balance: 10000.00,
-  account_type: Account.account_types[:investments],
-  currency: 'COP',
-  description: 'Investments',
-  is_owned: true
-}
-investments_result = Accounts::Create.call(test_user, investments_params)
-investments = investments_result[:account]
+  def create_test_user
+    puts "---------- 👤 Creating Test User ----------"
+    @test_user = User.create!(
+      email: 'user@test.com',
+      password: 'qwerty123',
+    )
+    puts "✅ Test user created successfully\n\n"
+  end
 
-credit_card_params = {
-  name: 'Credit Card',
-  balance: 1000.00,
-  account_type: Account.account_types[:credit_card],
-  currency: 'COP',
-  description: 'Primary credit card',
-  is_owned: true
-}
-credit_card_result = Accounts::Create.call(test_user, credit_card_params)
-credit_card = credit_card_result[:account]
+  def create_accounts
+    puts "---------- 🏦 Creating Financial Accounts ----------"
+    @savings = create_account(
+      name: 'Savings',
+      balance: 15000.00,
+      currency: 'cop',
+      description: 'Emergency fund',
+      is_owned: true,
+      account_type: Account.account_types[:savings]
+    )
 
-puts "Creating incomes..."
-salary_params = {
-  name: 'Monthly Salary',
-  amount: 3500.00,
-  frequency: 'monthly'
-}
-salary_result = Incomes::Create.call(test_user, salary_params)
-salary = salary_result[:income]
+    @investments = create_account(
+      name: 'Investments',
+      balance: 10000.00,
+      currency: 'cop',
+      description: 'Investments',
+      is_owned: true,
+      account_type: Account.account_types[:investment]
+    )
 
-freelance_params = {
-  name: 'Freelance Work',
-  amount: 500.00,
-  frequency: 'monthly'
-}
-freelance_result = Incomes::Create.call(test_user, freelance_params)
-freelance = freelance_result[:income]
+    @credit_card = create_account(
+      name: 'Credit Card',
+      balance: 1000.00,
+      currency: 'cop',
+      description: 'Primary credit card',
+      is_owned: true,
+      account_type: Account.account_types[:credit_card]
+    )
+    puts "✅ All accounts created successfully\n\n"
+  end
 
-puts "Creating budget items..."
-rent_params = {
-  name: 'Rent',
-  amount: 1200.00,
-  category: 'needs',
-  frequency: 'monthly'
-}
-rent_result = BudgetItems::Create.call(test_user, rent_params)
-rent = rent_result[:budget_item]
+  def create_incomes
+    puts "---------- 💰 Creating Income Sources ----------"
+    @salary = create_income(
+      name: 'Monthly Salary',
+      amount: 3500.00,
+      frequency: 'monthly',
+      account_id: @savings.id
+    )
 
-groceries_params = {
-  name: 'Groceries',
-  amount: 400.00,
-  category: 'needs',
-  frequency: 'monthly'
-}
-groceries_result = BudgetItems::Create.call(test_user, groceries_params)
-groceries = groceries_result[:budget_item]
+    @freelance = create_income(
+      name: 'Freelance Work',
+      amount: 500.00,
+      frequency: 'monthly',
+      account_id: @savings.id
+    )
+    puts "✅ All income sources created successfully\n\n"
+  end
 
-going_out_params = {
-  name: 'Eating Out',
-  amount: 200.00,
-  category: 'wants',
-  frequency: 'monthly'
-}
-going_out_result = BudgetItems::Create.call(test_user, going_out_params)
-going_out = going_out_result[:budget_item]
+  def create_budget_items
+    puts "---------- 📋 Creating Budget Items ----------"
+    @rent = create_budget_item(
+      name: 'Rent',
+      amount: 1200.00,
+      category: 'needs',
+      frequency: 'monthly'
+    )
 
-puts "Marking budget items as paid..."
-result = Transactions::Create.call(test_user, {
-  amount: 1200.00,
-  budget_item_id: rent.id,
-  executed_at: Time.current
-})
+    @groceries = create_budget_item(
+      name: 'Groceries',
+      amount: 400.00,
+      category: 'needs',
+      frequency: 'monthly'
+    )
 
-puts "Marking income as received..."
-result = Transactions::Create.call(test_user, {
-  amount: 3500.00,
-  budget_item_id: rent.id,
-  executed_at: Time.current
-})
+    @going_out = create_budget_item(
+      name: 'Eating Out',
+      amount: 200.00,
+      category: 'wants',
+      frequency: 'monthly'
+    )
+    puts "✅ All budget items created successfully\n\n"
+  end
+
+  def create_transactions
+    puts "---------- 💳 Creating Transactions ----------"
+    create_transaction(
+      amount: 1200.00,
+      item: @rent,
+      executed_at: Time.current,
+      account_id: @savings.id,
+      transaction_type: 'expense'
+    )
+
+    create_transaction(
+      amount: 3500.00,
+      item: @groceries,
+      executed_at: Time.current,
+      account_id: @savings.id,
+      transaction_type: 'income'
+    )
+    puts "✅ All transactions created successfully\n\n"
+  end
+
+  def create_account(params)
+    result = Accounts::Create.call(@test_user, params)
+    puts "  • #{params[:name]} account: #{result[:success] ? '✅' : '❌'}"
+    puts "    Errors: #{result[:errors]}" if result[:success] == false
+    result[:account]
+  end
+
+  def create_income(params)
+    result = Incomes::Create.call(@test_user, params)
+    puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
+    puts "    Errors: #{result[:errors]}" if result[:success] == false
+    result[:income]
+  end
+
+  def create_budget_item(params)
+    result = BudgetItems::Create.call(@test_user, params)
+    puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
+    puts "    Errors: #{result[:errors]}" if result[:success] == false
+    result[:budget_item]
+  end
+
+  def create_transaction(params)
+    result = Transactions::Create.call(@test_user, params)
+    puts "  • Transaction: #{result[:success] ? '✅' : '❌'}"
+    puts "    Errors: #{result[:errors]}" if result[:success] == false
+    result[:transaction]
+  end
+end
+
+# Run the seeds
+Seeds.run
