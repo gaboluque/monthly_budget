@@ -54,9 +54,6 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     }
   };
 
-  console.log(initialData);
-  console.log(accountOptions);
-
   const formFields: FormField<CreateIncomeData>[] = [
     {
       name: 'name',

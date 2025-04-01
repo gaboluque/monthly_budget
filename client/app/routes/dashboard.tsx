@@ -14,10 +14,6 @@ export const meta: MetaFunction = () => {
 export default function Dashboard() {
   const { monthlyBalance, monthlyBalanceLoading } = useDashboard()
 
-  // Debug the data
-  console.log("Monthly Balance Data:", monthlyBalance)
-  console.log("Category Data:", monthlyBalance?.balance_by_category)
-
   // Safely get category entries
   const categoryEntries = monthlyBalance?.balance_by_category ? Object.entries(monthlyBalance.balance_by_category) : []
 
