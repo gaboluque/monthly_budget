@@ -3,6 +3,7 @@
 **/*.iml
 **/node_modules
 **/.env
+**/.env.prod
 **/*.DS_Store
 
 # Ignore pidfiles, but keep the directory.
