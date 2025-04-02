@@ -81,18 +81,3 @@ test:
 production:
   primary: &primary_production
     <<: *default
-    database: <%= ENV["DATABASE_NAME"] %>
-    username: <%= ENV["DATABASE_USERNAME"] %>
-    password: <%= ENV["DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: <%= ENV["DATABASE_NAME"] %>-cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: <%= ENV["DATABASE_NAME"] %>-queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: <%= ENV["DATABASE_NAME"] %>-cable
-    migrations_paths: db/cable_migrate
