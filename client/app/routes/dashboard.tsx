@@ -6,7 +6,7 @@ import { MonthlyBalanceCard } from "../components/dashboard/MonthlyBalanceCard"
 import { BudgetDistributionChart } from "../components/dashboard/BudgetDistributionChart"
 import { CategoryCard } from "../components/dashboard/CategoryCard"
 import type { CategoryData } from "../lib/types/insights"
-
+import { Spinner } from "../components/ui/Spinner"
 export const meta: MetaFunction = () => {
   return [{ title: "Dashboard | Monthly Budget" }, { name: "description", content: "Your Monthly Budget Dashboard" }]
 }
@@ -24,8 +24,7 @@ export default function Dashboard() {
       {monthlyBalanceLoading ? (
         <div className="flex justify-center items-center p-12">
           <div className="animate-pulse flex flex-col items-center">
-            <div className="h-12 w-12 bg-blue-200 rounded-full mb-4 animate-spin"></div>
-            <div className="text-blue-600 font-medium">Loading budget data...</div>
+            <Spinner />
           </div>
         </div>
       ) : !monthlyBalance ? (

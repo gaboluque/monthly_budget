@@ -2,7 +2,6 @@ import { useState } from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { Layout } from "../components/ui/Layout";
 import { Modal } from "../components/ui/Modal";
-import { Loader2 } from "lucide-react";
 import { AccountSummary } from "../components/accounts/AccountSummary";
 import { AccountList } from "../components/accounts/AccountList";
 import { EmptyAccountState } from "../components/accounts/EmptyAccountState";
@@ -11,6 +10,7 @@ import { useAccounts } from "../hooks/useAccounts";
 import { ui } from "../lib/ui/manager";
 import type { Account, CreateAccountData } from "../lib/types/accounts";
 import { PageHeader } from "../components/ui/PageHeader";
+import { Spinner } from "../components/ui/Spinner";
 
 export const meta: MetaFunction = () => {
   return [
@@ -89,8 +89,7 @@ export default function AccountsPage() {
       {/* Loading state */}
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
-          <Loader2 className="w-6 h-6 animate-spin mr-2" />
-          <span>Loading accounts...</span>
+          <Spinner />
         </div>
       ) : accounts.length === 0 ? (
         <EmptyAccountState onAddAccount={() => setIsAddModalOpen(true)} />

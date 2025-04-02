@@ -8,10 +8,10 @@ import { BudgetSummary } from "../components/budget_items/BudgetSummary"
 import { BudgetItemCategory } from "../components/budget_items/BudgetItemCategory"
 import { useBudgetItems } from "../hooks/useBudgetItems"
 import type { BudgetItem, CreateBudgetItemData } from "../lib/types/budget_items"
-import { Loader2, PlusCircle } from "lucide-react"
+import { PlusCircle } from "lucide-react"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
-
+import { Spinner } from "../components/ui/Spinner"
 export const meta: MetaFunction = () => {
   return [{ title: "Budget Items | Monthly Budget" }, { name: "description", content: "Manage your budget" }]
 }
@@ -106,7 +106,7 @@ export default function BudgetItems() {
 
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
-          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <Spinner />
           <span>Loading budget items...</span>
         </div>
       ) : budgetItems.length === 0 ? (

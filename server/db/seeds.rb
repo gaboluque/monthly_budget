@@ -124,7 +124,7 @@ class Seeds
     puts "---------- 💳 Creating Transactions ----------"
     create_transaction(
       amount: 1200.00,
-      item: @rent,
+      budget_item: @rent,
       executed_at: Time.current,
       account_id: @savings.id,
       transaction_type: 'expense'
@@ -132,7 +132,7 @@ class Seeds
 
     create_transaction(
       amount: 3500.00,
-      item: @groceries,
+      budget_item: @groceries,
       executed_at: Time.current,
       account_id: @savings.id,
       transaction_type: 'income'

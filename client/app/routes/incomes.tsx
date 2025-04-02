@@ -7,10 +7,11 @@ import { IncomeSummary } from "../components/incomes/IncomeSummary"
 import { IncomeItem } from "../components/incomes/IncomeItem"
 import { useIncomes } from "../hooks/useIncomes"
 import type { Income, CreateIncomeData } from "../lib/types/incomes"
-import { Loader2, DollarSign, PlusCircle } from "lucide-react"
+import { DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
+import { Spinner } from "../components/ui/Spinner"
 
 export const meta: MetaFunction = () => {
   return [{ title: "Incomes | Monthly Budget" }, { name: "description", content: "Manage your income sources" }]
@@ -60,7 +61,7 @@ export default function Incomes() {
 
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
-          <Loader2 className="w-6 h-6 animate-spin mr-2" />
+          <Spinner />
           <span>Loading income sources...</span>
         </div>
       ) : incomes.length === 0 ? (

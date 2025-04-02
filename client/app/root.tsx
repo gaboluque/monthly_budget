@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "@remix-run/react";
 import type { LinksFunction } from "@remix-run/node";
 import { UIRoot } from "./lib/ui/components/UIRoot";
@@ -23,7 +24,17 @@ export const links: LinksFunction = () => [
   },
 ];
 
+export async function loader() {
+  const envVars = {
+    BASE_API_URL: process.env.BASE_API_URL,
+  };
+
+  return { envVars };
+}
+
 export default function App() {
+  const { envVars } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -36,6 +47,13 @@ export default function App() {
         <Outlet />
         <UIRoot />
         <ScrollRestoration />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.process = ${JSON.stringify({
+              env: envVars,
+            })}`,
+          }}
+        />
         <Scripts />
       </body>
     </html>
