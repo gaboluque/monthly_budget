@@ -12,7 +12,7 @@
     "variables": {}
   },
   "build": {
-    "outDir": "dist",
+    "outDir": "build",
     "buildCommand": "npm run build",
     "installCommand": "npm ci"
   },
