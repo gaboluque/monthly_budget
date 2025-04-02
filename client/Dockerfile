@@ -1,17 +1,31 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18
+# Build stage
+FROM node:18-alpine as build
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Copy source code
+COPY . .
 
-# Start the development server with hot reloading
-CMD ["npm", "run", "dev"] 
+# Build the application
+RUN npm run build
+
+# Production stage
+FROM nginx:alpine
+
+# Copy built assets from build stage
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy nginx configuration if you have one
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"] 
