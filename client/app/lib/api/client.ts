@@ -17,11 +17,6 @@ const request = async (url: string, options?: RequestInit) => {
     });
 
     if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
-
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 

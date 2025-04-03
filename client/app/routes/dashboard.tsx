@@ -23,7 +23,9 @@ export default function Dashboard() {
 
       {monthlyBalanceLoading ? (
         <div className="flex justify-center items-center p-12">
+          <div className="animate-pulse flex flex-col items-center">
             <Spinner />
+          </div>
         </div>
       ) : !monthlyBalance ? (
         <div className="flex justify-center items-center p-12">
@@ -46,7 +48,7 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6 p-2 md:p-6 max-w-7xl mx-auto">
+        <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
           {/* Monthly Balance Card */}
           <MonthlyBalanceCard
             monthlyBalance={monthlyBalance?.monthly_balance || "0"}
@@ -79,7 +81,7 @@ export default function Dashboard() {
           </div>
 
           {/* Category Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categoryEntries.length > 0 ? (
               categoryEntries.map(([category, data]: [string, CategoryData]) => (
                 <CategoryCard key={category} category={category} data={data} />

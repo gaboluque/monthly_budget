@@ -37,6 +37,8 @@ export async function loader() {
 export default function App() {
   const { envVars } = useLoaderData<typeof loader>();
 
+  console.log("App", envVars);
+
   return (
     <html lang="en">
       <head>
