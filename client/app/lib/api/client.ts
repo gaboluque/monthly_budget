@@ -1,3 +1,5 @@
+const BASE_URL = window?.process?.env?.BASE_API_URL || "/v1";
+
 const request = async (url: string, options?: RequestInit) => {
   try {
     const token = localStorage.getItem("token");
@@ -7,10 +9,7 @@ const request = async (url: string, options?: RequestInit) => {
       ...(options?.headers || {}),
     };
 
-    console.log(process.env.BASE_API_URL);
-    console.log(url);
-
-    const response = await fetch(`${process.env.BASE_API_URL}${url}`, {
+    const response = await fetch(`${BASE_URL}${url}`, {
       ...options,
       headers,
     });
