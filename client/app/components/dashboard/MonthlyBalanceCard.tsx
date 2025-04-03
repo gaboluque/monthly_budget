@@ -24,7 +24,7 @@ export function MonthlyBalanceCard({
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="flex flex-col">
           <span className="text-4xl font-bold text-green-600 transition-all duration-500 hover:scale-105 transform">
-            {typeof monthlyBalance === "string" ? monthlyBalance : formatCurrency(monthlyBalance)}
+            {formatCurrency(Number(monthlyBalance))}
           </span>
           <span className="text-xs text-gray-500 mt-1">Available this month</span>
         </div>
@@ -37,7 +37,7 @@ export function MonthlyBalanceCard({
             <div>
               <p className="text-xs font-medium text-gray-500">Income</p>
               <p className="text-lg font-medium text-green-500">
-                {typeof incomeTotal === "string" ? incomeTotal : formatCurrency(incomeTotal)}
+                {formatCurrency(Number(incomeTotal))}
               </p>
             </div>
           </div>
@@ -49,7 +49,7 @@ export function MonthlyBalanceCard({
             <div>
               <p className="text-xs font-medium text-gray-500">Expenses</p>
               <p className="text-lg font-medium text-red-500">
-                {typeof expensesTotal === "string" ? expensesTotal : formatCurrency(expensesTotal)}
+                {formatCurrency(Number(expensesTotal))}
               </p>
             </div>
           </div>

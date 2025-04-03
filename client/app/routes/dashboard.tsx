@@ -79,7 +79,7 @@ export default function Dashboard() {
           </div>
 
           {/* Category Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {categoryEntries.length > 0 ? (
               categoryEntries.map(([category, data]: [string, CategoryData]) => (
                 <CategoryCard key={category} category={category} data={data} />

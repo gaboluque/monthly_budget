@@ -21,7 +21,7 @@ export default function Insights() {
 
     return (
         <Layout>
-            <div className="bg-white rounded-lg shadow-lg p-6 lg:p-8">
+            <div className="bg-white rounded-lg shadow-lg p-4 md:p-6">
                 <PageHeader
                     title="Financial Insights"
                     description="Analyze your financial data with detailed insights and trends."
