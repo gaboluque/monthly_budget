@@ -20,7 +20,7 @@ RUN bundle install
 COPY . .
 
 # Expose the port the app runs on
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the server
 CMD ["rails", "server", "-b", "0.0.0.0"]

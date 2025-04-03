@@ -1,6 +1,9 @@
 alerts:
 - rule: DEPLOYMENT_FAILED
 - rule: DOMAIN_FAILED
+databases:
+- engine: PG
+  name: db-monthly-budget-dev
 features:
 - buildpack-stack=ubuntu-22
 ingress:
@@ -19,6 +22,10 @@ name: monthly-budget-dev
 region: sfo
 services:
 - dockerfile_path: .do/Dockerfile.client
+  envs:
+  - key: BASE_API_URL
+    scope: RUN_AND_BUILD_TIME
+    value: https://monthly-budget-dev-eyzxa.ondigitalocean.app/api/v1
   github:
     branch: develop
     deploy_on_push: true
@@ -29,6 +36,38 @@ services:
   name: monthly-budget-client
   source_dir: client
 - dockerfile_path: .do/Dockerfile.server
+  envs:
+  - key: PORT
+    scope: RUN_AND_BUILD_TIME
+    value: "3001"
+  - key: JWT_SECRET_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:qKOFDiCwgbHkCxdl9hElJy6aXuU+PVoy:xyhtotmtJBA/D0KqccOv3TPrhBxWGvcBhFIbGcjjnQNcyH3qxnpfMRcIgspPrwGvy6INoCmTugGRQsvklhVk2ZCo2PPQXEoc4oe2RtNl3/C47Q5S34DeGqDoeETfDkWbbmXW2qB/NvXAmX2euLR5PUY67vwEKHZ9dFrp7x/yk6uyPhv/FWBY3tkHw+DJoFxm]
+  - key: OPENAI_API_KEY
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:ceOXTY1nSatbR+gEg2d2dqfsL1I3lHnL:MAywxkEpWNZ5xLlJmwRxEEQxR4uGGphjvhqvhIu9vW36tBiFBATzFrqj/4yZFnUxmRsKIMmJBUsklayVaH1oPmRT41MJWyVbFlwR1BN2flMuPB4di53OalFvUJFZ2oBmJcPUApxE82Pq9Pr3dZkXcP8/wq6O6okjTneU6zUPMAByQtN02fq4W368mQdnfx50Y5oxUtbOcGe2JhVA5chUujr9kFDTpZuKwHTr1wvZw7yC1t8p]
+  - key: DATABASE_NAME
+    scope: RUN_AND_BUILD_TIME
+    value: db-monthly-budget-dev
+  - key: DATABASE_USERNAME
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:s1tqFmog8JC4dCv2DkzOkOxo9uZzlzoj:vDMMouse3s0nJRHvi7oL0QT3ElhVG8KRX/VrlxkfPr02WFKC/w==]
+  - key: DATABASE_PASSWORD
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+    value: EV[1:vNRVsbDQ05RXNVl2m7cms1E1O32ZiXGf:uiILItqau48Wzod/3NzPFdSDdnUzWWhekwEcQg60GNZFdukiNKFigg==]
+  - key: DATABASE_HOST
+    scope: RUN_AND_BUILD_TIME
+    value: app-2a11d997-f635-4491-b321-79a2343a424a-do-user-9101285-0.g.db.ondigitalocean.com
+  - key: DATABASE_PORT
+    scope: RUN_AND_BUILD_TIME
+    value: "25060"
+  - key: DATABASE_URL
+    scope: RUN_TIME
+    value: ${db-monthly-budget-dev.DATABASE_URL}
   github:
     branch: develop
     deploy_on_push: true

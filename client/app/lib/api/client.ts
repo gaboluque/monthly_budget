@@ -1,4 +1,4 @@
-import { getEnv } from "../utils/getEnv";
+'use client';
 
 const request = async (url: string, options?: RequestInit) => {
   try {
@@ -9,12 +9,17 @@ const request = async (url: string, options?: RequestInit) => {
       ...(options?.headers || {}),
     };
 
-    const response = await fetch(`${getEnv().BASE_API_URL}${url}`, {
+    const response = await fetch(`/api/v1${url}`, {
       ...options,
       headers,
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
