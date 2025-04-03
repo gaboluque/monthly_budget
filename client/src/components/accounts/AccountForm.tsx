@@ -47,7 +47,7 @@ export function AccountForm({
     is_owned: initialData?.is_owned ?? true,
   };
 
-  const handleSubmit: SubmitHandler<CreateAccountData> = async (data) => {
+  const handleSubmit: SubmitHandler<CreateAccountData> = async (data: CreateAccountData) => {
     setIsSubmitting(true);
     setError(null);
 

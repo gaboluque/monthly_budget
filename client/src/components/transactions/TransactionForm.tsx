@@ -2,13 +2,13 @@ import { useMemo, useState } from 'react';
 import type { CreateTransactionData } from '../../lib/api/transactions';
 import { Transaction } from '../../lib/types/transactions';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
-import { DefaultValues } from 'react-hook-form';
 import { Account } from '../../lib/types/accounts';
 import { Spinner } from '../ui/Spinner';
 import { formatCurrency } from '../../lib/utils/currency';
 import { formatISODate, formatLabel } from '../../lib/utils/formatters';
 import { FormActions } from '../ui/FormActions';
 import { BudgetItem } from '../../lib/types/budget_items';
+
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
     onCancel: () => void;
@@ -67,7 +67,7 @@ export function TransactionForm({
         budget_item_id: transaction?.budget_item?.id ?? undefined,
     };
 
-    const handleSubmit: SubmitHandler<CreateTransactionData> = async (data) => {
+    const handleSubmit: SubmitHandler<CreateTransactionData> = async (data: CreateTransactionData) => {
         setError(null);
         try {
             await onSubmit(data);
@@ -170,7 +170,7 @@ export function TransactionForm({
                 fields={formFields}
                 onSubmit={handleSubmit}
                 className="space-y-4"
-                defaultValues={defaultValues as DefaultValues<CreateTransactionData>}
+                defaultValues={defaultValues}
             />
 
             <FormActions

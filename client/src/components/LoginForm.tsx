@@ -17,7 +17,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit: SubmitHandler<LoginFormData> = async (data) => {
+  const handleSubmit: SubmitHandler<LoginFormData> = async (data: LoginFormData) => {
     setIsLoading(true);
     setError(null);
 

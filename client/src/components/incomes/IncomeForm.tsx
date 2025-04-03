@@ -41,7 +41,7 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
     account_id: initialData?.account_id ?? undefined,
   };
 
-  const handleSubmit: SubmitHandler<CreateIncomeData> = async (data) => {
+  const handleSubmit: SubmitHandler<CreateIncomeData> = async (data: CreateIncomeData) => {
     setIsSubmitting(true);
     setError(null);
     try {

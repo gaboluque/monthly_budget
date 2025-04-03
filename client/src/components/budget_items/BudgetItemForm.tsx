@@ -31,7 +31,7 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     category: initialData?.category ?? undefined,
   };
 
-  const handleSubmit: SubmitHandler<CreateBudgetItemData> = async (data) => {
+  const handleSubmit: SubmitHandler<CreateBudgetItemData> = async (data: CreateBudgetItemData) => {
     setIsSubmitting(true);
     setError(null);
     try {
