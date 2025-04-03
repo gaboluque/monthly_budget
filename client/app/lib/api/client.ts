@@ -1,5 +1,3 @@
-const BASE_URL = process.env.BASE_API_URL;
-
 const request = async (url: string, options?: RequestInit) => {
   try {
     const token = localStorage.getItem("token");
@@ -9,7 +7,7 @@ const request = async (url: string, options?: RequestInit) => {
       ...(options?.headers || {}),
     };
 
-    const response = await fetch(`${BASE_URL}${url}`, {
+    const response = await fetch(`${process.env.BASE_API_URL}${url}`, {
       ...options,
       headers,
     });
