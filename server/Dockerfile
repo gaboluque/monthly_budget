@@ -1,9 +1,8 @@
 # Use an official Ruby runtime as a parent image
-
-FROM ruby:3.3.5-slim
-
+FROM ruby:3.2
+ 
 # Install dependencies
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client build-essential git libpq-dev
+RUN apt-get update -qq && apt-get install -y nodejs postgresql-client
 
 # Install the specific version of Bundler
 RUN gem install bundler

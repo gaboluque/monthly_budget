@@ -18,7 +18,7 @@ ingress:
 name: monthly-budget-dev
 region: sfo
 services:
-- dockerfile_path: client/Dockerfile.prod
+- dockerfile_path: .do/Dockerfile.client
   github:
     branch: develop
     deploy_on_push: true
@@ -28,7 +28,7 @@ services:
   instance_size_slug: apps-s-1vcpu-1gb
   name: monthly-budget-client
   source_dir: client
-- dockerfile_path: server/Dockerfile.prod
+- dockerfile_path: .do/Dockerfile.server
   github:
     branch: develop
     deploy_on_push: true

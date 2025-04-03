@@ -1,4 +1,4 @@
-const BASE_URL = window?.process?.env?.BASE_API_URL || "/v1";
+const BASE_URL = process.env.BASE_API_URL;
 
 const request = async (url: string, options?: RequestInit) => {
   try {
