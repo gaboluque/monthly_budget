@@ -1,4 +1,4 @@
-const BASE_URL = process.env.BASE_API_URL;
+import { getEnv } from "../utils/getEnv";
 
 const request = async (url: string, options?: RequestInit) => {
   try {
@@ -9,7 +9,7 @@ const request = async (url: string, options?: RequestInit) => {
       ...(options?.headers || {}),
     };
 
-    const response = await fetch(`${BASE_URL}${url}`, {
+    const response = await fetch(`${getEnv().BASE_API_URL}${url}`, {
       ...options,
       headers,
     });
