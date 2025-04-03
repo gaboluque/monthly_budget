@@ -1,8 +1,6 @@
 import { getEnv } from "../utils/getEnv";
 
 const request = async (url: string, options?: RequestInit) => {
-  console.log("request", getEnv().BASE_API_URL);
-
   try {
     const token = localStorage.getItem("token");
     const headers = {
@@ -34,7 +32,6 @@ const request = async (url: string, options?: RequestInit) => {
 
 export const apiClient = {
   get: async (url: string) => {
-    console.log("get", getEnv().BASE_API_URL);
     return request(url);
   },
 

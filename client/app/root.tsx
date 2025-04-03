@@ -25,8 +25,6 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader() {
-  console.log("Root loader", process.env.BASE_API_URL);
-
   const envVars = {
     BASE_API_URL: process.env.BASE_API_URL,
   };
@@ -36,8 +34,6 @@ export async function loader() {
 
 export default function App() {
   const { envVars } = useLoaderData<typeof loader>();
-
-  console.log("App", envVars);
 
   return (
     <html lang="en">
