@@ -7,6 +7,9 @@ const request = async (url: string, options?: RequestInit) => {
       ...(options?.headers || {}),
     };
 
+    console.log(process.env.BASE_API_URL);
+    console.log(url);
+
     const response = await fetch(`${process.env.BASE_API_URL}${url}`, {
       ...options,
       headers,
