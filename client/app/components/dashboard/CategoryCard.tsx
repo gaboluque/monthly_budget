@@ -59,12 +59,8 @@ export function CategoryCard({ category, data }: CategoryCardProps) {
 
       <div className="space-y-3">
         <div className="flex justify-between items-center">
-          <span className="text-gray-500 text-sm">Budget</span>
-          <span className="font-medium text-gray-900">${data?.budget_amount || "0"}</span>
-        </div>
-        <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm">Spent</span>
-          <span className="font-medium text-gray-900">${data?.monthly_expenses || "0"}</span>
+          <span className="font-medium text-gray-900">${data?.monthly_expenses || "0"} / ${data?.budget_amount || "0"}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm">Remaining</span>

@@ -57,12 +57,13 @@ export function BudgetDistributionChart({ categories }: BudgetDistributionChartP
   return (
     <div className="space-y-6">
       {/* Bar Chart */}
-      <div className="flex h-20 rounded-xl overflow-hidden shadow-inner bg-gray-100">
+      <div className="flex h-12 rounded-xl overflow-hidden shadow-inner bg-gray-100">
         {validCategories.map(([category, data]) => {
           // Calculate percentage for this category
           const budgetAmount =
             typeof data.budget_amount === "string" ? Number.parseFloat(data.budget_amount) : data.budget_amount
-          const percentage = totalBudget > 0 ? (budgetAmount / totalBudget) * 100 : 0
+          const percentage = totalBudget > 0 ? (budgetAmount / totalBudget) * 100 : 0;
+          const categoryColor = getCategoryColor(category);
 
           return (
             <div
@@ -70,7 +71,7 @@ export function BudgetDistributionChart({ categories }: BudgetDistributionChartP
               className="h-full relative group transition-all duration-300 hover:brightness-110"
               style={{
                 width: `${percentage}%`,
-                backgroundColor: getCategoryColor(category),
+                backgroundColor: categoryColor,
                 minWidth: percentage > 0 ? "1.5rem" : "0",
               }}
             >
@@ -85,18 +86,19 @@ export function BudgetDistributionChart({ categories }: BudgetDistributionChartP
       </div>
 
       {/* Legend */}
-      <div className="flex flex-wrap gap-4 justify-center bg-white p-4 rounded-lg shadow-sm">
+      <div className="flex flex-wrap gap-4 justify-center">
         {validCategories.map(([category, data]) => {
           // Calculate percentage for this category
           const budgetAmount =
             typeof data.budget_amount === "string" ? Number.parseFloat(data.budget_amount) : data.budget_amount
-          const percentage = totalBudget > 0 ? (budgetAmount / totalBudget) * 100 : 0
+          const percentage = totalBudget > 0 ? (budgetAmount / totalBudget) * 100 : 0;
+          const categoryColor = getCategoryColor(category);
 
           return (
-            <div key={category} className="flex items-center bg-gray-50 px-3 py-2 rounded-lg">
+            <div key={category} className="flex items-center px-3 py-2 rounded-lg">
               <div
                 className="w-6 h-6 mr-2 rounded-full flex items-center justify-center"
-                style={{ backgroundColor: getCategoryColor(category) }}
+                style={{ backgroundColor: `${categoryColor}20`, color: categoryColor }}
               >
                 {getCategoryIcon(category)}
               </div>

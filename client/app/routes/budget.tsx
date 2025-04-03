@@ -107,7 +107,6 @@ export default function BudgetItems() {
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
           <Spinner />
-          <span>Loading budget items...</span>
         </div>
       ) : budgetItems.length === 0 ? (
         <div className="py-12 text-center">

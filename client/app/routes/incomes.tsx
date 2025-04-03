@@ -62,7 +62,6 @@ export default function Incomes() {
       {isLoading ? (
         <div className="py-12 flex justify-center items-center text-gray-500">
           <Spinner />
-          <span>Loading income sources...</span>
         </div>
       ) : incomes.length === 0 ? (
         <div className="py-12 text-center">

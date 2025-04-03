@@ -13,7 +13,7 @@ export function MonthlyBalanceCard({
   expensesTotal = 0,
 }: MonthlyBalanceCardProps) {
   return (
-    <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg p-6 col-span-1 md:col-span-3 border border-blue-100 transition-all duration-300 hover:shadow-xl">
+    <div className="rounded-xl shadow-lg p-6 col-span-1 md:col-span-3 border border-blue-100 transition-all duration-300 hover:shadow-xl">
       <div className="flex items-center mb-4">
         <div className="bg-blue-100 p-2 rounded-full mr-3">
           <TrendingUp className="h-5 w-5 text-blue-600" />
@@ -29,7 +29,7 @@ export function MonthlyBalanceCard({
           <span className="text-xs text-gray-500 mt-1">Available this month</span>
         </div>
 
-        <div className="flex space-x-6 bg-white p-3 rounded-lg shadow-sm">
+        <div className="flex space-x-6 bg-white flex items-center justify-start">
           <div className="flex items-center">
             <div className="mr-2 bg-green-100 p-1.5 rounded-full">
               <ArrowUpCircle className="h-4 w-4 text-green-600" />
