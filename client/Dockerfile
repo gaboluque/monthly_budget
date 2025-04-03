@@ -1,17 +1,19 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18
- 
-# Set the working directory
+# Build stage
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package files first
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies (including dev dependencies)
 RUN npm install
 
-# Expose the port the app runs on
+# Copy the rest of the source code
+COPY . .
+
+# Expose port 3000
 EXPOSE 3000
 
-# Start the development server with hot reloading
-CMD ["npm", "run", "dev"] 
+# Start the development server
+CMD ["npm", "run", "dev", "--", "--host"] 

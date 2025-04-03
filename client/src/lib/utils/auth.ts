@@ -1,0 +1,50 @@
+/**
+ * Authentication utility functions for handling JWT tokens and user authentication
+ */
+
+// Token storage key in localStorage
+export const TOKEN_KEY = 'auth_token';
+
+/**
+ * Check if the user is authenticated by verifying a token exists
+ */
+export function isAuthenticated(): boolean {
+  return !!getToken();
+}
+
+/**
+ * Get the authentication token from localStorage
+ */
+export function getToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+/**
+ * Set the authentication token in localStorage
+ */
+export function setToken(token: string): void {
+  localStorage.setItem(TOKEN_KEY, token);
+}
+
+/**
+ * Remove the authentication token from localStorage
+ */
+export function removeToken(): void {
+  localStorage.removeItem(TOKEN_KEY);
+}
+
+/**
+ * Log the user out by removing the token
+ */
+export function logout(): void {
+  removeToken();
+  window.location.href = '/login';
+}
+
+/**
+ * Get authentication headers for API requests
+ */
+export function getAuthHeaders(): Record<string, string> {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+} 
