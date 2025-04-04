@@ -36,7 +36,8 @@ COPY client/package.json client/package-lock.json ./client/
 # Install gems and npm packages
 RUN bundle install && \
     cd client && \
-    npm ci --production && \
+    npm ci && \
+    npm install -g typescript && \
     npm cache clean --force
 
 # Copy the rest of the application
@@ -61,8 +62,7 @@ ENV RAILS_ENV=${ENV} \
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     postgresql-client \
-    libpq-dev \
-    tini && \
+    libpq-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -79,20 +79,8 @@ COPY server .
 RUN mkdir -p public
 COPY --from=builder /app/client/dist/* ./public/
 
-# Create a non-root user
-RUN useradd -m -u 1000 app && \
-    chown -R app:app /app
-USER app
-
 # Expose the port the app runs on
 EXPOSE 80
-
-# Add healthcheck
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:80/health || exit 1
-
-# Use tini as init system
-ENTRYPOINT ["/usr/bin/tini", "--"]
 
 # Start the server
 CMD ["rails", "server", "-b", "0.0.0.0"]
