@@ -1,3 +1,5 @@
+name: monthly-budget-dev
+region: sfo
 alerts:
 - rule: DEPLOYMENT_FAILED
 - rule: DOMAIN_FAILED
@@ -19,10 +21,9 @@ ingress:
     match:
       path:
         prefix: /api
-name: monthly-budget-dev
-region: sfo
 services:
-- dockerfile_path: .do/Dockerfile.client
+- name: monthly-budget-client
+  environment-slug: node-js
   envs:
   - key: BASE_API_URL
     scope: RUN_AND_BUILD_TIME
@@ -31,14 +32,11 @@ services:
     branch: develop
     deploy_on_push: true
     repo: gaboluque/monthly_budget
-  http_port: 80
-  instance_count: 1
-  instance_size_slug: apps-s-1vcpu-1gb
-  name: monthly-budget-client
   source_dir: client
   static_sites:
     output_dir: /app/dist
-- dockerfile_path: .do/Dockerfile.server
+- name: monthly-budget-server
+  dockerfile_path: .do/Dockerfile.server
   envs:
   - key: PORT
     scope: RUN_AND_BUILD_TIME
@@ -78,5 +76,4 @@ services:
   http_port: 3001
   instance_count: 1
   instance_size_slug: apps-s-1vcpu-1gb
-  name: monthly-budget-server
   source_dir: server

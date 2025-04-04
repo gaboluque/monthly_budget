@@ -1,9 +1,12 @@
 # Use an official Ruby runtime as a parent image
-
-FROM ruby:3.3.5-slim
+FROM ruby:3.3.5-slim as builder
 
 # Install dependencies
-RUN apt-get update -qq && apt-get install -y nodejs postgresql-client build-essential git libpq-dev
+RUN apt-get update -qq && \
+    apt-get install -y nodejs postgresql-client build-essential git libpq-dev curl && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g npm@latest
 
 # Install the specific version of Bundler
 RUN gem install bundler
@@ -12,13 +15,36 @@ RUN gem install bundler
 WORKDIR /app
 
 # Copy the Gemfile and Gemfile.lock
-COPY Gemfile Gemfile.lock ./
+COPY ./server/Gemfile ./server/Gemfile.lock ./
 
 # Install gems
 RUN bundle install
 
-# Copy the rest of the application code
-COPY . .
+# Copy the client data
+COPY ./client ./client
+
+# Build the client
+RUN cd client && npm install && npm run build
+
+FROM ruby:3.3.5-slim as runner
+
+# Install runtime dependencies
+RUN apt-get update -qq && \
+    apt-get install -y postgresql-client libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set the working directory
+WORKDIR /app
+
+# Copy gems from builder
+COPY --from=builder /usr/local/bundle /usr/local/bundle
+
+# Copy the server code
+COPY ./server .
+
+# Create public directory and copy the client build
+RUN mkdir -p public
+COPY --from=builder /app/client/dist/* ./public/
 
 # Expose the port the app runs on
 EXPOSE 3001
