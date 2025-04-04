@@ -4,7 +4,7 @@ FROM ruby:3.3.5-slim as builder
 # Set environment variables for build
 ENV RAILS_ENV=${ENV} \
     NODE_ENV=${ENV} \
-    BUNDLE_WITHOUT="development:test" \
+    BUNDLE_WITHOUT="development" \
     BUNDLE_FROZEN=1 \
     BUNDLE_JOBS=4
 
@@ -33,11 +33,13 @@ WORKDIR /app
 COPY server/Gemfile server/Gemfile.lock ./
 COPY client/package.json client/package-lock.json ./client/
 
-# Install gems and npm packages
-RUN bundle install && \
-    cd client && \
-    npm ci && \
-    npm cache clean --force
+# Install gems
+RUN bundle config set without 'development' && \
+    bundle install
+
+# Install npm packages
+RUN cd client && \
+    npm ci
 
 # Copy the rest of the application
 COPY . .
