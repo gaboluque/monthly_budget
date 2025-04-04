@@ -1,16 +1,23 @@
 # Use an official Ruby runtime as a parent image
 FROM ruby:3.3.5-slim as builder
 
-# Print envs
-RUN echo "ENV: $RAILS_ENV"
-RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
+# Define build arguments
+ARG ENV
+ARG CLIENT_BASE_URL
 
 # Set environment variables for build
 ENV RAILS_ENV=${ENV} \
     NODE_ENV=${ENV} \
     BUNDLE_WITHOUT="development" \
     BUNDLE_FROZEN=1 \
-    BUNDLE_JOBS=4
+    BUNDLE_JOBS=4 \
+    VITE_BASE_API_URL=${CLIENT_BASE_URL}
+
+# Print envs for debugging
+RUN echo "ENV: $ENV"
+RUN echo "RAILS_ENV: $RAILS_ENV"
+RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
+RUN echo "VITE_BASE_API_URL: $VITE_BASE_API_URL"
 
 # Install build dependencies
 RUN apt-get update -qq && \
@@ -47,14 +54,6 @@ RUN cd client && \
 
 # Copy the rest of the application
 COPY . .
-
-
-# Print envs
-RUN echo "ENV: $RAILS_ENV"
-RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
-
-# Set client base url with env variable
-ENV VITE_BASE_API_URL=${CLIENT_BASE_URL}
 
 # Build the client
 RUN cd client && \
