@@ -15,13 +15,13 @@ RUN gem install bundler
 WORKDIR /app
 
 # Copy the Gemfile and Gemfile.lock
-COPY ./server/Gemfile ./server/Gemfile.lock ./
+COPY server/Gemfile server/Gemfile.lock ./
 
 # Install gems
 RUN bundle install
 
 # Copy the client data
-COPY ./client ./client
+COPY client ./client
 
 # Set client base url with env variable
 ENV VITE_BASE_API_URL=${CLIENT_BASE_URL}
@@ -43,7 +43,7 @@ WORKDIR /app
 COPY --from=builder /usr/local/bundle /usr/local/bundle
 
 # Copy the server code
-COPY ./server .
+COPY server .
 
 # Create public directory and copy the client build
 RUN mkdir -p public

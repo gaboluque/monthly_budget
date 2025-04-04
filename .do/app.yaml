@@ -16,7 +16,7 @@ ingress:
       path:
         prefix: /
 services:
-- dockerfile_path: server/Dockerfile
+- dockerfile_path: .do/Dockerfile.server
   envs:
   - key: SERVER_PORT
     scope: RUN_AND_BUILD_TIME
