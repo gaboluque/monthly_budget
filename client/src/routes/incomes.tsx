@@ -28,6 +28,7 @@ export default function Incomes() {
       ui.notify({
         message: "Failed to save income",
         type: "error",
+        error: error as Error,
       });
     }
   }

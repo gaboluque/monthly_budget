@@ -37,5 +37,12 @@ module Server
     config.api_only = true
 
     config.public_file_server.enabled = true
+
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins "https://monthly-budget-dev-.*.ondigitalocean.app", "http://localhost:*"
+        resource "*", headers: :any, methods: [:get, :post, :put, :delete, :options, :head]
+      end
+    end
   end
 end

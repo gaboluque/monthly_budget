@@ -31,6 +31,7 @@ export function useIncomes() {
       ui.notify({
         message: "Failed to fetch incomes",
         type: "error",
+        error: error as Error,
       });
     } finally {
       setIsLoading(false);
@@ -46,6 +47,7 @@ export function useIncomes() {
       ui.notify({
         message: "Failed to create income",
         type: "error",
+        error: error as Error,
       });
       return false;
     }
@@ -60,6 +62,7 @@ export function useIncomes() {
       ui.notify({
         message: "Failed to update income",
         type: "error",
+        error: error as Error,
       });
       return false;
     }
@@ -74,6 +77,7 @@ export function useIncomes() {
       ui.notify({
         message: "Failed to delete income",
         type: "error",
+        error: error as Error,
       });
       return false;
     }
