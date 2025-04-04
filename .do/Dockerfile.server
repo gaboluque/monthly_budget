@@ -23,6 +23,9 @@ RUN bundle install
 # Copy the client data
 COPY ./client ./client
 
+# Set client base url with env variable
+ENV VITE_BASE_API_URL=${CLIENT_BASE_URL}
+
 # Build the client
 RUN cd client && npm install && npm run build
 
