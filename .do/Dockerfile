@@ -2,7 +2,7 @@
 FROM ruby:3.3.5-slim as builder
 
 # Print envs
-RUN echo "ENV: $ENV"
+RUN echo "ENV: $RAILS_ENV"
 RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
 
 # Set environment variables for build
@@ -50,7 +50,7 @@ COPY . .
 
 
 # Print envs
-RUN echo "ENV: $ENV"
+RUN echo "ENV: $RAILS_ENV"
 RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
 
 # Set client base url with env variable
