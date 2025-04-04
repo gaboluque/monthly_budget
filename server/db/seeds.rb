@@ -171,3 +171,23 @@ end
 
 # Run the seeds
 Seeds.run
+
+
+
+
+
+
+# emails = %w[
+#   dpavam@outlook.com
+# ]
+
+# emails.each do |email|
+#   user = User.create(email: email.downcase, password: email.downcase)
+
+#   BudgetItems::Create.call(user, {
+#     name: 'Other',
+#     amount: 0,
+#     category: 'other',
+#     frequency: 'monthly'
+#   })
+# end
