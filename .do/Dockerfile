@@ -37,7 +37,6 @@ COPY client/package.json client/package-lock.json ./client/
 RUN bundle install && \
     cd client && \
     npm ci && \
-    npm install -g typescript && \
     npm cache clean --force
 
 # Copy the rest of the application
@@ -47,7 +46,9 @@ COPY . .
 ENV VITE_BASE_API_URL=${CLIENT_BASE_URL}
 
 # Build the client
-RUN cd client && npm run build
+RUN cd client && \
+    npx tsc -b && \
+    npm run build
 
 # Production stage
 FROM ruby:3.3.5-slim as runner
