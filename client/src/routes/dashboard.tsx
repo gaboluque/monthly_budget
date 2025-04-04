@@ -44,7 +44,7 @@ export default function Dashboard() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6 p-4 md:p-6 max-w-7xl mx-auto">
+        <div className="space-y-6 md:p-4 lg:p-6 max-w-7xl mx-auto">
           {/* Monthly Balance Card */}
           <MonthlyBalanceCard
             monthlyBalance={monthlyBalance?.monthly_balance || "0"}
