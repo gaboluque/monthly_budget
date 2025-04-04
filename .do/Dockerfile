@@ -1,6 +1,8 @@
 # Use an official Ruby runtime as a parent image
 FROM ruby:3.3.5-slim as builder
 
+COPY . .
+
 # Install dependencies
 RUN apt-get update -qq && \
     apt-get install -y nodejs postgresql-client build-essential git libpq-dev curl && \
