@@ -46,4 +46,3 @@ services:
   instance_count: 1
   instance_size_slug: apps-s-1vcpu-1gb
   name: monthly-budget-server
-  source_dir: server
