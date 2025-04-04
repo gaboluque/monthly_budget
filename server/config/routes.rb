@@ -53,7 +53,9 @@ Rails.application.routes.draw do
   # Client routes - only in development and production
   if Rails.env.development? || Rails.env.production?
     # Serve static files from public directory
-    get '*path', to: 'static#index', constraints: ->(req) { !req.path.start_with?('/api') }
+    get '*path', to: 'static#index', constraints: ->(req) { 
+      !req.path.start_with?('/api') && !req.path.start_with?('/assets')
+    }
 
     # Root route
     root 'static#index'
