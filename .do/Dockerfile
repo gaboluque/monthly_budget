@@ -13,12 +13,6 @@ ENV RAILS_ENV=${ENV} \
     BUNDLE_JOBS=4 \
     VITE_BASE_API_URL=${CLIENT_BASE_URL}
 
-# Print envs for debugging
-RUN echo "ENV: $ENV"
-RUN echo "RAILS_ENV: $RAILS_ENV"
-RUN echo "CLIENT_BASE_URL: $CLIENT_BASE_URL"
-RUN echo "VITE_BASE_API_URL: $VITE_BASE_API_URL"
-
 # Install build dependencies
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
@@ -57,7 +51,7 @@ COPY . .
 
 # Build the client
 RUN cd client && \
-    echo "VITE_BASE_API_URL=$VITE_BASE_API_URL" > .env && \
+    echo "VITE_BASE_API_URL=$CLIENT_BASE_URL" > .env && \
     npx tsc -b && \
     npm run build
 
