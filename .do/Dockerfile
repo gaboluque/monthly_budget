@@ -45,10 +45,11 @@ RUN cd client && \
 COPY . .
 
 # Set client base url with env variable
-ENV VITE_BASE_API_URL=${CLIENT_BASE_URL}
+ENV VITE_BASE_API_URL=${CLIENT_BASE_URL:-http://localhost:3000}
 
 # Build the client
 RUN cd client && \
+    echo "VITE_BASE_API_URL=$VITE_BASE_API_URL" > .env && \
     npx tsc -b && \
     npm run build
 
