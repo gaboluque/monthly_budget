@@ -36,6 +36,8 @@ services:
   instance_size_slug: apps-s-1vcpu-1gb
   name: monthly-budget-client
   source_dir: client
+  static_sites:
+    output_dir: /app/dist
 - dockerfile_path: .do/Dockerfile.server
   envs:
   - key: PORT

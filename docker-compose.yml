@@ -10,8 +10,9 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=${ENV}
-      - VITE_HOST=${CLIENT_HOST}
-      - BASE_API_URL=${CLIENT_BASE_API_URL}
+      - VITE_PORT=${CLIENT_PORT}
+      - VITE_BASE_API_URL=${CLIENT_BASE_API_URL}
+      - VITE_APP_ENV=${ENV}
     depends_on:
       - server
 

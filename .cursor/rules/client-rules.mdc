@@ -1,0 +1,71 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Use these rules only when working on client-side code (React/Vite), not server-side Ruby on Rails code.
+
+You are an expert in modern React (v18+), React Router, JavaScript (or TypeScript), and frontend architecture.
+
+Code Style and Structure
+  - Write concise, idiomatic React code with accurate examples.
+  - Use functional components and React Hooks exclusively.
+  - Keep components small, focused, and reusable.
+  - Co-locate component logic (e.g., CSS modules, hooks) where appropriate.
+  - Organize code by feature or domain rather than by type (e.g., feature folders).
+  - Prefer modular CSS or utility-first frameworks like Tailwind (if used).
+  - Use consistent file structure (e.g., `components/`, `hooks/`, `pages/`, `utils/`).
+
+React and Routing
+  - Use `react-router-dom` (v6+) features like `<Routes>`, nested routing, and `useNavigate`.
+  - Prefer declarative routing over imperative history manipulation.
+  - Handle loading and error states for route-based components gracefully (e.g., suspense boundaries).
+  - Use lazy loading for route-based code splitting.
+
+Hooks and State Management
+  - Prefer built-in hooks (`useState`, `useEffect`, `useContext`, `useReducer`) before reaching for external state libraries.
+  - Use custom hooks to abstract reusable logic (`useFetch`, `useAuth`, etc.).
+  - Use context for cross-cutting concerns (e.g., theme, auth, user preferences).
+  - Ensure proper cleanup of side effects in hooks.
+
+Naming Conventions
+  - Use camelCase for variables, functions, and file names.
+  - Use PascalCase for React components and custom hooks.
+  - Use descriptive and intention-revealing names (e.g., `useAuthToken`, `handleSubmitForm`).
+
+Syntax and Formatting
+  - Use ES6+ syntax (e.g., arrow functions, destructuring, async/await).
+  - Prefer implicit returns in arrow functions when appropriate.
+  - Use single quotes for strings unless interpolation is needed.
+  - Format with Prettier and follow Airbnb or a custom ESLint config.
+  - Write JSX with proper indentation and spacing.
+
+Error Handling and Validation
+  - Use try/catch around async calls and display user-friendly error messages.
+  - Validate forms using libraries like `react-hook-form` or `zod/yup` (if applicable).
+  - Use error boundaries for critical component failures.
+
+Performance Optimization
+  - Memoize expensive calculations or components with `useMemo` / `React.memo` / `useCallback`.
+  - Avoid unnecessary re-renders by managing props and dependencies properly.
+  - Implement lazy loading and code splitting where beneficial (`React.lazy`, `Suspense`).
+
+Testing
+  - Write unit tests with React Testing Library.
+  - Follow TDD/BDD principles for complex logic or components.
+  - Use mocks for network calls (e.g., MSW or Jest mocks).
+  - Prefer testing behavior over implementation details.
+
+Security
+  - Sanitize and escape dynamic content to prevent XSS.
+  - Store sensitive data securely (e.g., never in localStorage without encryption).
+  - Validate user input both client- and server-side.
+
+General Best Practices
+  - Keep UI state local when possible.
+  - Decouple logic and presentation layers using hooks and components.
+  - Use environment variables for config (via `import.meta.env`).
+  - Follow accessibility (a11y) guidelines (ARIA roles, keyboard nav, etc.).
+  - Document complex components, hooks, or utility functions.
+
+Follow the official React documentation and modern frontend best practices for maintainability, performance, and developer experience.
