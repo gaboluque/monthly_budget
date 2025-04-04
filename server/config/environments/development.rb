@@ -72,6 +72,7 @@ Rails.application.configure do
 
   # Wildcard host for digital ocean monthly-budget-dev-* apps
   config.hosts << /monthly-budget-dev-.*\.ondigitalocean\.app/
+  config.hosts << /localhost/
 
   STDOUT.sync = true
 end
