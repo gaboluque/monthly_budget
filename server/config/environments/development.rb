@@ -70,7 +70,8 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-  config.hosts << "monthly-budget-dev-eyzxa.ondigitalocean.app"
+  # Wildcard host for digital ocean monthly-budget-dev-* apps
+  config.hosts << "monthly-budget-dev-*.ondigitalocean.app"
 
   STDOUT.sync = true
 end
