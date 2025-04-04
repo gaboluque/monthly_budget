@@ -80,7 +80,7 @@ COPY server .
 
 # Create public directory and copy the client build
 RUN mkdir -p public
-COPY --from=builder /app/client/dist/* ./public/
+COPY --from=builder /app/client/dist/ ./public/
 
 # Expose the port the app runs on
 EXPOSE 80
