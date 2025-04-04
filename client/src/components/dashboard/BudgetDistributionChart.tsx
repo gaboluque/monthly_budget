@@ -1,6 +1,7 @@
 import { CATEGORY_COLORS } from "../../lib/types/budget_items"
 import type { CategoryData } from "../../lib/types/insights"
 import { ShoppingBag, HeartHandshake, PiggyBank, CreditCard, TrendingUp, MoreHorizontal } from "lucide-react"
+import { formatCurrency } from "../../lib/utils/currency"
 
 interface BudgetDistributionChartProps {
   categories: Record<string, CategoryData>
@@ -76,7 +77,7 @@ export function BudgetDistributionChart({ categories }: BudgetDistributionChartP
               }}
             >
               <div className="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg whitespace-nowrap shadow-lg z-10 transition-opacity duration-200">
-                <span className="capitalize font-medium">{category}</span>: ${data.budget_amount} (
+                <span className="capitalize font-medium">{category}</span>: ${formatCurrency(Number(data.budget_amount))} (
                 {percentage.toFixed(1)}%)
                 <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-gray-800"></div>
               </div>

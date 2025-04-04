@@ -12,10 +12,10 @@ export function BudgetItem({ budgetItem, onEdit, onDelete }: BudgetItemProps) {
 
   return (
     <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow">
-      <div className="flex flex-row justify-between gap-4">
+      <div className="flex flex-row justify-between gap-4 items-center">
         <div className="flex flex-row items-center gap-4">
-          <h4 className="text-base font-medium text-gray-900 truncate w-40">{budgetItem.name}</h4>
-          <div className="mt-2 flex flex-wrap gap-4">
+          <h4 className="text-base font-medium text-gray-900 truncate w-32 truncate md:w-40">{budgetItem.name}</h4>
+          <div className="flex flex-wrap gap-4">
             <span className="text-sm font-semibold text-gray-700">
               {formatCurrency(budgetItem.amount)}
             </span>

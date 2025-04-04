@@ -1,6 +1,6 @@
 import type { CategoryData } from "../../lib/types/insights"
 import { ShoppingBag, HeartHandshake, PiggyBank, CreditCard, TrendingUp, MoreHorizontal } from "lucide-react"
-
+import { formatCurrency } from "../../lib/utils/currency"
 interface CategoryCardProps {
   category: string
   data: CategoryData
@@ -60,14 +60,16 @@ export function CategoryCard({ category, data }: CategoryCardProps) {
       <div className="space-y-3">
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm">Spent</span>
-          <span className="font-medium text-gray-900">${data?.monthly_expenses || "0"} / ${data?.budget_amount || "0"}</span>
+          <span className="font-medium text-gray-900">
+            {formatCurrency(Number(data?.monthly_expenses || "0"))} / {formatCurrency(Number(data?.budget_amount || "0"))}
+          </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm">Remaining</span>
           <span
             className={`font-medium ${Number.parseFloat(data?.remaining?.toString() || "0") > 0 ? "text-green-600" : "text-red-600"}`}
           >
-            ${data?.remaining || "0"}
+            {formatCurrency(Number(data?.remaining || "0"))}
           </span>
         </div>
 

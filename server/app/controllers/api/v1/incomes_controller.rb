@@ -16,6 +16,7 @@ module Api
         result = Incomes::Create.call(current_user, income_params)
 
         if result[:success]
+          @income = result[:income]
           render :show
         else
           render_error(result[:errors], :unprocessable_entity)

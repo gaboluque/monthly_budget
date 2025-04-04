@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './routes/login'
 import { routes } from './routes/_index'
+import { UIRoot } from './lib/ui'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         {/* Catch all redirect */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
+      <UIRoot />
     </div>
   )
 }

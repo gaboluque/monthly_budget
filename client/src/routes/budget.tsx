@@ -34,8 +34,11 @@ export default function BudgetItems() {
   const handleSubmit = async (data: CreateBudgetItemData) => {
     try {
       let budgetItem: BudgetItem | null = null;
-      if (data?.id) {
-        budgetItem = await updateBudgetItem(data.id, data);
+      if (data?.id || selectedBudgetItem?.id) {
+        const id = data?.id || selectedBudgetItem?.id;
+        if (!id) throw new Error("BudgetItem ID is required");
+
+        budgetItem = await updateBudgetItem(id, data);
       } else {
         budgetItem = await createBudgetItem(data);
       }
@@ -45,6 +48,7 @@ export default function BudgetItems() {
       ui.notify({
         message: "Failed to save budget item",
         type: "error",
+        error: error as Error,
       });
     }
   }
@@ -63,7 +67,9 @@ export default function BudgetItems() {
   }
 
   const handleDeleteBudgetItem = (id: string) => {
+    console.log("id", id)
     const budgetItem = budgetItems.find(e => e.id === id)
+    console.log("budgetItem", budgetItem)
     if (!budgetItem) return
 
     ui.confirm({
