@@ -1,5 +1,5 @@
 name: monthly-budget-dev
-region: sfo
+region: nyc
 alerts:
 - rule: DEPLOYMENT_FAILED
 - rule: DOMAIN_FAILED
@@ -11,69 +11,39 @@ features:
 ingress:
   rules:
   - component:
-      name: monthly-budget-client
+      name: monthly-budget-server
     match:
       path:
         prefix: /
-  - component:
-      name: monthly-budget-server
-      preserve_path_prefix: true
-    match:
-      path:
-        prefix: /api
 services:
-- name: monthly-budget-client
-  environment-slug: node-js
+- dockerfile_path: server/Dockerfile
   envs:
-  - key: BASE_API_URL
+  - key: SERVER_PORT
     scope: RUN_AND_BUILD_TIME
-    value: https://monthly-budget-dev-eyzxa.ondigitalocean.app/api/v1
-  github:
-    branch: develop
-    deploy_on_push: true
-    repo: gaboluque/monthly_budget
-  source_dir: client
-  static_sites:
-    output_dir: /app/dist
-- name: monthly-budget-server
-  dockerfile_path: .do/Dockerfile.server
-  envs:
-  - key: PORT
-    scope: RUN_AND_BUILD_TIME
-    value: "3001"
+    value: "80"
   - key: JWT_SECRET_KEY
     scope: RUN_AND_BUILD_TIME
     type: SECRET
-    value: EV[1:qKOFDiCwgbHkCxdl9hElJy6aXuU+PVoy:xyhtotmtJBA/D0KqccOv3TPrhBxWGvcBhFIbGcjjnQNcyH3qxnpfMRcIgspPrwGvy6INoCmTugGRQsvklhVk2ZCo2PPQXEoc4oe2RtNl3/C47Q5S34DeGqDoeETfDkWbbmXW2qB/NvXAmX2euLR5PUY67vwEKHZ9dFrp7x/yk6uyPhv/FWBY3tkHw+DJoFxm]
+    value: EV[1:Ha4Txn8ebOr2BntAqTn9sY94o9GdCRcW:qZGWc3UQ7mdylNx2FBbTM/v3g9m4uwsRiBw2Al94TrOqKb9zcJ5Nfsp91d4uYf8hkjDEDpWFAkwgXJCNeSdrnQcz0x/7yFRfhOc7NbXRRK6JVc/QUk+8++dzn3kh08sOGdxwX6wWHSCRuRa0up3wEHWr0tNHtY9Tr0tBY9Ir4IxA/U0mbwNViVFM+wrkPSTi]
   - key: OPENAI_API_KEY
     scope: RUN_AND_BUILD_TIME
     type: SECRET
-    value: EV[1:ceOXTY1nSatbR+gEg2d2dqfsL1I3lHnL:MAywxkEpWNZ5xLlJmwRxEEQxR4uGGphjvhqvhIu9vW36tBiFBATzFrqj/4yZFnUxmRsKIMmJBUsklayVaH1oPmRT41MJWyVbFlwR1BN2flMuPB4di53OalFvUJFZ2oBmJcPUApxE82Pq9Pr3dZkXcP8/wq6O6okjTneU6zUPMAByQtN02fq4W368mQdnfx50Y5oxUtbOcGe2JhVA5chUujr9kFDTpZuKwHTr1wvZw7yC1t8p]
-  - key: DATABASE_NAME
-    scope: RUN_AND_BUILD_TIME
-    value: db-monthly-budget-dev
-  - key: DATABASE_USERNAME
-    scope: RUN_AND_BUILD_TIME
-    type: SECRET
-    value: EV[1:s1tqFmog8JC4dCv2DkzOkOxo9uZzlzoj:vDMMouse3s0nJRHvi7oL0QT3ElhVG8KRX/VrlxkfPr02WFKC/w==]
-  - key: DATABASE_PASSWORD
-    scope: RUN_AND_BUILD_TIME
-    type: SECRET
-    value: EV[1:vNRVsbDQ05RXNVl2m7cms1E1O32ZiXGf:uiILItqau48Wzod/3NzPFdSDdnUzWWhekwEcQg60GNZFdukiNKFigg==]
-  - key: DATABASE_HOST
-    scope: RUN_AND_BUILD_TIME
-    value: app-2a11d997-f635-4491-b321-79a2343a424a-do-user-9101285-0.g.db.ondigitalocean.com
-  - key: DATABASE_PORT
-    scope: RUN_AND_BUILD_TIME
-    value: "25060"
+    value: EV[1:wWPCl0ZnPNHUBZhQYg1rutLwWDAi9/dl:thCX93F3Gx/UhPVu8FYi6Egwty5eDEWT3ReozbZmNGAaklbYreeuILQmYt6JG/srbpofd72x0AgUCcY6hRf4EuhwEi5rvlKacyo/C5kiUMPs/ttwZxXQjFSaxXOoW1idD1z1zDcBS2ukfqt22W6zUcOpYT84aXI6Eo+Z8Fk4r8DCMYam3PxpO8szraftX9B9LY0BclvPW28JheETXK4JbKhZSxcRpgoOSCkF4HLNUj4sv5JH]
   - key: DATABASE_URL
     scope: RUN_TIME
     value: ${db-monthly-budget-dev.DATABASE_URL}
+  - key: RAILS_ENV
+    scope: RUN_AND_BUILD_TIME
+    value: development
+  - key: CLIENT_BASE_URL
+    scope: RUN_AND_BUILD_TIME
+    value: https://monthly-budget-dev-wri3l.ondigitalocean.app/api/v1
   github:
     branch: develop
     deploy_on_push: true
     repo: gaboluque/monthly_budget
-  http_port: 3001
+  http_port: 80
   instance_count: 1
   instance_size_slug: apps-s-1vcpu-1gb
+  name: monthly-budget-server
   source_dir: server
