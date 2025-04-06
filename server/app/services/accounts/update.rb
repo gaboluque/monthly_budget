@@ -1,13 +1,14 @@
-module Account
-  class Destroy < ApplicationService
-    attr_reader :account
+module Accounts
+  class Update < ApplicationService
+    attr_reader :account, :params
 
-    def initialize(account)
+    def initialize(account, params)
       @account = account
+      @params = params
     end
 
     def call
-      if account.destroy
+      if account.update(params)
         { success: true, account: account }
       else
         { success: false, errors: account.errors.full_messages }

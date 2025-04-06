@@ -1,13 +1,4 @@
-# This file creates seed data for development and testing environments
-# Run using: rails db:seed or when setting up the database: rails db:setup
-
-
-# 1. Create test user
-# 2. Create accounts (Savings, Investments, Credit Card)
-# 3. Create incomes (Salary, Freelance)
-# 4. Create budget items (Rent, Groceries, Eating Out, Streaming Services)
-# 5. Mark 2 budget items as paid (using MarkAsPaid service)
-# 6. Mark 1 income as received (using MarkAsReceived service)
+require_relative 'seeds/transaction_categories'
 
 class Seeds
   def self.run
@@ -17,6 +8,7 @@ class Seeds
   def run
     puts "\n============ Starting Database Seeding Process ============\n\n"
     clear_existing_data
+    Seeds::TransactionCategories.run
     create_test_user
     create_accounts
     create_incomes
@@ -34,6 +26,7 @@ class Seeds
     BudgetItem.destroy_all
     Account.destroy_all
     User.destroy_all
+    Transaction::Category.destroy_all
     puts "✅ All existing data cleared\n\n"
   end
 
@@ -141,28 +134,28 @@ class Seeds
   end
 
   def create_account(params)
-    result = Account::Create.call(@test_user, params)
+    result = Accounts::Create.call(@test_user, params)
     puts "  • #{params[:name]} account: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:account]
   end
 
   def create_income(params)
-    result = Income::Create.call(@test_user, params)
+    result = Incomes::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:income]
   end
 
   def create_budget_item(params)
-    result = BudgetItem::Create.call(@test_user, params)
+    result = BudgetItems::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:budget_item]
   end
 
   def create_transaction(params)
-    result = Transaction::Create.call(@test_user, params)
+    result = Transactions::Create.call(@test_user, params)
     puts "  • Transaction: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:transaction]
@@ -171,23 +164,3 @@ end
 
 # Run the seeds
 Seeds.run
-
-
-
-
-
-
-# emails = %w[
-#   dpavam@outlook.com
-# ]
-
-# emails.each do |email|
-#   user = User.create(email: email.downcase, password: email.downcase)
-
-#   BudgetItem::Create.call(user, {
-#     name: 'Other',
-#     amount: 0,
-#     category: 'other',
-#     frequency: 'monthly'
-#   })
-# end

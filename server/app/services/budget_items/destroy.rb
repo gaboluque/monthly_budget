@@ -1,16 +1,13 @@
-module BudgetItem
-  class Create < ApplicationService
-    attr_reader :user, :params
+module BudgetItems
+  class Destroy < ApplicationService
+    attr_reader :budget_item
 
-    def initialize(user, params)
-      @user = user
-      @params = params
+    def initialize(budget_item)
+      @budget_item = budget_item
     end
 
     def call
-      budget_item = user.budget_items.build(params)
-
-      if budget_item.save
+      if budget_item.destroy
         { success: true, budget_item: budget_item }
       else
         { success: false, errors: budget_item.errors }

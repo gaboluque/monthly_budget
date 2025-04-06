@@ -1,4 +1,4 @@
-module Income
+module Incomes
   class MarkAsPending < ApplicationService
     attr_reader :income, :transaction
 

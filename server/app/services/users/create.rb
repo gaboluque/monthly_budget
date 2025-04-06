@@ -1,4 +1,4 @@
-module User
+module Users
   class Create < ApplicationService
     attr_reader :params
 
@@ -10,7 +10,7 @@ module User
       ActiveRecord::Base.transaction do
         user = User.create!(params)
 
-        BudgetItem::Create.call(user, {
+        BudgetItems::Create.call(user, {
           name: 'other',
           amount: 0,
           frequency: 'monthly',

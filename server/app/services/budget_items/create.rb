@@ -1,4 +1,4 @@
-module Account
+module BudgetItems
   class Create < ApplicationService
     attr_reader :user, :params
 
@@ -8,12 +8,12 @@ module Account
     end
 
     def call
-      account = user.accounts.build(params)
+      budget_item = user.budget_items.build(params)
 
-      if account.save
-        { success: true, account: account }
+      if budget_item.save
+        { success: true, budget_item: budget_item }
       else
-        { success: false, errors: account.errors.full_messages }
+        { success: false, errors: budget_item.errors }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

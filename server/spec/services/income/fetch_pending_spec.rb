@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Income::FetchPending, type: :service do
+RSpec.describe Incomes::FetchPending, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -16,7 +16,7 @@ RSpec.describe Income::FetchPending, type: :service do
 
     context 'when user has pending incomes' do
       it 'returns all pending incomes for the user' do
-        result = Income::FetchPending.call(user)
+        result = Incomes::FetchPending.call(user)
 
         expect(result[:success]).to be true
         expect(result[:incomes].count).to eq(2)
@@ -31,7 +31,7 @@ RSpec.describe Income::FetchPending, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Income::FetchPending.call(user)
+        result = Incomes::FetchPending.call(user)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

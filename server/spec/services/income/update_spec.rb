@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Income::Update, type: :service do
+RSpec.describe Incomes::Update, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -18,7 +18,7 @@ RSpec.describe Income::Update, type: :service do
 
     context 'with valid parameters' do
       it 'updates the income' do
-        result = Income::Update.call(income, valid_params)
+        result = Incomes::Update.call(income, valid_params)
         income.reload
 
         expect(income.name).to eq(valid_params[:name])
@@ -28,7 +28,7 @@ RSpec.describe Income::Update, type: :service do
       end
 
       it 'returns success and the updated income' do
-        result = Income::Update.call(income, valid_params)
+        result = Incomes::Update.call(income, valid_params)
 
         expect(result[:success]).to be true
         expect(result[:income]).to eq(income)
@@ -46,7 +46,7 @@ RSpec.describe Income::Update, type: :service do
         original_name = income.name
         original_amount = income.amount
 
-        Income::Update.call(income, invalid_params)
+        Incomes::Update.call(income, invalid_params)
         income.reload
 
         expect(income.name).to eq(original_name)
@@ -54,7 +54,7 @@ RSpec.describe Income::Update, type: :service do
       end
 
       it 'returns failure and error messages' do
-        result = Income::Update.call(income, invalid_params)
+        result = Incomes::Update.call(income, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
@@ -67,7 +67,7 @@ RSpec.describe Income::Update, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Income::Update.call(income, valid_params)
+        result = Incomes::Update.call(income, valid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

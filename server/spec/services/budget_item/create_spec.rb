@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BudgetItem::Create do
+RSpec.describe BudgetItems::Create do
   let(:user) { create(:user) }
 
   let(:valid_params) {

@@ -1,4 +1,4 @@
-module Income
+module Incomes
   class Update < ApplicationService
     attr_reader :income, :params
 

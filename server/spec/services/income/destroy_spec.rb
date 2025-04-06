@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Income::Destroy, type: :service do
+RSpec.describe Incomes::Destroy, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -9,12 +9,12 @@ RSpec.describe Income::Destroy, type: :service do
     context 'when income exists' do
       it 'destroys the income' do
         expect {
-          Income::Destroy.call(income)
+          Incomes::Destroy.call(income)
         }.to change(Income, :count).by(-1)
       end
 
       it 'returns success' do
-        result = Income::Destroy.call(income)
+        result = Incomes::Destroy.call(income)
 
         expect(result[:success]).to be true
       end
@@ -27,12 +27,12 @@ RSpec.describe Income::Destroy, type: :service do
 
       it 'does not destroy the income' do
         expect {
-          Income::Destroy.call(income)
+          Incomes::Destroy.call(income)
         }.not_to change(Income, :count)
       end
 
       it 'returns failure and the error message' do
-        result = Income::Destroy.call(income)
+        result = Incomes::Destroy.call(income)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

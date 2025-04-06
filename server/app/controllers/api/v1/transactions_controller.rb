@@ -55,7 +55,7 @@ module Api
 
       # GET /api/v1/transactions/categories
       def categories
-        render json: { categories: BudgetItem::DEFAULT_CATEGORIES }
+        render json: { categories: BudgetItems::DEFAULT_CATEGORIES }
       end
 
       private

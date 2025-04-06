@@ -13,7 +13,7 @@ module Api
 
       # POST /api/v1/accounts
       def create
-        result = Account::Create.call(current_user, account_params)
+        result = Accounts::Create.call(current_user, account_params)
 
         if result[:success]
           @account = result[:account]
@@ -25,7 +25,7 @@ module Api
 
       # PATCH/PUT /api/v1/accounts/:id
       def update
-        result = Account::Update.call(@account, account_params)
+        result = Accounts::Update.call(@account, account_params)
 
         if result[:success]
           @account = result[:account]
@@ -37,7 +37,7 @@ module Api
 
       # DELETE /api/v1/accounts/:id
       def destroy
-        result = Account::Destroy.call(@account)
+        result = Accounts::Destroy.call(@account)
 
         if result[:success]
           @account = result[:account]

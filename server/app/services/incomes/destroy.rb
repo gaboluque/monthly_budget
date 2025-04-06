@@ -1,4 +1,4 @@
-module Income
+module Incomes
   class Destroy < ApplicationService
     attr_reader :income
 

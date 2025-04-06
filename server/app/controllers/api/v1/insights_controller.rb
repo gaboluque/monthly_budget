@@ -3,7 +3,7 @@ module Api
     class InsightsController < ApplicationController
       def index
         insights = Rails.cache.fetch("user_#{current_user.id}_budget_insights", expires_in: 1.hour) do
-          Insight::BudgetInsightGenerator.new(current_user).generate
+          Insights::BudgetInsightGenerator.new(current_user).generate
         end
 
         render json: { data: insights }
@@ -14,7 +14,7 @@ module Api
         expenses = current_user.transactions.expenses.current_month
         budget_items = current_user.budget_items
 
-        balance_by_category = BudgetItem::DEFAULT_CATEGORIES.each_with_object({}) do |category, acc|
+        balance_by_category = BudgetItems::DEFAULT_CATEGORIES.each_with_object({}) do |category, acc|
           budget_amount = budget_items.where(category: category).sum(:amount)
           monthly_expenses = expenses.joins(:budget_item).where(budget_items: { category: category }).sum(:amount)
           remaining = budget_amount - monthly_expenses

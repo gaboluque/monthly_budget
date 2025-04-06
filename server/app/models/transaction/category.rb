@@ -24,4 +24,12 @@
 #
 class Transaction::Category < ApplicationRecord
 
+    belongs_to :user, optional: true
+    belongs_to :parent, class_name: 'Transaction::Category', optional: true
+
+    has_many :children, class_name: 'Transaction::Category', foreign_key: :parent_id, dependent: :destroy
+
+    validates :name, presence: true, uniqueness: { scope: :user }
+    
+    scope :root, -> { where(parent_id: nil) }
 end

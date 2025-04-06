@@ -1,14 +1,16 @@
-module Account
-  class Update < ApplicationService
-    attr_reader :account, :params
+module Accounts
+  class Create < ApplicationService
+    attr_reader :user, :params
 
-    def initialize(account, params)
-      @account = account
+    def initialize(user, params)
+      @user = user
       @params = params
     end
 
     def call
-      if account.update(params)
+      account = user.accounts.build(params)
+
+      if account.save
         { success: true, account: account }
       else
         { success: false, errors: account.errors.full_messages }

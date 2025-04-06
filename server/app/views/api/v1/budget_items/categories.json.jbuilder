@@ -1,1 +1,1 @@
-json.data BudgetItem::DEFAULT_CATEGORIES
+json.data BudgetItems::DEFAULT_CATEGORIES
