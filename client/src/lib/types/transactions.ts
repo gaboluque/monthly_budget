@@ -1,6 +1,6 @@
 import { Account } from "./accounts";
 import { BudgetItem } from "./budget_items";
-
+import { TransactionCategory } from "./transaction_categories";
 export interface Transaction {
   id: string;
   account_id: string;
@@ -16,7 +16,7 @@ export interface Transaction {
   recipient_account_name?: string;
   recipient_account?: Account;
   budget_item?: BudgetItem;
-  category?: string;
+  category?: TransactionCategory;
 }
 
 export type TransactionType = string;
@@ -31,4 +31,16 @@ export interface TransactionsFilterParams {
   category?: string;
   page?: number;
   per_page?: number;
+}
+
+export interface CreateTransactionData {
+  account_id: string;
+  recipient_account_id?: string;
+  amount: number;
+  transaction_type: string;
+  description?: string;
+  executed_at?: string;
+  frequency?: string;
+  budget_item_id?: string;
+  category_id?: string;
 }

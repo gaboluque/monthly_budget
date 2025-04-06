@@ -113,7 +113,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
     context 'when transaction creation fails' do
       before do
         allow(income).to receive(:paid?).and_return(false)
-        allow_any_instance_of(Transaction::Create).to receive(:call).and_return({
+        allow_any_instance_of(Transactions::Create).to receive(:call).and_return({
           success: false,
           errors: [ 'Transaction creation failed' ]
         })

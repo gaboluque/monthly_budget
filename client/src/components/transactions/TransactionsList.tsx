@@ -2,6 +2,7 @@ import { Transaction } from "../../lib/types/transactions";
 import { formatCurrency, formatDate } from "../../lib/utils/formatters";
 import { transactionTypeColor } from "../../lib/ui/colorHelpers";
 import { Spinner } from "../ui/Spinner";
+import { TransactionTypeBadge } from "./TransactionTypeBadge";
 interface TransactionsListProps {
     transactions: Transaction[];
     isLoading: boolean;
@@ -9,7 +10,6 @@ interface TransactionsListProps {
 }
 
 export function TransactionsList({ transactions, isLoading, onOpen }: TransactionsListProps) {
-
 
     if (isLoading) {
         return (
@@ -48,9 +48,7 @@ export function TransactionsList({ transactions, isLoading, onOpen }: Transactio
                             <span className={`text-${transactionTypeColor(transaction.transaction_type)}-600 font-medium`}>
                                 {formatCurrency(transaction.amount)}
                             </span>
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${transactionTypeColor(transaction.transaction_type)}-100 text-${transactionTypeColor(transaction.transaction_type)}-800`}>
-                                {transaction.transaction_type}
-                            </span>
+                            <TransactionTypeBadge transactionType={transaction.transaction_type} />
                         </div>
                     </button>
                 </div>

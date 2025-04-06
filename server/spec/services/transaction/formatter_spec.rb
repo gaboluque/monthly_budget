@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Transaction::Formatter do
+RSpec.describe Transactions::Formatter do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user, name: 'Test Account') }
   let(:recipient_account) { create(:account, user: user, name: 'Recipient Account') }

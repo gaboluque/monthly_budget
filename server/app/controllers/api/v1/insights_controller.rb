@@ -14,7 +14,7 @@ module Api
         expenses = current_user.transactions.expenses.current_month
         budget_items = current_user.budget_items
 
-        balance_by_category = BudgetItems::DEFAULT_CATEGORIES.each_with_object({}) do |category, acc|
+        balance_by_category = BudgetItem::DEFAULT_CATEGORIES.each_with_object({}) do |category, acc|
           budget_amount = budget_items.where(category: category).sum(:amount)
           monthly_expenses = expenses.joins(:budget_item).where(budget_items: { category: category }).sum(:amount)
           remaining = budget_amount - monthly_expenses

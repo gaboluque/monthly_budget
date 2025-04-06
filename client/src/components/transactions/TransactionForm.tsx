@@ -1,24 +1,21 @@
 import { useMemo, useState } from 'react';
-import type { CreateTransactionData } from '../../lib/api/transactions';
-import { Transaction } from '../../lib/types/transactions';
+import { CreateTransactionData, Transaction } from '../../lib/types/transactions';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { Account } from '../../lib/types/accounts';
 import { Spinner } from '../ui/Spinner';
 import { formatCurrency } from '../../lib/utils/currency';
 import { formatISODate, formatLabel } from '../../lib/utils/formatters';
 import { FormActions } from '../ui/FormActions';
-import { BudgetItem } from '../../lib/types/budget_items';
+import { TransactionCategory } from '../../lib/types/transaction_categories';
 
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
     onCancel: () => void;
     accounts: Account[];
     transactionTypes: string[];
-    categories: string[];
     transaction?: Transaction | null;
     isSubmitting: boolean;
-    isBudgetItemsLoading: boolean;
-    budgetItems: BudgetItem[];
+    categories: TransactionCategory[];
 }
 
 const FORM_ID = 'transaction-form';
@@ -30,8 +27,7 @@ export function TransactionForm({
     transactionTypes,
     transaction,
     isSubmitting,
-    isBudgetItemsLoading,
-    budgetItems
+    categories
 }: TransactionFormProps) {
     const [error, setError] = useState<string | null>(null);
 
@@ -49,12 +45,12 @@ export function TransactionForm({
         }));
     }, [transactionTypes]);
 
-    const budgetItemOptions = useMemo(() => {
-        return budgetItems.map(budgetItem => ({
-            value: budgetItem.id,
-            label: `${budgetItem.name} (${budgetItem.category})`
+    const categoryOptions = useMemo(() => {
+        return categories.map(category => ({
+            value: category.id.toString(),
+            label: `${category.icon} ${category.name}`
         }));
-    }, [budgetItems]);
+    }, [categories]);
 
     // Default values for the form
     const defaultValues: Partial<CreateTransactionData> = {
@@ -77,7 +73,7 @@ export function TransactionForm({
         }
     };
 
-    if (!accounts.length || !transactionTypes.length || isBudgetItemsLoading) {
+    if (!accounts.length || !transactionTypes.length) {
         return <Spinner />;
     }
 
@@ -94,22 +90,6 @@ export function TransactionForm({
             }
         },
         {
-            name: 'description',
-            label: 'Description',
-            type: 'text',
-            placeholder: 'Enter transaction description',
-        },
-        {
-            name: 'account_id',
-            label: 'Account',
-            type: 'select',
-            options: accountOptions,
-            required: true,
-            validation: {
-                required: 'Account is required'
-            }
-        },
-        {
             name: 'amount',
             label: 'Amount',
             type: 'number',
@@ -121,6 +101,28 @@ export function TransactionForm({
                     value: 0.01,
                     message: 'Amount must be greater than 0'
                 }
+            }
+        },
+        {
+            name: 'description',
+            label: 'Description',
+            type: 'text',
+            placeholder: 'Enter transaction description',
+        },
+        {
+            name: 'category_id',
+            label: 'Category',
+            type: 'optionSelect',
+            options: categoryOptions
+        },
+        {
+            name: 'account_id',
+            label: 'Account',
+            type: 'select',
+            options: accountOptions,
+            required: true,
+            validation: {
+                required: 'Account is required'
             }
         },
         {
@@ -141,12 +143,6 @@ export function TransactionForm({
             ]
         },
         {
-            name: 'budget_item_id',
-            label: 'Budget Item',
-            type: 'select',
-            options: budgetItemOptions
-        },
-        {
             name: 'executed_at',
             label: 'Date',
             type: 'date',
@@ -154,7 +150,7 @@ export function TransactionForm({
             validation: {
                 required: 'Date is required'
             }
-        },
+        }
     ];
 
     return (

@@ -11,7 +11,7 @@ module Api
 
       # POST /api/v1/transactions
       def create
-        result = Transaction::Create.call(current_user, transaction_params)
+        result = Transactions::Create.call(current_user, transaction_params)
         @transaction = result[:transaction]
 
         if result[:success]
@@ -23,7 +23,7 @@ module Api
 
       # GET /api/v1/transactions/1
       def show
-        result = Transaction::Formatter.call(@transaction)
+        result = Transactions::Formatter.call(@transaction)
 
         if result[:success]
           render :show
@@ -34,7 +34,7 @@ module Api
 
       # DELETE /api/v1/transactions/1
       def destroy
-        result = Transaction::Destroy.call(@transaction)
+        result = Transactions::Destroy.call(@transaction)
 
         if result[:success]
           render :show, status: :no_content
@@ -55,7 +55,7 @@ module Api
 
       # GET /api/v1/transactions/categories
       def categories
-        render json: { categories: BudgetItems::DEFAULT_CATEGORIES }
+        render json: { categories: Transaction::Category.root }
       end
 
       private
@@ -75,8 +75,7 @@ module Api
           :description,
           :executed_at,
           :frequency,
-          :category,
-          :budget_item_id
+          :category_id
         )
       end
 

@@ -11,14 +11,14 @@ import {
 } from "../lib/types/transactions";
 import { Account } from "../lib/types/accounts";
 import { ui } from "../lib/ui/manager";
-
+import { TransactionCategory } from "../lib/types/transaction_categories";
 export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
     []
   );
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filterParams, setFilterParams] = useState<TransactionsFilterParams>(

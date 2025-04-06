@@ -1,6 +1,15 @@
 json.id transaction.id
 json.amount transaction.amount
-json.category transaction.category
+json.category do
+    if transaction.category.nil?
+        json.null
+    else
+        json.id transaction.category.id
+        json.name transaction.category.name
+        json.color transaction.category.color
+        json.icon transaction.category.icon
+    end
+end
 json.description transaction.description
 json.executed_at transaction.executed_at
 json.frequency transaction.frequency

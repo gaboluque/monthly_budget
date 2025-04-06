@@ -16,6 +16,12 @@ class Seeds
       
       categories = [
         {
+          id: 0,
+          name: 'Other',
+          color: '#808080',
+          icon: '📌',
+        },
+        {
           name: 'Food & Drinks',
           color: '#FF5733',
           icon: '🍔',
@@ -89,11 +95,6 @@ class Seeds
           name: 'Subscriptions',
           color: '#FF33FF',
           icon: '📱',
-        },
-        {
-          name: 'Other',
-          color: '#808080',
-          icon: '📌',
         }
       ]
 

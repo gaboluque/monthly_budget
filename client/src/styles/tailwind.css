@@ -433,6 +433,10 @@ img,video {
     z-index: 20
 }
 
+.z-30 {
+    z-index: 30
+}
+
 .z-40 {
     z-index: 40
 }
@@ -440,6 +444,31 @@ img,video {
 .z-50 {
     z-index: 50
 }
+
+.z-100 {
+    z-index: 100
+}
+
+.z-200 {
+    z-index: 200
+}
+
+.z-300 {
+    z-index: 300
+}
+
+.z-400 {
+    z-index: 400
+}
+
+.z-500 {
+    z-index: 500
+}
+
+.z-600 {
+    z-index: 600
+}
+
 
 .col-span-1 {
     grid-column: span 1 / span 1
@@ -2063,3 +2092,4 @@ img,video {
         grid-template-columns:repeat(3,minmax(0,1fr))
     }
 }
+

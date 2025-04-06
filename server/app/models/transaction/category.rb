@@ -20,7 +20,6 @@
 # Foreign Keys
 #
 #  fk_rails_...  (parent_id => transaction_categories.id)
-#  fk_rails_...  (user_id => users.id)
 #
 class Transaction::Category < ApplicationRecord
 

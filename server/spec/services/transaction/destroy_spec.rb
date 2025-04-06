@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Transaction::Destroy do
+RSpec.describe Transactions::Destroy do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user, balance: 1000) }
   let!(:transaction) { create(:transaction, user: user, account: account, amount: 100) }

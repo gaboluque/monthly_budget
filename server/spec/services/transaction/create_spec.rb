@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Transaction::Create do
+RSpec.describe Transactions::Create do
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user, balance: 1000) }
   let(:recipient_account) { create(:account, user: user, balance: 500) }

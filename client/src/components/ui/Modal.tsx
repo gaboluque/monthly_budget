@@ -6,12 +6,16 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   type?: 'standard' | 'popup';
+  zIndex?: number;
 }
 
-export function Modal({ isOpen, onClose, title, children, type = 'standard' }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, zIndex, type = 'standard' }: ModalProps) {
 
   const isModal = type === 'standard';
   const isPopup = type === 'popup';
+  const calculatedZIndex = zIndex || (isPopup ? 50 : 30);
+
+  console.log(calculatedZIndex);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -32,7 +36,7 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-20"} overflow-y-auto`}>
+      <div className={`fixed inset-0 z-${calculatedZIndex} overflow-y-auto`}>
       <div
         className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
         onClick={onClose}

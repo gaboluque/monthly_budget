@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_06_070253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
     t.index ["user_id"], name: "index_incomes_on_user_id"
   end
 
+  create_table "transaction_categories", force: :cascade do |t|
+    t.string "name"
+    t.string "color"
+    t.bigint "user_id"
+    t.bigint "parent_id"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_transaction_categories_on_parent_id"
+    t.index ["user_id"], name: "index_transaction_categories_on_user_id"
+  end
+
   create_table "transactions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "account_id", null: false
@@ -64,16 +76,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
     t.datetime "executed_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "item_type"
-    t.bigint "item_id"
     t.string "frequency", default: "one_time"
-    t.string "category"
-    t.bigint "budget_item_id", null: false
+    t.bigint "category_id", default: 0, null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
-    t.index ["budget_item_id"], name: "index_transactions_on_budget_item_id"
-    t.index ["category"], name: "index_transactions_on_category"
+    t.index ["category_id"], name: "index_transactions_on_category_id"
     t.index ["frequency"], name: "index_transactions_on_frequency"
-    t.index ["item_type", "item_id"], name: "index_transactions_on_item"
     t.index ["recipient_account_id"], name: "index_transactions_on_recipient_account_id"
     t.index ["transaction_type"], name: "index_transactions_on_transaction_type"
     t.index ["user_id"], name: "index_transactions_on_user_id"
@@ -91,8 +98,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
   add_foreign_key "budget_items", "users"
   add_foreign_key "incomes", "accounts"
   add_foreign_key "incomes", "users"
+  add_foreign_key "transaction_categories", "transaction_categories", column: "parent_id"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "accounts", column: "recipient_account_id"
-  add_foreign_key "transactions", "budget_items"
+  add_foreign_key "transactions", "transaction_categories", column: "category_id"
   add_foreign_key "transactions", "users"
 end

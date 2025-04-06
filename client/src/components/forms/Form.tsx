@@ -1,7 +1,8 @@
 import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react";
+import { OptionSelect } from "./fields/OptionSelect";
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio';
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio' | 'optionSelect';
 
 export type ConditionalRule<T extends FieldValues> = {
     field: Path<T>;
@@ -15,7 +16,7 @@ export interface FormField<T extends FieldValues> {
     type: FormFieldType;
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string }[]; // For select fields
+    options?: { value: string; label: string, children?: { value: string; label: string }[] }[]; // For select fields
     validation?: Omit<RegisterOptions<T, Path<T>>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
     showWhen?: ConditionalRule<T>[];
 }
@@ -90,6 +91,23 @@ export const Form = <T extends FieldValues>({
         const { name, type, placeholder, options, validation } = field;
 
         switch (type) {
+            case 'optionSelect':
+                return (
+                    <OptionSelect
+                        name={name}
+                        label={field.label}
+                        placeholder={placeholder}
+                        options={options || []}
+                        value={values?.[name as string] as string}
+                        register={register}
+                        onChange={(value) => {
+                            if (onFieldChange) {
+                                onFieldChange(name, value);
+                            }
+                        }}
+                    />
+                );
+            
             case 'select':
                 return (
                     <select
