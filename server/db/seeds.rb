@@ -162,7 +162,7 @@ class Seeds
   end
 
   def create_transaction(params)
-    result = Transactions::Create.call(@test_user, params)
+    result = Transaction::Create.call(@test_user, params)
     puts "  • Transaction: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:transaction]

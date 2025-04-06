@@ -11,7 +11,7 @@ module Api
 
       # POST /api/v1/transactions
       def create
-        result = Transactions::Create.call(current_user, transaction_params)
+        result = Transaction::Create.call(current_user, transaction_params)
         @transaction = result[:transaction]
 
         if result[:success]
@@ -23,7 +23,7 @@ module Api
 
       # GET /api/v1/transactions/1
       def show
-        result = Transactions::Formatter.call(@transaction)
+        result = Transaction::Formatter.call(@transaction)
 
         if result[:success]
           render :show
@@ -34,7 +34,7 @@ module Api
 
       # DELETE /api/v1/transactions/1
       def destroy
-        result = Transactions::Destroy.call(@transaction)
+        result = Transaction::Destroy.call(@transaction)
 
         if result[:success]
           render :show, status: :no_content

@@ -10,7 +10,7 @@ module Income
     def call
       return { success: true, income: income } if income.pending?
 
-      Transactions::Destroy.call(transaction)
+      Transaction::Destroy.call(transaction)
     end
   end
 end

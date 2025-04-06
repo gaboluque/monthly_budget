@@ -1,4 +1,4 @@
-module Transactions
+module Transaction
   class Destroy < ApplicationService
     attr_reader :transaction
 

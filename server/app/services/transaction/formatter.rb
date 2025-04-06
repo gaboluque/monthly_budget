@@ -1,4 +1,4 @@
-module Transactions
+module Transaction
   class Formatter < ApplicationService
     attr_reader :transaction
 

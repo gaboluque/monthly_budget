@@ -31,7 +31,7 @@ RSpec.describe Income::MarkAsPending, type: :service do
       end
 
       it 'calls the transaction destroy service' do
-        expect(Transactions::Destroy).to receive(:call).with(transaction).and_return({
+        expect(Transaction::Destroy).to receive(:call).with(transaction).and_return({
           success: true,
           income: income.reload
         })

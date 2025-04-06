@@ -1,4 +1,4 @@
-module Transactions
+module Transaction
   class Create < ApplicationService
     attr_reader :user, :params
 

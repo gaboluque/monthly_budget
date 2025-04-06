@@ -1,4 +1,4 @@
-module Transactions
+module Transaction
   class Update < ApplicationService
     attr_reader :transaction, :params
 

@@ -31,7 +31,7 @@ module Income
         item: income
       }
 
-      transaction_result = Transactions::Create.call(user, transaction_params)
+      transaction_result = Transaction::Create.call(user, transaction_params)
       unless transaction_result[:success]
         raise StandardError, "Failed to create transaction: #{transaction_result[:errors]}"
       end
