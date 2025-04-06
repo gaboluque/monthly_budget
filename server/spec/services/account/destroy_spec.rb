@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::Destroy, type: :service do
+RSpec.describe Account::Destroy, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let!(:account) { create(:account, :savings, :usd, :owned, user: user) }
@@ -8,12 +8,12 @@ RSpec.describe Accounts::Destroy, type: :service do
     context 'when successful' do
       it 'destroys the account' do
         expect {
-          Accounts::Destroy.call(account)
+          Account::Destroy.call(account)
         }.to change(Account, :count).by(-1)
       end
 
       it 'returns success and the destroyed account' do
-        result = Accounts::Destroy.call(account)
+        result = Account::Destroy.call(account)
 
         expect(result[:success]).to be true
         expect(result[:account]).to eq(account)
@@ -23,7 +23,7 @@ RSpec.describe Accounts::Destroy, type: :service do
         transactions = create_list(:transaction, 3, account: account)
 
         expect {
-          Accounts::Destroy.call(account)
+          Account::Destroy.call(account)
         }.to change(Transaction, :count).by(-3)
       end
 
@@ -34,7 +34,7 @@ RSpec.describe Accounts::Destroy, type: :service do
           test_account = create(:account, account_type: type, user: user)
 
           expect {
-            result = Accounts::Destroy.call(test_account)
+            result = Account::Destroy.call(test_account)
             expect(result[:success]).to be true
           }.to change(Account, :count).by(-1)
         end
@@ -48,12 +48,12 @@ RSpec.describe Accounts::Destroy, type: :service do
 
       it 'does not destroy the account' do
         expect {
-          Accounts::Destroy.call(account)
+          Account::Destroy.call(account)
         }.not_to change(Account, :count)
       end
 
       it 'returns failure and the error message' do
-        result = Accounts::Destroy.call(account)
+        result = Account::Destroy.call(account)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')
@@ -69,12 +69,12 @@ RSpec.describe Accounts::Destroy, type: :service do
 
       it 'does not destroy the account' do
         expect {
-          Accounts::Destroy.call(account)
+          Account::Destroy.call(account)
         }.not_to change(Account, :count)
       end
 
       it 'returns failure and error messages' do
-        result = Accounts::Destroy.call(account)
+        result = Account::Destroy.call(account)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to include("Cannot delete account with active dependent records")

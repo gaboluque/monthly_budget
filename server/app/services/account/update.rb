@@ -1,4 +1,4 @@
-module Accounts
+module Account
   class Update < ApplicationService
     attr_reader :account, :params
 

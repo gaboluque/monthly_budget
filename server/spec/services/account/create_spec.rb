@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::Create, type: :service do
+RSpec.describe Account::Create, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:valid_params) do
@@ -16,12 +16,12 @@ RSpec.describe Accounts::Create, type: :service do
     context 'with valid parameters' do
       it 'creates a new account' do
         expect {
-          Accounts::Create.call(user, valid_params)
+          Account::Create.call(user, valid_params)
         }.to change(Account, :count).by(1)
       end
 
       it 'returns success and the created account' do
-        result = Accounts::Create.call(user, valid_params)
+        result = Account::Create.call(user, valid_params)
 
         expect(result[:success]).to be true
         expect(result[:account]).to be_a(Account)
@@ -39,7 +39,7 @@ RSpec.describe Accounts::Create, type: :service do
           balance: 500.00
         }
 
-        result = Accounts::Create.call(user, minimal_params)
+        result = Account::Create.call(user, minimal_params)
 
         expect(result[:success]).to be true
         expect(result[:account].name).to eq(minimal_params[:name])
@@ -54,7 +54,7 @@ RSpec.describe Accounts::Create, type: :service do
 
         account_types.each do |type|
           params = valid_params.merge(account_type: type)
-          result = Accounts::Create.call(user, params)
+          result = Account::Create.call(user, params)
 
           expect(result[:success]).to be true
           expect(result[:account].account_type).to eq(type)
@@ -66,7 +66,7 @@ RSpec.describe Accounts::Create, type: :service do
 
         currencies.each do |currency|
           params = valid_params.merge(currency: currency)
-          result = Accounts::Create.call(user, params)
+          result = Account::Create.call(user, params)
 
           expect(result[:success]).to be true
           expect(result[:account].currency).to eq(currency)
@@ -76,7 +76,7 @@ RSpec.describe Accounts::Create, type: :service do
       it 'creates owned and not owned accounts' do
         [ true, false ].each do |owned_status|
           params = valid_params.merge(is_owned: owned_status)
-          result = Accounts::Create.call(user, params)
+          result = Account::Create.call(user, params)
 
           expect(result[:success]).to be true
           expect(result[:account].is_owned).to eq(owned_status)
@@ -89,12 +89,12 @@ RSpec.describe Accounts::Create, type: :service do
 
       it 'does not create a new account' do
         expect {
-          Accounts::Create.call(user, invalid_params)
+          Account::Create.call(user, invalid_params)
         }.not_to change(Account, :count)
       end
 
       it 'returns failure and error messages' do
-        result = Accounts::Create.call(user, invalid_params)
+        result = Account::Create.call(user, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
@@ -106,10 +106,10 @@ RSpec.describe Accounts::Create, type: :service do
         invalid_type_params = valid_params.merge(account_type: 'invalid_type')
 
         expect {
-          Accounts::Create.call(user, invalid_type_params)
+          Account::Create.call(user, invalid_type_params)
         }.not_to change(Account, :count)
 
-        result = Accounts::Create.call(user, invalid_type_params)
+        result = Account::Create.call(user, invalid_type_params)
         expect(result[:success]).to be false
         expect(result[:errors]).to include("'invalid_type' is not a valid account_type")
       end
@@ -118,10 +118,10 @@ RSpec.describe Accounts::Create, type: :service do
         invalid_currency_params = valid_params.merge(currency: 'invalid_currency')
 
         expect {
-          Accounts::Create.call(user, invalid_currency_params)
+          Account::Create.call(user, invalid_currency_params)
         }.not_to change(Account, :count)
 
-        result = Accounts::Create.call(user, invalid_currency_params)
+        result = Account::Create.call(user, invalid_currency_params)
         expect(result[:success]).to be false
         expect(result[:errors]).to include("'invalid_currency' is not a valid currency")
       end
@@ -133,7 +133,7 @@ RSpec.describe Accounts::Create, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Accounts::Create.call(user, valid_params)
+        result = Account::Create.call(user, valid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

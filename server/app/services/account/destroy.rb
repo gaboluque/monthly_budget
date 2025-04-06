@@ -1,4 +1,4 @@
-module Accounts
+module Account
   class Destroy < ApplicationService
     attr_reader :account
 

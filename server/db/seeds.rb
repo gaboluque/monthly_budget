@@ -141,7 +141,7 @@ class Seeds
   end
 
   def create_account(params)
-    result = Accounts::Create.call(@test_user, params)
+    result = Account::Create.call(@test_user, params)
     puts "  • #{params[:name]} account: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:account]

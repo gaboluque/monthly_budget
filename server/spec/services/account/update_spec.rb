@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Accounts::Update, type: :service do
+RSpec.describe Account::Update, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, :savings, :usd, :owned, user: user) }
@@ -16,7 +16,7 @@ RSpec.describe Accounts::Update, type: :service do
 
     context 'with valid parameters' do
       it 'updates the account' do
-        result = Accounts::Update.call(account, valid_params)
+        result = Account::Update.call(account, valid_params)
         account.reload
 
         expect(account.name).to eq(valid_params[:name])
@@ -27,7 +27,7 @@ RSpec.describe Accounts::Update, type: :service do
       end
 
       it 'returns success and the updated account' do
-        result = Accounts::Update.call(account, valid_params)
+        result = Account::Update.call(account, valid_params)
 
         expect(result[:success]).to be true
         expect(result[:account]).to eq(account)
@@ -38,7 +38,7 @@ RSpec.describe Accounts::Update, type: :service do
         original_balance = account.balance
         original_type = account.account_type
 
-        result = Accounts::Update.call(account, partial_params)
+        result = Account::Update.call(account, partial_params)
         account.reload
 
         expect(result[:success]).to be true
@@ -54,7 +54,7 @@ RSpec.describe Accounts::Update, type: :service do
           test_account = create(:account, user: user)
           params = { account_type: type }
 
-          result = Accounts::Update.call(test_account, params)
+          result = Account::Update.call(test_account, params)
           test_account.reload
 
           expect(result[:success]).to be true
@@ -69,7 +69,7 @@ RSpec.describe Accounts::Update, type: :service do
           test_account = create(:account, user: user)
           params = { currency: currency }
 
-          result = Accounts::Update.call(test_account, params)
+          result = Account::Update.call(test_account, params)
           test_account.reload
 
           expect(result[:success]).to be true
@@ -80,7 +80,7 @@ RSpec.describe Accounts::Update, type: :service do
       it 'updates ownership status' do
         # Test changing from owned to not owned
         owned_account = create(:account, :owned, user: user)
-        result = Accounts::Update.call(owned_account, { is_owned: false })
+        result = Account::Update.call(owned_account, { is_owned: false })
         owned_account.reload
 
         expect(result[:success]).to be true
@@ -88,7 +88,7 @@ RSpec.describe Accounts::Update, type: :service do
 
         # Test changing from not owned to owned
         not_owned_account = create(:account, :not_owned, user: user)
-        result = Accounts::Update.call(not_owned_account, { is_owned: true })
+        result = Account::Update.call(not_owned_account, { is_owned: true })
         not_owned_account.reload
 
         expect(result[:success]).to be true
@@ -103,7 +103,7 @@ RSpec.describe Accounts::Update, type: :service do
         original_name = account.name
         original_balance = account.balance
 
-        Accounts::Update.call(account, invalid_params)
+        Account::Update.call(account, invalid_params)
         account.reload
 
         expect(account.name).to eq(original_name)
@@ -111,7 +111,7 @@ RSpec.describe Accounts::Update, type: :service do
       end
 
       it 'returns failure and error messages' do
-        result = Accounts::Update.call(account, invalid_params)
+        result = Account::Update.call(account, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
@@ -123,7 +123,7 @@ RSpec.describe Accounts::Update, type: :service do
         invalid_type_params = { account_type: 'invalid_type' }
         original_type = account.account_type
 
-        result = Accounts::Update.call(account, invalid_type_params)
+        result = Account::Update.call(account, invalid_type_params)
         account.reload
 
         expect(result[:success]).to be false
@@ -135,7 +135,7 @@ RSpec.describe Accounts::Update, type: :service do
         invalid_currency_params = { currency: 'invalid_currency' }
         original_currency = account.currency
 
-        result = Accounts::Update.call(account, invalid_currency_params)
+        result = Account::Update.call(account, invalid_currency_params)
         account.reload
 
         expect(result[:success]).to be false
@@ -150,7 +150,7 @@ RSpec.describe Accounts::Update, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Accounts::Update.call(account, valid_params)
+        result = Account::Update.call(account, valid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')
