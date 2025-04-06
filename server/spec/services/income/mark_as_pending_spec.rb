@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Incomes::MarkAsPending, type: :service do
+RSpec.describe Income::MarkAsPending, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user, balance: 100) }

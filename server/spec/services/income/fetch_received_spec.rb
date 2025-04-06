@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Incomes::FetchReceived, type: :service do
+RSpec.describe Income::FetchReceived, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -12,7 +12,7 @@ RSpec.describe Incomes::FetchReceived, type: :service do
 
     context 'when user has received incomes' do
       it 'returns all received incomes for the user in the current month' do
-        result = Incomes::FetchReceived.call(user)
+        result = Income::FetchReceived.call(user)
 
         expect(result[:success]).to be true
         expect(result[:incomes].count).to eq(2)
@@ -27,7 +27,7 @@ RSpec.describe Incomes::FetchReceived, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Incomes::FetchReceived.call(user)
+        result = Income::FetchReceived.call(user)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

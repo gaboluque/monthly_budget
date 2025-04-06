@@ -148,7 +148,7 @@ class Seeds
   end
 
   def create_income(params)
-    result = Incomes::Create.call(@test_user, params)
+    result = Income::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:income]

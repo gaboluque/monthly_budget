@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Incomes::Create, type: :service do
+RSpec.describe Income::Create, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -16,12 +16,12 @@ RSpec.describe Incomes::Create, type: :service do
     context 'with valid parameters' do
       it 'creates a new income' do
         expect {
-          Incomes::Create.call(user, valid_params)
+          Income::Create.call(user, valid_params)
         }.to change(Income, :count).by(1)
       end
 
       it 'returns success and the created income' do
-        result = Incomes::Create.call(user, valid_params)
+        result = Income::Create.call(user, valid_params)
 
         expect(result[:success]).to be true
         expect(result[:income]).to be_a(Income)
@@ -38,12 +38,12 @@ RSpec.describe Incomes::Create, type: :service do
 
       it 'does not create a new income' do
         expect {
-          Incomes::Create.call(user, invalid_params)
+          Income::Create.call(user, invalid_params)
         }.not_to change(Income, :count)
       end
 
       it 'returns failure and error messages' do
-        result = Incomes::Create.call(user, invalid_params)
+        result = Income::Create.call(user, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
@@ -56,7 +56,7 @@ RSpec.describe Incomes::Create, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Incomes::Create.call(user, valid_params)
+        result = Income::Create.call(user, valid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

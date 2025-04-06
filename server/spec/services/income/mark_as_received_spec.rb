@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Incomes::MarkAsReceived, type: :service do
+RSpec.describe Income::MarkAsReceived, type: :service do
   describe '#call' do
     let(:user) { create(:user) }
     let(:account) { create(:account, user: user) }
@@ -14,7 +14,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
       it 'marks the income as received' do
         expect(income.last_received_at).to be_nil
 
-        result = Incomes::MarkAsReceived.call(income)
+        result = Income::MarkAsReceived.call(income)
         income.reload
 
         expect(income.last_received_at).not_to be_nil
@@ -22,7 +22,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
       end
 
       it 'returns success and the updated income' do
-        result = Incomes::MarkAsReceived.call(income)
+        result = Income::MarkAsReceived.call(income)
 
         expect(result[:success]).to be true
         expect(result[:income]).to eq(income)
@@ -31,7 +31,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
 
       it 'creates a transaction record' do
         expect {
-          result = Incomes::MarkAsReceived.call(income)
+          result = Income::MarkAsReceived.call(income)
         }.to change(Transaction, :count).by(1)
 
         transaction = Transaction.last
@@ -44,7 +44,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
       end
 
       it 'sets the income last_received_at to the transaction executed_at date' do
-        result = Incomes::MarkAsReceived.call(income)
+        result = Income::MarkAsReceived.call(income)
         income.reload
         transaction = Transaction.last
 
@@ -62,7 +62,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
       it 'does not update the received timestamp' do
         original_timestamp = received_income.last_received_at
 
-        result = Incomes::MarkAsReceived.call(received_income)
+        result = Income::MarkAsReceived.call(received_income)
         received_income.reload
 
         expect(result[:success]).to be true
@@ -72,7 +72,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
 
       it 'does not create a transaction record' do
         expect {
-          result = Incomes::MarkAsReceived.call(received_income)
+          result = Income::MarkAsReceived.call(received_income)
         }.not_to change(Transaction, :count)
       end
     end
@@ -89,7 +89,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
           original_method.call(specific_date)
         end
 
-        result = Incomes::MarkAsReceived.call(income)
+        result = Income::MarkAsReceived.call(income)
         income.reload
 
         expect(income.last_received_at).to be_within(1.second).of(specific_date)
@@ -103,7 +103,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
       end
 
       it 'returns failure and the error message' do
-        result = Incomes::MarkAsReceived.call(income)
+        result = Income::MarkAsReceived.call(income)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')
@@ -121,7 +121,7 @@ RSpec.describe Incomes::MarkAsReceived, type: :service do
 
       it 'rolls back the changes and returns error' do
         expect {
-          result = Incomes::MarkAsReceived.call(income)
+          result = Income::MarkAsReceived.call(income)
 
           expect(result[:success]).to be false
           expect(result[:errors]).to include('Failed to create transaction')

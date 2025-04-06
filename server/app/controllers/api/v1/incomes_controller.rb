@@ -13,7 +13,7 @@ module Api
 
       # POST /api/v1/incomes
       def create
-        result = Incomes::Create.call(current_user, income_params)
+        result = Income::Create.call(current_user, income_params)
 
         if result[:success]
           @income = result[:income]
@@ -25,7 +25,7 @@ module Api
 
       # PATCH/PUT /api/v1/incomes/:id
       def update
-        result = Incomes::Update.call(@income, income_params)
+        result = Income::Update.call(@income, income_params)
 
         if result[:success]
           render :show
@@ -36,7 +36,7 @@ module Api
 
       # DELETE /api/v1/incomes/:id
       def destroy
-        result = Incomes::Destroy.call(@income)
+        result = Income::Destroy.call(@income)
 
         if result[:success]
           render :show
@@ -47,7 +47,7 @@ module Api
 
       # PUT /api/v1/incomes/:id/mark_as_received
       def mark_as_received
-        result = Incomes::MarkAsReceived.call(@income)
+        result = Income::MarkAsReceived.call(@income)
 
         if result[:success]
           render :show
@@ -58,7 +58,7 @@ module Api
 
       # PUT /api/v1/incomes/:id/mark_as_pending
       def mark_as_pending
-        result = Incomes::MarkAsPending.call(@income)
+        result = Income::MarkAsPending.call(@income)
 
         if result[:success]
           render :show
@@ -74,7 +74,7 @@ module Api
 
       # GET /api/v1/incomes/pending
       def pending
-        result = Incomes::FetchPending.call(current_user)
+        result = Income::FetchPending.call(current_user)
         @incomes = result[:incomes]
 
         if result[:success]
@@ -86,7 +86,7 @@ module Api
 
       # GET /api/v1/incomes/received
       def received
-        result = Incomes::FetchReceived.call(current_user)
+        result = Income::FetchReceived.call(current_user)
         @incomes = result[:incomes]
         if result[:success]
           render :index

@@ -1,4 +1,4 @@
-module Incomes
+module Income
   class MarkAsReceived < ApplicationService
     attr_reader :income, :user
 

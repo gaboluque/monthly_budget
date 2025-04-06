@@ -1,5 +1,5 @@
-module Incomes
-  class FetchPending < ApplicationService
+module Income
+  class FetchReceived < ApplicationService
     attr_reader :user
 
     def initialize(user)
@@ -7,9 +7,9 @@ module Incomes
     end
 
     def call
-      pending_incomes = user.incomes.pending
+      received_incomes = user.incomes.received_this_month
 
-      { success: true, incomes: pending_incomes }
+      { success: true, incomes: received_incomes }
     rescue StandardError => e
       { success: false, errors: e.message }
     end

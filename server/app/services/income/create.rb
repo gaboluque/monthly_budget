@@ -1,4 +1,4 @@
-module Incomes
+module Income
   class Create < ApplicationService
     attr_reader :user, :params
 
