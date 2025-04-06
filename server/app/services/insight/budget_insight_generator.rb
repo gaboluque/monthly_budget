@@ -1,4 +1,4 @@
-module Insights
+module Insight
   class BudgetInsightGenerator
     SYSTEM_PROMPT = <<~PROMPT
       You are a financial insights analyst specializing in personal budgeting. Analyze the provided financial data and generate detailed, **actionable insights** that help the user optimize their spending, increase savings, and achieve financial stability.
