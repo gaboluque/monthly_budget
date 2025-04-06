@@ -155,7 +155,7 @@ class Seeds
   end
 
   def create_budget_item(params)
-    result = BudgetItems::Create.call(@test_user, params)
+    result = BudgetItem::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:budget_item]
@@ -184,7 +184,7 @@ Seeds.run
 # emails.each do |email|
 #   user = User.create(email: email.downcase, password: email.downcase)
 
-#   BudgetItems::Create.call(user, {
+#   BudgetItem::Create.call(user, {
 #     name: 'Other',
 #     amount: 0,
 #     category: 'other',
