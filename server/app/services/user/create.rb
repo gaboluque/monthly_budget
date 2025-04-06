@@ -1,4 +1,4 @@
-module Users
+module User
   class Create < ApplicationService
     attr_reader :params
 
