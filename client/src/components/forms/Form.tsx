@@ -1,6 +1,7 @@
 import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react";
 import { OptionSelect } from "./fields/OptionSelect";
+import { PasswordField } from "./fields/PasswordField";
 
 export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'multi-select' | 'textarea' | 'checkbox' | 'date' | 'radio' | 'optionSelect';
 
@@ -91,6 +92,17 @@ export const Form = <T extends FieldValues>({
         const { name, type, placeholder, options, validation } = field;
 
         switch (type) {
+            case 'password':
+                return (
+                    <PasswordField
+                        name={name}
+                        label={field.label}
+                        placeholder={placeholder}
+                        required={field.required}
+                        validation={validation}
+                        register={register}
+                    />
+                );
             case 'optionSelect':
             case 'multi-select':
                 return (

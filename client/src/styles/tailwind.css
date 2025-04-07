@@ -393,6 +393,10 @@ img,video {
     bottom: 100%
 }
 
+.bottom-10 {
+    bottom: 10px
+}
+
 .left-0 {
     left: 0
 }
@@ -1352,6 +1356,10 @@ img,video {
 
 .pr-10 {
     padding-right: 2.5rem
+}
+
+.pr-2 {
+    padding-right: .5rem
 }
 
 .pt-4 {
