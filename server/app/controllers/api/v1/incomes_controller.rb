@@ -67,11 +67,6 @@ module Api
         end
       end
 
-      # GET /api/v1/incomes/categories
-      def categories
-        render json: { data: Incomes::CATEGORIES }
-      end
-
       # GET /api/v1/incomes/pending
       def pending
         result = Incomes::FetchPending.call(current_user)

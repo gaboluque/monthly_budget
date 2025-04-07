@@ -1,18 +1,18 @@
-# This file contains seed data for transaction categories
-# Run using: rails db:seed:transaction_categories
+# This file contains seed data for categories
+# Run using: rails db:seed:categories
 
 class Seeds
-  module TransactionCategories
+  module Categories
     def self.run
-      puts "\n============ Starting Transaction Categories Seeding Process ============\n\n"
+      puts "\n============ Starting Categories Seeding Process ============\n\n"
       create_categories
-      puts "\n============ Transaction Categories Seeding Completed Successfully ============\n"
+      puts "\n============ Categories Seeding Completed Successfully ============\n"
     end
 
     private
 
     def self.create_categories
-      puts "---------- 📂 Creating Transaction Categories ----------"
+      puts "---------- 📂 Creating Categories ----------"
       
       categories = [
         {
@@ -99,7 +99,7 @@ class Seeds
       ]
 
       categories.each do |category|
-        result = Transactions::Categories::Create.call(nil, category)
+        result = ::Categories::Create.call(nil, category)
         puts "  • #{category[:name]}: #{result[:success] ? '✅' : '❌'}"
         puts "    Errors: #{result[:errors]}" if result[:success] == false
       end

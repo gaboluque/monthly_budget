@@ -63,7 +63,7 @@ module Insights
     def initialize(user)
       @user = user
       @incomes = user.incomes.includes(:account)
-      @budget_items = user.budget_items
+      @budgets = user.budgets
       @transactions = user.transactions.includes(:account, :recipient_account)
       @accounts = user.accounts
     end
@@ -95,7 +95,7 @@ module Insights
         #{incomes_data.to_json}
 
         Budget Item Data:
-        #{budget_items_data.to_json}
+        #{budgets_data.to_json}
 
         Transaction Data:
         #{transactions_data.to_json}
@@ -134,16 +134,16 @@ module Insights
       end
     end
 
-    def budget_items_data
-      @budget_items_data ||= @budget_items.map do |budget_item|
+    def budgets_data
+      @budgets_data ||= @budgets.map do |budget|
         {
-          name: budget_item.name,
-          amount: budget_item.amount,
-          category: budget_item.category,
-          frequency: budget_item.frequency,
-          last_paid_at: budget_item.last_paid_at,
-          is_pending: budget_item.pending?,
-          is_paid: budget_item.paid?
+          name: budget.name,
+          amount: budget.amount,
+          category: budget.category,
+          frequency: budget.frequency,
+          last_paid_at: budget.last_paid_at,
+          is_pending: budget.pending?,
+          is_paid: budget.paid?
         }
       end
     end

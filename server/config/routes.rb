@@ -9,7 +9,6 @@ Rails.application.routes.draw do
 
       resources :incomes do
         collection do
-          get :categories
           get :pending
           get :received
         end
@@ -18,9 +17,8 @@ Rails.application.routes.draw do
           put :mark_as_pending
         end
       end
-      resources :budget_items do
+      resources :budgets do
         collection do
-          get :categories
           get :pending
           get :paid
         end
@@ -29,6 +27,7 @@ Rails.application.routes.draw do
           put :mark_as_pending
         end
       end
+      resources :categories, only: [ :index, :show, :create, :update, :destroy ]
       resources :accounts do
         collection do
           get :types
@@ -39,7 +38,6 @@ Rails.application.routes.draw do
         collection do
           get :types
           get :frequencies
-          get :categories
         end
       end
       resources :insights, only: [ :index ] do

@@ -45,18 +45,18 @@ RSpec.describe User, type: :model do
 
   describe 'associations' do
     it { should have_many(:incomes).dependent(:destroy) }
-    it { should have_many(:budget_items).dependent(:destroy) }
+    it { should have_many(:budgets).dependent(:destroy) }
     it { should have_many(:accounts).dependent(:destroy) }
 
     it 'cascades deletion to associated records' do
       user = create(:user)
       create(:income, user: user)
-      create(:budget_item, user: user)
+      create(:budget, user: user)
       create(:account, user: user)
 
       expect { user.destroy }.to change { Income.count }.by(-1)
-        .and change { BudgetItem.count }.by(-1)
-        .and change { Account.count }.by(-1)
+        .and change { Budget.count }.by(-1)
+                                    .and change { Account.count }.by(-1)
     end
   end
 

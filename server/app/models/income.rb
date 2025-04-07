@@ -23,8 +23,6 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class Income < ApplicationRecord
-  include TransactionItem
-
   belongs_to :user
   belongs_to :account
 

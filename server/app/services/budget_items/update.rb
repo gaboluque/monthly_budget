@@ -1,17 +1,17 @@
 module BudgetItems
   class Update < ApplicationService
-    attr_reader :budget_item, :params
+    attr_reader :budget, :params
 
-    def initialize(budget_item, params)
-      @budget_item = budget_item
+    def initialize(budget, params)
+      @budget = budget
       @params = params
     end
 
     def call
-      if budget_item.update(params)
-        { success: true, budget_item: budget_item }
+      if budget.update(params)
+        { success: true, budget: budget }
       else
-        { success: false, errors: budget_item.errors }
+        { success: false, errors: budget.errors }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

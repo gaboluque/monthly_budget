@@ -1,4 +1,4 @@
-require_relative 'seeds/transaction_categories'
+require_relative 'seeds/categories'
 
 class Seeds
   def self.run
@@ -8,11 +8,11 @@ class Seeds
   def run
     puts "\n============ Starting Database Seeding Process ============\n\n"
     clear_existing_data
-    Seeds::TransactionCategories.run
+    Seeds::Categories.run
     create_test_user
     create_accounts
     create_incomes
-    create_budget_items
+    create_budgets
     create_transactions
     puts "\n============ Database Seeding Completed Successfully ============\n"
   end
@@ -23,10 +23,10 @@ class Seeds
     puts "---------- 🗑️  Clearing Existing Data ----------"
     Transaction.destroy_all
     Income.destroy_all
-    BudgetItem.destroy_all
+    Budget.destroy_all
     Account.destroy_all
     User.destroy_all
-    Transaction::Category.destroy_all
+    Category.destroy_all
     puts "✅ All existing data cleared\n\n"
   end
 
@@ -88,37 +88,32 @@ class Seeds
     puts "✅ All income sources created successfully\n\n"
   end
 
-  def create_budget_items
+  def create_budgets
     puts "---------- 📋 Creating Budget Items ----------"
     
     # Get transaction categories
-    @housing_category = Transaction::Category.find_by(name: 'Housing')
-    @food_category = Transaction::Category.find_by(name: 'Food & Drinks')
-    @entertainment_category = Transaction::Category.find_by(name: 'Entertainment')
-    @shopping_category = Transaction::Category.find_by(name: 'Shopping')
+    @housing_category = Category.find_by(name: 'Housing')
+    @food_category = Category.find_by(name: 'Food & Drinks')
+    @entertainment_category = Category.find_by(name: 'Entertainment')
+    @shopping_category = Category.find_by(name: 'Shopping')
     
-    @rent = create_budget_item(
+    @rent = create_budget(
       name: 'Rent',
       amount: 1200.00,
       frequency: 'monthly'
     )
-    @rent.transaction_categories << @housing_category if @housing_category
     
-    @groceries = create_budget_item(
+    @groceries = create_budget(
       name: 'Groceries',
       amount: 400.00,
       frequency: 'monthly'
     )
-    @groceries.transaction_categories << @food_category if @food_category
-    @groceries.transaction_categories << @shopping_category if @shopping_category
     
-    @going_out = create_budget_item(
+    @going_out = create_budget(
       name: 'Eating Out',
       amount: 200.00,
       frequency: 'monthly'
     )
-    @going_out.transaction_categories << @food_category if @food_category
-    @going_out.transaction_categories << @entertainment_category if @entertainment_category
     
     puts "✅ All budget items created successfully\n\n"
   end
@@ -127,7 +122,6 @@ class Seeds
     puts "---------- 💳 Creating Transactions ----------"
     create_transaction(
       amount: 1200.00,
-      budget_item: @rent,
       executed_at: Time.current,
       account_id: @savings.id,
       transaction_type: 'expense'
@@ -135,7 +129,6 @@ class Seeds
 
     create_transaction(
       amount: 3500.00,
-      budget_item: @groceries,
       executed_at: Time.current,
       account_id: @savings.id,
       transaction_type: 'income'
@@ -157,11 +150,11 @@ class Seeds
     result[:income]
   end
 
-  def create_budget_item(params)
+  def create_budget(params)
     result = BudgetItems::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
-    result[:budget_item]
+    result[:budget]
   end
 
   def create_transaction(params)

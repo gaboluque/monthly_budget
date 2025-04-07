@@ -1,4 +1,4 @@
-# Monthly Budget PWA 📊
+# PLUTO - Budget PWA 📊
 
 [![Rails](https://img.shields.io/badge/Rails-8.x-blue.svg)](https://rubyonrails.org/)
 [![Remix](https://img.shields.io/badge/Remix-1.x-blue.svg)](https://remix.run/)
@@ -7,7 +7,7 @@
 
 ## 📝 Overview
 
-A modern Progressive Web App (PWA) for managing your monthly budget effectively. Track your income sources and budget, categorize your spending, and maintain a clear view of your financial health.
+Pluto is a modern Progressive Web App (PWA) for managing your monthly budget effectively. Track your income sources and budget, categorize your spending, and maintain a clear view of your financial health.
 
 ### 🎯 Purpose
 

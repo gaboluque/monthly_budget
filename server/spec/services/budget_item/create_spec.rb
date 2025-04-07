@@ -7,7 +7,6 @@ RSpec.describe BudgetItems::Create do
     {
       name: 'Monthly Rent',
       amount: 1500.00,
-      category: 'needs',
       frequency: 'monthly'
     }
   }
@@ -16,7 +15,6 @@ RSpec.describe BudgetItems::Create do
     {
       name: '',
       amount: nil,
-      category: 'invalid',
       frequency: 'yearly'
     }
   }
@@ -27,19 +25,18 @@ RSpec.describe BudgetItems::Create do
         expect {
           result = described_class.call(user, valid_params)
           expect(result[:success]).to be true
-          expect(result[:budget_item]).to be_persisted
-        }.to change(BudgetItem, :count).by(1)
+          expect(result[:budget]).to be_persisted
+        }.to change(Budget, :count).by(1)
       end
 
       it 'correctly assigns attributes' do
         result = described_class.call(user, valid_params)
 
-        budget_item = result[:budget_item]
-        expect(budget_item.user).to eq(user)
-        expect(budget_item.name).to eq('Monthly Rent')
-        expect(budget_item.amount).to eq(1500.00)
-        expect(budget_item.category).to eq('needs')
-        expect(budget_item.frequency).to eq('monthly')
+        budget = result[:budget]
+        expect(budget.user).to eq(user)
+        expect(budget.name).to eq('Monthly Rent')
+        expect(budget.amount).to eq(1500.00)
+        expect(budget.frequency).to eq('monthly')
       end
     end
 
@@ -54,13 +51,13 @@ RSpec.describe BudgetItems::Create do
       it 'does not create a budget item' do
         expect {
           described_class.call(user, invalid_params)
-        }.not_to change(BudgetItem, :count)
+        }.not_to change(Budget, :count)
       end
     end
 
     context 'when an exception occurs' do
       before do
-        allow_any_instance_of(BudgetItem).to receive(:save).and_raise(StandardError.new('Test error'))
+        allow_any_instance_of(Budget).to receive(:save).and_raise(StandardError.new('Test error'))
       end
 
       it 'returns error message' do

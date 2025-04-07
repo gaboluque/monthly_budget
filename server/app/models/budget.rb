@@ -1,31 +1,30 @@
 # == Schema Information
 #
-# Table name: budget_items
+# Table name: budgets
 #
 #  id           :bigint           not null, primary key
 #  amount       :decimal(15, 2)   not null
-#  frequency    :string           not null
+#  frequency    :string           default("monthly"), not null
 #  last_paid_at :datetime
 #  name         :string           not null
+#  nature       :string           default("other"), not null
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  user_id      :bigint           not null
 #
 # Indexes
 #
-#  index_budget_items_on_frequency  (frequency)
-#  index_budget_items_on_user_id    (user_id)
+#  index_budgets_on_frequency  (frequency)
+#  index_budgets_on_nature     (nature)
+#  index_budgets_on_user_id    (user_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (user_id => users.id)
 #
-class BudgetItem < ApplicationRecord
+class Budget < ApplicationRecord
   belongs_to :user
   
-  has_many :budget_item_categories, dependent: :destroy
-  has_many :transaction_categories, through: :budget_item_categories, class_name: 'Transaction::Category'
-
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
@@ -33,7 +32,15 @@ class BudgetItem < ApplicationRecord
     monthly: 'monthly'
   }, default: :monthly
 
-  scope :by_category, ->(category) { joins(:transaction_categories).where(transaction_categories: { id: category }) }
+  enum :nature, {
+    want: 'want',
+    need: 'need',
+    debt: 'debt',
+    savings: 'savings',
+    investment: 'investment',
+    other: 'other'
+  }, default: :other
+
   scope :by_frequency, ->(frequency) { where(frequency: frequency) }
   scope :pending, -> {
     current_month_start = Time.current.beginning_of_month

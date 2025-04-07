@@ -1,16 +1,16 @@
 module BudgetItems
   class Destroy < ApplicationService
-    attr_reader :budget_item
+    attr_reader :budget
 
-    def initialize(budget_item)
-      @budget_item = budget_item
+    def initialize(budget)
+      @budget = budget
     end
 
     def call
-      if budget_item.destroy
-        { success: true, budget_item: budget_item }
+      if budget.destroy
+        { success: true, budget: budget }
       else
-        { success: false, errors: budget_item.errors }
+        { success: false, errors: budget.errors }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

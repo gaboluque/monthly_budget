@@ -122,7 +122,7 @@ RSpec.describe Transactions::Create do
     end
 
     context 'with a budget item' do
-      let(:budget_item) { create(:budget_item, user: user, amount: 100.50) }
+      let(:budget) { create(:budget, user: user, amount: 100.50) }
       let(:expense_with_item_params) {
         {
           account_id: account.id,
@@ -130,7 +130,7 @@ RSpec.describe Transactions::Create do
           transaction_type: Transaction.transaction_types[:expense],
           description: 'Budget item expense',
           item_type: 'BudgetItem',
-          item_id: budget_item.id
+          item_id: budget.id
         }
       }
 
@@ -138,7 +138,7 @@ RSpec.describe Transactions::Create do
         result = described_class.call(user, expense_with_item_params)
 
         expect(result[:success]).to be true
-        expect(result[:transaction].item).to eq(budget_item)
+        expect(result[:transaction].item).to eq(budget)
       end
     end
   end

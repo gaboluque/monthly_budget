@@ -84,13 +84,13 @@ RSpec.describe Transactions::Destroy do
     end
 
     context 'when transaction is associated with a budget item' do
-      let(:budget_item) { create(:budget_item, user: user, last_paid_at: Date.yesterday) }
+      let(:budget) { create(:budget, user: user, last_paid_at: Date.yesterday) }
       let!(:transaction) do
         create(:transaction, :expense,
           user: user,
           account: account,
           amount: 100,
-          item: budget_item
+          item: budget
         )
       end
 
@@ -100,11 +100,11 @@ RSpec.describe Transactions::Destroy do
       end
 
       it 'marks the budget item as pending' do
-        expect(budget_item.last_paid_at).to be_present
+        expect(budget.last_paid_at).to be_present
 
         subject
 
-        expect(budget_item.reload.last_paid_at).to eq(budget_item.last_executed_at)
+        expect(budget.reload.last_paid_at).to eq(budget.last_executed_at)
       end
     end
 

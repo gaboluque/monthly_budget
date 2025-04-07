@@ -2,13 +2,12 @@ require 'rails_helper'
 
 RSpec.describe BudgetItems::Update do
   let(:user) { create(:user) }
-  let(:budget_item) { create(:budget_item, user: user, name: 'Old Name', amount: 100.00, category: 'needs') }
+  let(:budget) { create(:budget, user: user, name: 'Old Name', amount: 100.00) }
 
   let(:valid_params) {
     {
       name: 'New Name',
       amount: 200.00,
-      category: 'wants'
     }
   }
 
@@ -16,48 +15,45 @@ RSpec.describe BudgetItems::Update do
     {
       name: '',
       amount: nil,
-      category: 'invalid'
     }
   }
 
   describe '.call' do
     context 'with valid params' do
       it 'updates the budget item' do
-        result = described_class.call(budget_item, valid_params)
+        result = described_class.call(budget, valid_params)
 
         expect(result[:success]).to be true
-        budget_item.reload
-        expect(budget_item.name).to eq('New Name')
-        expect(budget_item.amount).to eq(200.00)
-        expect(budget_item.category).to eq('wants')
+        budget.reload
+        expect(budget.name).to eq('New Name')
+        expect(budget.amount).to eq(200.00)
       end
     end
 
     context 'with invalid params' do
       it 'returns errors' do
-        result = described_class.call(budget_item, invalid_params)
+        result = described_class.call(budget, invalid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to be_present
       end
 
       it 'does not update the budget item' do
-        described_class.call(budget_item, invalid_params)
+        described_class.call(budget, invalid_params)
 
-        budget_item.reload
-        expect(budget_item.name).to eq('Old Name')
-        expect(budget_item.amount).to eq(100.00)
-        expect(budget_item.category).to eq('needs')
+        budget.reload
+        expect(budget.name).to eq('Old Name')
+        expect(budget.amount).to eq(100.00)
       end
     end
 
     context 'when an exception occurs' do
       before do
-        allow(budget_item).to receive(:update).and_raise(StandardError.new('Test error'))
+        allow(budget).to receive(:update).and_raise(StandardError.new('Test error'))
       end
 
       it 'returns error message' do
-        result = described_class.call(budget_item, valid_params)
+        result = described_class.call(budget, valid_params)
 
         expect(result[:success]).to be false
         expect(result[:errors]).to eq('Test error')

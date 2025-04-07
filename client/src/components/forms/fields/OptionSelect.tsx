@@ -25,11 +25,11 @@ export function OptionSelect<T extends FieldValues>({
 }: OptionSelectProps<T>) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedValues, setSelectedValues] = useState<number[]>(
-    isMulti 
-      ? (Array.isArray(value) ? value : []) 
+    isMulti
+      ? (Array.isArray(value) ? value : [])
       : (value && !Array.isArray(value) ? [Number(value)] : [])
   );
-  
+
   // Update local state when value prop changes
   useEffect(() => {
     if (isMulti) {
@@ -38,7 +38,7 @@ export function OptionSelect<T extends FieldValues>({
       setSelectedValues(value && !Array.isArray(value) ? [Number(value)] : []);
     }
   }, [value, isMulti]);
-  
+
   // Get selected category names as string
   const getSelectedText = (): string => {
     if (!selectedValues.length) return '';
@@ -46,7 +46,7 @@ export function OptionSelect<T extends FieldValues>({
     if (!isMulti) {
       // Single select mode - show only the first selected value
       const selectedValue = selectedValues[0]?.toString();
-      
+
       // First check parent categories
       const parent = options.find(opt => opt.value === selectedValue);
       if (parent) return parent.label;
@@ -58,18 +58,18 @@ export function OptionSelect<T extends FieldValues>({
           if (child) return child.label;
         }
       }
-      
+
       return '';
     } else {
       // Multi-select mode - show comma-separated list
       const selectedLabels: string[] = [];
-      
+
       // Check each option
       options.forEach(option => {
         if (selectedValues.includes(Number(option.value))) {
           selectedLabels.push(option.label);
         }
-        
+
         // Check children as well
         if (option.children) {
           option.children.forEach(child => {
@@ -88,24 +88,24 @@ export function OptionSelect<T extends FieldValues>({
 
   const handleCategorySelect = (categoryId: string | number) => {
     const numValue = Number(categoryId);
-    
+
     if (!isMulti) {
       // Single select mode
       setSelectedValues([numValue]);
       const stringValue = categoryId.toString();
-      
+
       // Call the onChange callback
       onChange(stringValue);
-      
+
       // Update the form value
       registerOnChange({ target: { name, value: stringValue } });
-      
+
       // Close the modal
       setIsModalOpen(false);
     } else {
       // Multi-select mode
       const newValues = [...selectedValues];
-      
+
       // Toggle the selection
       const index = newValues.indexOf(numValue);
       if (index === -1) {
@@ -115,23 +115,20 @@ export function OptionSelect<T extends FieldValues>({
         // Remove
         newValues.splice(index, 1);
       }
-      
+
       // Update local state
       setSelectedValues(newValues);
-      
+
       // Call the onChange callback
       onChange(newValues);
-      
+
       // Update the form value
       registerOnChange({ target: { name, value: newValues } });
     }
   };
-  
+
   const handleSave = () => {
-    // Close modal in multi-select mode when save is clicked
-    if (isMulti) {
-      setIsModalOpen(false);
-    }
+    setIsModalOpen(false);
   };
 
   return (
@@ -145,35 +142,33 @@ export function OptionSelect<T extends FieldValues>({
         className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       />
-      
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => handleSave()} 
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => handleSave()}
         title={label}
         zIndex={300}
       >
         <div className="space-y-2 overflow-y-auto max-h-[60vh] pb-10">
           {options.map((option) => (
             <div key={option.value} className="space-y-1">
-              <div 
-                className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                  selectedValues.includes(Number(option.value)) ? 'bg-blue-100 border-blue-500' : ''
-                }`}
+              <div
+                className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${selectedValues.includes(Number(option.value)) ? 'bg-blue-100 border-blue-500' : ''
+                  }`}
                 onClick={() => handleCategorySelect(option.value)}
               >
                 <div className="flex items-center">
                   <span>{option.label}</span>
                 </div>
               </div>
-              
+
               {option.children && option.children.length > 0 && (
                 <div className="pl-4 space-y-1">
                   {option.children.map((child) => (
-                    <div 
-                      key={child.value} 
-                      className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                        selectedValues.includes(Number(child.value)) ? 'bg-blue-100 border-blue-500' : ''
-                      }`}
+                    <div
+                      key={child.value}
+                      className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${selectedValues.includes(Number(child.value)) ? 'bg-blue-100 border-blue-500' : ''
+                        }`}
                       onClick={() => handleCategorySelect(child.value)}
                     >
                       <div className="flex items-center">
@@ -186,7 +181,7 @@ export function OptionSelect<T extends FieldValues>({
             </div>
           ))}
         </div>
-        
+
         {isMulti && (
           <div className="mt-4 flex justify-end">
             <button
@@ -199,7 +194,7 @@ export function OptionSelect<T extends FieldValues>({
           </div>
         )}
       </Modal>
-      
+
       {/* Hidden input to store the actual form value */}
       <input
         type="hidden"

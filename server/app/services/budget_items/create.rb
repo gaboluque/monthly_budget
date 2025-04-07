@@ -8,12 +8,12 @@ module BudgetItems
     end
 
     def call
-      budget_item = user.budget_items.build(params)
+      budget = user.budgets.build(params)
 
-      if budget_item.save
-        { success: true, budget_item: budget_item }
+      if budget.save
+        { success: true, budget: budget }
       else
-        { success: false, errors: budget_item.errors }
+        { success: false, errors: budget.errors }
       end
     rescue StandardError => e
       { success: false, errors: e.message }

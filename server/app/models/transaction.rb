@@ -6,8 +6,8 @@
 #  amount               :decimal(10, 2)   not null
 #  description          :text
 #  executed_at          :datetime         not null
-#  frequency            :string           default("one_time")
-#  transaction_type     :string           not null
+#  frequency            :string           default("one_time"), not null
+#  transaction_type     :string           default("expense"), not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  account_id           :bigint           not null
@@ -27,7 +27,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (account_id => accounts.id)
-#  fk_rails_...  (category_id => transaction_categories.id)
+#  fk_rails_...  (category_id => categories.id)
 #  fk_rails_...  (recipient_account_id => accounts.id)
 #  fk_rails_...  (user_id => users.id)
 #
@@ -35,7 +35,7 @@ class Transaction < ApplicationRecord
   belongs_to :user
   belongs_to :account
   belongs_to :recipient_account, class_name: 'Account', optional: true
-  belongs_to :category, class_name: 'Transaction::Category'
+  belongs_to :category
 
   validates :amount, presence: true, numericality: true
   validates :transaction_type, presence: true
