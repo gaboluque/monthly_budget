@@ -15,8 +15,6 @@ export function Modal({ isOpen, onClose, title, children, zIndex, type = 'standa
   const isPopup = type === 'popup';
   const calculatedZIndex = zIndex || (isPopup ? 50 : 30);
 
-  console.log(calculatedZIndex);
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {

@@ -19,16 +19,18 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
   const [error, setError] = useState<string | null>(null);
 
   const categoryOptions = useMemo(() => {
-    return categories.map((cat: string) => ({
-      value: cat,
-      label: cat
+    if (!categories || !Array.isArray(categories)) return [];
+    
+    return categories.map((cat) => ({
+      value: cat.id.toString(),
+      label: `${cat.icon} ${cat.name}`
     }));
   }, [categories]);
 
   const defaultValues: CreateBudgetItemData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
-    category: initialData?.category ?? undefined,
+    transaction_category_ids: initialData?.transaction_category_ids ?? [],
   };
 
   const handleSubmit: SubmitHandler<CreateBudgetItemData> = async (data: CreateBudgetItemData) => {
@@ -51,12 +53,12 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
   const formFields: FormField<CreateBudgetItemData>[] = [
     {
       name: 'name',
-      label: 'BudgetItem Name',
+      label: 'Budget Item Name',
       type: 'text',
       placeholder: 'Enter budget item name',
       required: true,
       validation: {
-        required: 'BudgetItem name is required'
+        required: 'Budget item name is required'
       }
     },
     {
@@ -74,13 +76,13 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
       }
     },
     {
-      name: 'category',
-      label: 'Category',
-      type: 'select',
+      name: 'transaction_category_ids',
+      label: 'Categories',
+      type: 'multi-select',
       options: categoryOptions,
       required: true,
       validation: {
-        required: 'Category is required'
+        required: 'At least one category is required'
       }
     },
   ];

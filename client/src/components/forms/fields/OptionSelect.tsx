@@ -1,5 +1,5 @@
 import { Path, FieldValues, UseFormRegister } from 'react-hook-form';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal } from '../../ui/Modal';
 
 interface OptionSelectProps<T extends FieldValues> {
@@ -7,9 +7,10 @@ interface OptionSelectProps<T extends FieldValues> {
   label: string;
   placeholder?: string;
   options: { value: string; label: string, children?: { value: string; label: string }[] }[]; // For select fields
-  value?: string;
+  value?: string | number[];
+  isMulti?: boolean;
   register: UseFormRegister<T>;
-  onChange: (value: string) => void;
+  onChange: (value: string | number[]) => void;
 }
 
 export function OptionSelect<T extends FieldValues>({
@@ -18,42 +19,119 @@ export function OptionSelect<T extends FieldValues>({
   placeholder = "Select an option",
   options,
   value,
+  isMulti = false,
   register,
   onChange
 }: OptionSelectProps<T>) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedValues, setSelectedValues] = useState<number[]>(
+    isMulti 
+      ? (Array.isArray(value) ? value : []) 
+      : (value && !Array.isArray(value) ? [Number(value)] : [])
+  );
   
-  // Find the selected category or subcategory name
-  const getSelectedCategoryName = (): string => {
-    if (!value) return '';
-
-    // First check parent categories
-    const parent = options.find(opt => opt.value === value);
-    if (parent) return parent.label;
-
-    // Then check subcategories
-    for (const option of options) {
-      if (option.children) {
-        const child = option.children.find(sub => sub.value === value);
-        if (child) return child.label;
-      }
+  // Update local state when value prop changes
+  useEffect(() => {
+    if (isMulti) {
+      setSelectedValues(Array.isArray(value) ? value : []);
+    } else {
+      setSelectedValues(value && !Array.isArray(value) ? [Number(value)] : []);
     }
+  }, [value, isMulti]);
+  
+  // Get selected category names as string
+  const getSelectedText = (): string => {
+    if (!selectedValues.length) return '';
 
-    return '';
+    if (!isMulti) {
+      // Single select mode - show only the first selected value
+      const selectedValue = selectedValues[0]?.toString();
+      
+      // First check parent categories
+      const parent = options.find(opt => opt.value === selectedValue);
+      if (parent) return parent.label;
+
+      // Then check subcategories
+      for (const option of options) {
+        if (option.children) {
+          const child = option.children.find(sub => sub.value === selectedValue);
+          if (child) return child.label;
+        }
+      }
+      
+      return '';
+    } else {
+      // Multi-select mode - show comma-separated list
+      const selectedLabels: string[] = [];
+      
+      // Check each option
+      options.forEach(option => {
+        if (selectedValues.includes(Number(option.value))) {
+          selectedLabels.push(option.label);
+        }
+        
+        // Check children as well
+        if (option.children) {
+          option.children.forEach(child => {
+            if (selectedValues.includes(Number(child.value))) {
+              selectedLabels.push(child.label);
+            }
+          });
+        }
+      });
+
+      return selectedLabels.join(', ');
+    }
   };
 
   const { onChange: registerOnChange } = register(name);
 
   const handleCategorySelect = (categoryId: string | number) => {
-    const stringValue = categoryId.toString();
-    // Call the onChange callback
-    onChange(stringValue);
+    const numValue = Number(categoryId);
     
-    // Update the form value
-    registerOnChange({ target: { name, value: stringValue } });
-    
-    // Close the modal
-    setIsModalOpen(false);
+    if (!isMulti) {
+      // Single select mode
+      setSelectedValues([numValue]);
+      const stringValue = categoryId.toString();
+      
+      // Call the onChange callback
+      onChange(stringValue);
+      
+      // Update the form value
+      registerOnChange({ target: { name, value: stringValue } });
+      
+      // Close the modal
+      setIsModalOpen(false);
+    } else {
+      // Multi-select mode
+      const newValues = [...selectedValues];
+      
+      // Toggle the selection
+      const index = newValues.indexOf(numValue);
+      if (index === -1) {
+        // Add
+        newValues.push(numValue);
+      } else {
+        // Remove
+        newValues.splice(index, 1);
+      }
+      
+      // Update local state
+      setSelectedValues(newValues);
+      
+      // Call the onChange callback
+      onChange(newValues);
+      
+      // Update the form value
+      registerOnChange({ target: { name, value: newValues } });
+    }
+  };
+  
+  const handleSave = () => {
+    // Close modal in multi-select mode when save is clicked
+    if (isMulti) {
+      setIsModalOpen(false);
+    }
   };
 
   return (
@@ -62,7 +140,7 @@ export function OptionSelect<T extends FieldValues>({
         type="text"
         id={name.toString()}
         readOnly
-        value={getSelectedCategoryName()}
+        value={getSelectedText()}
         placeholder={placeholder}
         className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
@@ -70,7 +148,7 @@ export function OptionSelect<T extends FieldValues>({
       
       <Modal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        onClose={() => handleSave()} 
         title={label}
         zIndex={300}
       >
@@ -79,7 +157,7 @@ export function OptionSelect<T extends FieldValues>({
             <div key={option.value} className="space-y-1">
               <div 
                 className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                  value === option.value ? 'bg-blue-100 border-blue-500' : ''
+                  selectedValues.includes(Number(option.value)) ? 'bg-blue-100 border-blue-500' : ''
                 }`}
                 onClick={() => handleCategorySelect(option.value)}
               >
@@ -94,7 +172,7 @@ export function OptionSelect<T extends FieldValues>({
                     <div 
                       key={child.value} 
                       className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
-                        value === child.value ? 'bg-blue-100 border-blue-500' : ''
+                        selectedValues.includes(Number(child.value)) ? 'bg-blue-100 border-blue-500' : ''
                       }`}
                       onClick={() => handleCategorySelect(child.value)}
                     >
@@ -108,6 +186,18 @@ export function OptionSelect<T extends FieldValues>({
             </div>
           ))}
         </div>
+        
+        {isMulti && (
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              onClick={handleSave}
+            >
+              Done
+            </button>
+          </div>
+        )}
       </Modal>
       
       {/* Hidden input to store the actual form value */}

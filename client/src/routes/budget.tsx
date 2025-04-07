@@ -1,35 +1,24 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Layout } from "../components/ui/Layout"
-import { Button } from "../components/ui/Button"
 import { Modal } from "../components/ui/Modal"
 import { BudgetItemForm } from "../components/budget_items/BudgetItemForm"
-import { BudgetSummary } from "../components/budget_items/BudgetSummary"
-import { BudgetItemCategory } from "../components/budget_items/BudgetItemCategory"
 import { useBudgetItems } from "../hooks/useBudgetItems"
 import type { BudgetItem, CreateBudgetItemData } from "../lib/types/budget_items"
-import { PlusCircle } from "lucide-react"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
+import { formatCurrency } from "../lib/utils/currency"
 import { Spinner } from "../components/ui/Spinner"
 
 export default function BudgetItems() {
   const [selectedBudgetItem, setSelectedBudgetItem] = useState<BudgetItem | CreateBudgetItemData | null>(null)
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
-  const { budgetItems, categories, isLoading, totalBudgetItems, budgetItemsByCategory, createBudgetItem, updateBudgetItem, deleteBudgetItem } = useBudgetItems()
+  const { budgetItems, createBudgetItem, updateBudgetItem, deleteBudgetItem, isLoading: isBudgetItemsLoading } = useBudgetItems()
 
-  // Initialize all categories as collapsed when they're loaded
-  useEffect(() => {
-    if (categories.length > 0) {
-      const initialExpandState = categories.reduce(
-        (acc, category) => {
-          acc[category] = false // Start with all categories collapsed
-          return acc
-        },
-        {} as Record<string, boolean>,
-      )
-      setExpandedCategories(initialExpandState)
-    }
-  }, [categories])
+
+  const handleAddBudgetItem = (category?: string) => {
+    setSelectedBudgetItem({
+      transaction_category_ids: category ? [Number(category)] : [],
+    })
+  }
 
   const handleSubmit = async (data: CreateBudgetItemData) => {
     try {
@@ -37,7 +26,7 @@ export default function BudgetItems() {
       if (data?.id || selectedBudgetItem?.id) {
         const id = data?.id || selectedBudgetItem?.id;
         if (!id) throw new Error("BudgetItem ID is required");
-
+        
         budgetItem = await updateBudgetItem(id, data);
       } else {
         budgetItem = await createBudgetItem(data);
@@ -51,19 +40,6 @@ export default function BudgetItems() {
         error: error as Error,
       });
     }
-  }
-
-  const toggleCategory = (category: string) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }))
-  }
-
-  const handleAddBudgetItem = (category?: string) => {
-    setSelectedBudgetItem({
-      category: category || undefined,
-    })
   }
 
   const handleDeleteBudgetItem = (id: string) => {
@@ -92,52 +68,67 @@ export default function BudgetItems() {
     <Layout>
       <PageHeader
         title="Monthly Budget"
-        description="A list of all your budget items organized by category."
-        buttonText="Add Budget Item"
+        description="A list of all your budgets."
+        buttonText="Add Budget"
         buttonColor="blue"
         onAction={() => handleAddBudgetItem()}
       />
 
-      {!isLoading && budgetItems.length > 0 && (
-        <BudgetSummary
-          totalBudgetItems={totalBudgetItems}
-          budgetItemCount={budgetItems.length}
-          budgetItemsByCategory={budgetItemsByCategory}
-        />
-      )}
-
-      {isLoading ? (
-        <div className="py-12 flex justify-center items-center text-gray-500">
-          <Spinner />
-        </div>
-      ) : budgetItems.length === 0 ? (
-        <div className="py-12 text-center">
-          <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-            <PlusCircle className="w-8 h-8 text-gray-400" />
+      <div className="mt-6 bg-white shadow-sm rounded-lg divide-y divide-gray-200">
+        {isBudgetItemsLoading ? (
+          <div className="p-6 text-center text-gray-500">
+            <Spinner />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No budget items yet</h3>
-          <p className="text-gray-500 mb-4">Get started by adding your first budget item</p>
-          <Button onClick={() => handleAddBudgetItem()} className="inline-flex items-center justify-center gap-2">
-            <PlusCircle className="w-4 h-4" />
-            <span>Add Budget Item</span>
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {categories.map((category) => (
-            <BudgetItemCategory
-              key={category}
-              category={category}
-              budgetItems={budgetItemsByCategory[category] || []}
-              isExpanded={expandedCategories[category]}
-              onToggle={toggleCategory}
-              onAddBudgetItem={handleAddBudgetItem}
-              onEditBudgetItem={setSelectedBudgetItem}
-              onDeleteBudgetItem={handleDeleteBudgetItem}
-            />
-          ))}
-        </div>
-      )}
+        ) : budgetItems.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">
+            No budget items found. Get started by adding your first budget item.
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+            {budgetItems.map((item) => (
+              <li key={item.id} className="p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300 shadow-sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900">{item.name}</h3>
+                    <div className="flex items-center mt-1">
+                      {item.transaction_categories?.map((category) => (
+                        <p 
+                          key={category.id} 
+                          className="block inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2" 
+                          style={{ backgroundColor: `${category.color}20`, color: category.color }}
+                        >
+                          {category.icon}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xl font-semibold text-gray-900">
+                      {formatCurrency(item.amount)}
+                    </span>
+                    <div className="ml-4 flex-shrink-0 flex">
+                      <button
+                        type="button"
+                        className="mr-2 text-blue-600 hover:text-blue-900"
+                        onClick={() => setSelectedBudgetItem(item)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="text-red-600 hover:text-red-900"
+                        onClick={() => handleDeleteBudgetItem(item.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       <Modal
         isOpen={!!selectedBudgetItem}

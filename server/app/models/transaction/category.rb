@@ -29,6 +29,7 @@ class Transaction::Category < ApplicationRecord
     has_many :children, class_name: 'Transaction::Category', foreign_key: :parent_id, dependent: :destroy
 
     validates :name, presence: true, uniqueness: { scope: :user }
-    
+
+    scope :main, -> { where(user_id: nil) }
     scope :root, -> { where(parent_id: nil) }
 end

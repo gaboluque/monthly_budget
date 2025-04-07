@@ -3,13 +3,14 @@ import type {
   BudgetItemsByCategory,
   BudgetItem,
   CreateBudgetItemData,
+  TransactionCategory,
 } from "../lib/types/budget_items";
 import { ui } from "../lib/ui/manager";
 import { budgetItemsApi } from "../lib/api/budget_items";
 
 export function useBudgetItems() {
   const [budgetItems, setBudgetItems] = useState<BudgetItem[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const totalBudgetItems = useMemo(() => {
@@ -22,10 +23,13 @@ export function useBudgetItems() {
 
   const budgetItemsByCategory = useMemo(() => {
     return budgetItems.reduce((acc, budgetItem) => {
-      if (!acc[budgetItem.category]) {
-        acc[budgetItem.category] = [];
+      // Use the first category's name as a fallback
+      const category = budgetItem.transaction_categories?.[0]?.name || 'Other';
+      
+      if (!acc[category]) {
+        acc[category] = [];
       }
-      acc[budgetItem.category].push(budgetItem);
+      acc[category].push(budgetItem);
       return acc;
     }, {} as BudgetItemsByCategory);
   }, [budgetItems]);
@@ -34,7 +38,7 @@ export function useBudgetItems() {
     try {
       const data = await budgetItemsApi.getAll();
       setBudgetItems(data);
-    } catch (error) {
+    } catch (_error) {
       ui.notify({
         message: "Failed to fetch budget items",
         type: "error",
@@ -47,8 +51,9 @@ export function useBudgetItems() {
   const fetchCategories = async () => {
     try {
       const data = await budgetItemsApi.getCategories();
-      setCategories(data);
-    } catch (error) {
+      // Cast the data to TransactionCategory[] since the API now returns this format
+      setCategories(data as unknown as TransactionCategory[]);
+    } catch (_error) {
       ui.notify({
         message: "Failed to fetch categories",
         type: "error",
@@ -65,7 +70,7 @@ export function useBudgetItems() {
         type: "success",
       });
       return budgetItem;
-    } catch (error) {
+    } catch (_error) {
       ui.notify({
         message: "Failed to create budget item",
         type: "error",
@@ -83,7 +88,7 @@ export function useBudgetItems() {
         type: "success",
       });
       return budgetItem;
-    } catch (error) {
+    } catch (_error) {
       ui.notify({
         message: "Failed to update budget item",
         type: "error",
@@ -101,7 +106,7 @@ export function useBudgetItems() {
         type: "success",
       });
       return true;
-    } catch (error) {
+    } catch (_error) {
       ui.notify({
         message: "Failed to delete budget item",
         type: "error",

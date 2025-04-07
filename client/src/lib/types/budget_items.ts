@@ -1,8 +1,16 @@
+export interface TransactionCategory {
+  id: number;
+  name: string;
+  color: string;
+  icon: string;
+}
+
 export interface BudgetItem {
   id: string;
   name: string;
   amount: number;
-  category: string;
+  transaction_categories?: TransactionCategory[];
+  transaction_category_ids?: number[];
   last_paid_at?: string;
   created_at: string;
   updated_at: string;
@@ -14,10 +22,16 @@ export interface CreateBudgetItemData {
   id?: string;
   name?: string;
   amount?: number;
-  category?: string;
+  transaction_category_ids?: number[];
 }
 
-export interface UpdateBudgetItemData extends Partial<CreateBudgetItemData> {}
+// Define explicit fields for clarity even though it's a partial
+export interface UpdateBudgetItemData {
+  id?: string;
+  name?: string;
+  amount?: number;
+  transaction_category_ids?: number[];
+}
 
 export interface BudgetItemsByCategory {
   [key: string]: BudgetItem[];

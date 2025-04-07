@@ -4,7 +4,6 @@
 #
 #  id           :bigint           not null, primary key
 #  amount       :decimal(15, 2)   not null
-#  category     :string           not null
 #  frequency    :string           not null
 #  last_paid_at :datetime
 #  name         :string           not null
@@ -14,7 +13,6 @@
 #
 # Indexes
 #
-#  index_budget_items_on_category   (category)
 #  index_budget_items_on_frequency  (frequency)
 #  index_budget_items_on_user_id    (user_id)
 #

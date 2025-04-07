@@ -45,7 +45,7 @@ export default function Incomes() {
     <Layout>
       <PageHeader
         title="Income Sources"
-        description="A list of all your income sources including their name, amount, and frequency."
+        description="A list of all your income sources."
         buttonText="Add Income"
         buttonColor="green"
         onAction={handleAddIncome}

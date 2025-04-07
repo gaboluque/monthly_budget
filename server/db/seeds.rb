@@ -90,26 +90,36 @@ class Seeds
 
   def create_budget_items
     puts "---------- 📋 Creating Budget Items ----------"
+    
+    # Get transaction categories
+    @housing_category = Transaction::Category.find_by(name: 'Housing')
+    @food_category = Transaction::Category.find_by(name: 'Food & Drinks')
+    @entertainment_category = Transaction::Category.find_by(name: 'Entertainment')
+    @shopping_category = Transaction::Category.find_by(name: 'Shopping')
+    
     @rent = create_budget_item(
       name: 'Rent',
       amount: 1200.00,
-      category: 'needs',
       frequency: 'monthly'
     )
-
+    @rent.transaction_categories << @housing_category if @housing_category
+    
     @groceries = create_budget_item(
       name: 'Groceries',
       amount: 400.00,
-      category: 'needs',
       frequency: 'monthly'
     )
-
+    @groceries.transaction_categories << @food_category if @food_category
+    @groceries.transaction_categories << @shopping_category if @shopping_category
+    
     @going_out = create_budget_item(
       name: 'Eating Out',
       amount: 200.00,
-      category: 'wants',
       frequency: 'monthly'
     )
+    @going_out.transaction_categories << @food_category if @food_category
+    @going_out.transaction_categories << @entertainment_category if @entertainment_category
+    
     puts "✅ All budget items created successfully\n\n"
   end
 

@@ -2,7 +2,7 @@ import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValu
 import { useEffect, useMemo } from "react";
 import { OptionSelect } from "./fields/OptionSelect";
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio' | 'optionSelect';
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'multi-select' | 'textarea' | 'checkbox' | 'date' | 'radio' | 'optionSelect';
 
 export type ConditionalRule<T extends FieldValues> = {
     field: Path<T>;
@@ -92,13 +92,15 @@ export const Form = <T extends FieldValues>({
 
         switch (type) {
             case 'optionSelect':
+            case 'multi-select':
                 return (
                     <OptionSelect
                         name={name}
                         label={field.label}
                         placeholder={placeholder}
                         options={options || []}
-                        value={values?.[name as string] as string}
+                        value={values?.[name as string]}
+                        isMulti={type === 'multi-select'}
                         register={register}
                         onChange={(value) => {
                             if (onFieldChange) {
