@@ -9,8 +9,8 @@ export function MobileNavigation() {
     };
 
     return (
-        <div className="md:hidden fixed bottom-10 left-0 right-0 bg-white border-t border-gray-200 z-20">
-            <div className="grid grid-cols-5 h-16">
+        <div className="sticky-footer md:hidden fixed left-0 right-0 bg-white border-t border-gray-200 z-20">
+            <div className="grid grid-cols-5 h-16 w-full">
                 {navigationLinks.slice(0, 5).map(({ path, label, icon: Icon, activeClass }) => (
                     <Link
                         key={path}

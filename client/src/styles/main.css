@@ -1,2 +1,8 @@
 @import url('./tailwind.css');
 @import url('./markdown.css');
+
+.sticky-footer {
+    display: flex;
+    bottom: 0;
+    padding-bottom: calc(.5rem + env(safe-area-inset-bottom))
+}

@@ -96,9 +96,7 @@ export const Form = <T extends FieldValues>({
                 return (
                     <PasswordField
                         name={name}
-                        label={field.label}
                         placeholder={placeholder}
-                        required={field.required}
                         validation={validation}
                         register={register}
                     />
