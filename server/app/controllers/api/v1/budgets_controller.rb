@@ -14,7 +14,7 @@ module Api
 
       # POST /api/v1/budgets
       def create
-        result = BudgetItems::Create.call(current_user, budget_params)
+        result = Budgets::Create.call(current_user, budget_params)
 
         if result[:success]
           @budget = result[:budget]
@@ -27,7 +27,7 @@ module Api
 
       # PUT /api/v1/budgets/:id
       def update
-        result = BudgetItems::Update.call(@budget, budget_params)
+        result = Budgets::Update.call(@budget, budget_params)
 
         if result[:success]
           @budget = result[:budget]
@@ -40,7 +40,7 @@ module Api
 
       # DELETE /api/v1/budgets/:id
       def destroy
-        result = BudgetItems::Destroy.call(@budget)
+        result = Budgets::Destroy.call(@budget)
 
         if result[:success]
           @budget = result[:budget]

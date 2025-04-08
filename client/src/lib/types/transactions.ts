@@ -1,5 +1,4 @@
 import { Account } from "./accounts";
-import { BudgetItem } from "./budget_items";
 import { TransactionCategory } from "./transaction_categories";
 export interface Transaction {
   id: string;
@@ -15,7 +14,6 @@ export interface Transaction {
   updated_at: string;
   recipient_account_name?: string;
   recipient_account?: Account;
-  budget_item?: BudgetItem;
   category?: TransactionCategory;
 }
 
@@ -41,6 +39,5 @@ export interface CreateTransactionData {
   description?: string;
   executed_at?: string;
   frequency?: string;
-  budget_item_id?: string;
   category_id?: string;
 }

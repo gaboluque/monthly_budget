@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BudgetItems::Destroy do
+RSpec.describe Budgets::Destroy do
   let(:user) { create(:user) }
   let(:budget) { create(:budget, user: user) }
 

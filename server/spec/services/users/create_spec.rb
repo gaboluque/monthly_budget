@@ -12,8 +12,8 @@ RSpec.describe Users::Create, type: :service do
 
     context 'with valid parameters' do
       before do
-        # Mock the BudgetItems::Create service
-        allow(BudgetItems::Create).to receive(:call).and_return({ success: true, budget: build(:budget) })
+        # Mock the Budgets::Create service
+        allow(Budgets::Create).to receive(:call).and_return({ success: true, budget: build(:budget) })
       end
 
       it 'creates a new user' do
@@ -30,16 +30,16 @@ RSpec.describe Users::Create, type: :service do
         expect(result[:user].email).to eq(valid_params[:email])
       end
 
-      it 'calls BudgetItems::Create with the new user and correct parameters' do
+      it 'calls Budgets::Create with the new user and correct parameters' do
         user = nil
-        allow(BudgetItems::Create).to receive(:call) do |u, params|
+        allow(Budgets::Create).to receive(:call) do |u, params|
           user = u
           { success: true, budget: build(:budget) }
         end
 
         result = Users::Create.call(valid_params)
         
-        expect(BudgetItems::Create).to have_received(:call)
+        expect(Budgets::Create).to have_received(:call)
         expect(user).to eq(result[:user])
         expect(user).to be_a(User)
       end
@@ -61,11 +61,11 @@ RSpec.describe Users::Create, type: :service do
         expect(result[:errors]).to be_present
       end
 
-      it 'does not call BudgetItems::Create' do
-        allow(BudgetItems::Create).to receive(:call)
+      it 'does not call Budgets::Create' do
+        allow(Budgets::Create).to receive(:call)
         Users::Create.call(invalid_params)
         
-        expect(BudgetItems::Create).not_to have_received(:call)
+        expect(Budgets::Create).not_to have_received(:call)
       end
     end
 

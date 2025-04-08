@@ -151,7 +151,7 @@ class Seeds
   end
 
   def create_budget(params)
-    result = BudgetItems::Create.call(@test_user, params)
+    result = Budgets::Create.call(@test_user, params)
     puts "  • #{params[:name]}: #{result[:success] ? '✅' : '❌'}"
     puts "    Errors: #{result[:errors]}" if result[:success] == false
     result[:budget]

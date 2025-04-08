@@ -1,4 +1,4 @@
-module BudgetItems
+module Budgets
   class Update < ApplicationService
     attr_reader :budget, :params
 

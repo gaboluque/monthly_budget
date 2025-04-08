@@ -1,16 +1,7 @@
-export interface TransactionCategory {
-  id: number;
-  name: string;
-  color: string;
-  icon: string;
-}
-
-export interface BudgetItem {
+export interface Budget {
   id: string;
   name: string;
   amount: number;
-  transaction_categories?: TransactionCategory[];
-  transaction_category_ids?: number[];
   last_paid_at?: string;
   created_at: string;
   updated_at: string;
@@ -18,23 +9,17 @@ export interface BudgetItem {
   is_pending: boolean;
 }
 
-export interface CreateBudgetItemData {
+export interface CreateBudgetData {
   id?: string;
   name?: string;
   amount?: number;
-  transaction_category_ids?: number[];
 }
 
 // Define explicit fields for clarity even though it's a partial
-export interface UpdateBudgetItemData {
+export interface UpdateBudgetData {
   id?: string;
   name?: string;
   amount?: number;
-  transaction_category_ids?: number[];
-}
-
-export interface BudgetItemsByCategory {
-  [key: string]: BudgetItem[];
 }
 
 export const CATEGORY_COLORS: Record<string, string> = {

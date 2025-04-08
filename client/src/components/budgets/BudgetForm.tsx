@@ -1,39 +1,26 @@
-import { useMemo, useState } from 'react';
-import type { CreateBudgetItemData, BudgetItem } from '../../lib/types/budget_items';
+import { useState } from 'react';
+import type { CreateBudgetData, Budget } from '../../lib/types/budgets';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
-import { useBudgetItems } from '../../hooks/useBudgetItems';
-import { Spinner } from '../ui/Spinner';
 import { FormActions } from '../ui/FormActions';
 
-interface BudgetItemFormProps {
-  onSubmit: (data: CreateBudgetItemData) => Promise<void>;
+interface BudgetFormProps {
+  onSubmit: (data: CreateBudgetData) => Promise<void>;
   onCancel: () => void;
-  initialData?: BudgetItem | CreateBudgetItemData | null;
+  initialData?: Budget | CreateBudgetData | null;
 }
 
-const FORM_ID = 'budgetItem-form';
+const FORM_ID = 'budget-form';
 
-export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFormProps) {
-  const { categories, isLoading: isCategoriesLoading } = useBudgetItems();
+export function BudgetForm({ onSubmit, onCancel, initialData }: BudgetFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const categoryOptions = useMemo(() => {
-    if (!categories || !Array.isArray(categories)) return [];
-    
-    return categories.map((cat) => ({
-      value: cat.id.toString(),
-      label: `${cat.icon} ${cat.name}`
-    }));
-  }, [categories]);
-
-  const defaultValues: CreateBudgetItemData = {
+  const defaultValues: CreateBudgetData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
-    transaction_category_ids: initialData?.transaction_category_ids ?? [],
   };
 
-  const handleSubmit: SubmitHandler<CreateBudgetItemData> = async (data: CreateBudgetItemData) => {
+  const handleSubmit: SubmitHandler<CreateBudgetData> = async (data: CreateBudgetData) => {
     setIsSubmitting(true);
     setError(null);
     try {
@@ -46,11 +33,7 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
     }
   };
 
-  if (isCategoriesLoading) {
-    return <Spinner />
-  }
-
-  const formFields: FormField<CreateBudgetItemData>[] = [
+  const formFields: FormField<CreateBudgetData>[] = [
     {
       name: 'name',
       label: 'Budget Item Name',
@@ -75,16 +58,6 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
         }
       }
     },
-    {
-      name: 'transaction_category_ids',
-      label: 'Categories',
-      type: 'multi-select',
-      options: categoryOptions,
-      required: true,
-      validation: {
-        required: 'At least one category is required'
-      }
-    },
   ];
 
   return (
@@ -95,7 +68,7 @@ export function BudgetItemForm({ onSubmit, onCancel, initialData }: BudgetItemFo
         </div>
       )}
 
-      <Form<CreateBudgetItemData>
+      <Form<CreateBudgetData>
         id={FORM_ID}
         fields={formFields}
         onSubmit={handleSubmit}

@@ -60,7 +60,6 @@ export function TransactionForm({
         transaction_type: transaction?.transaction_type ?? "expense",
         description: transaction?.description ?? undefined,
         executed_at: formatISODate(transaction?.executed_at ?? new Date().toISOString()),
-        budget_item_id: transaction?.budget_item?.id ?? undefined,
     };
 
     const handleSubmit: SubmitHandler<CreateTransactionData> = async (data: CreateTransactionData) => {

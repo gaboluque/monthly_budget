@@ -1,4 +1,4 @@
-module BudgetItems
+module Budgets
   class Destroy < ApplicationService
     attr_reader :budget
 

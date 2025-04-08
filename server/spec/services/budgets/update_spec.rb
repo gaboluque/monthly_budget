@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BudgetItems::Update do
+RSpec.describe Budgets::Update do
   let(:user) { create(:user) }
   let(:budget) { create(:budget, user: user, name: 'Old Name', amount: 100.00) }
 

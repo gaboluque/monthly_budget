@@ -1,4 +1,4 @@
-module BudgetItems
+module Budgets
   class Create < ApplicationService
     attr_reader :user, :params
 

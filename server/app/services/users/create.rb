@@ -10,7 +10,7 @@ module Users
       ActiveRecord::Base.transaction do
         user = User.create!(params)
 
-        BudgetItems::Create.call(user, {
+        Budgets::Create.call(user, {
           name: 'other',
           amount: 0,
           frequency: 'monthly',
