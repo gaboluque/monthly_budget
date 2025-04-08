@@ -8,7 +8,7 @@ export function useDashboard() {
 
   useEffect(() => {
     const fetchMonthlyBalance = async () => {
-      const response = await insightsApi.getMonthlyBalance();
+      const response = await insightsApi.fetchMonthlyBalance();
       setMonthlyBalance(response);
       setMonthlyBalanceLoading(false);
     };

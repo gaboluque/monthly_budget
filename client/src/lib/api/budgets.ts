@@ -6,14 +6,14 @@ import {
 import { apiClient } from "./client";
 
 export const budgetsApi = {
-  // Get all budgets
-  getAll: async (): Promise<Budget[]> => {
+  // Fetch all budgets
+  fetchAll: async (): Promise<Budget[]> => {
     const response = await apiClient.get("/budgets");
     return response.data;
   },
 
-  // Get a single budget item by ID
-  getById: async (id: string): Promise<Budget> => {
+  // Fetch a single budget item by ID
+  fetchById: async (id: string): Promise<Budget> => {
     const response = await apiClient.get(`/budgets/${id}`);
     return response;
   },
@@ -42,20 +42,14 @@ export const budgetsApi = {
     await apiClient.delete(`/budgets/${id}`);
   },
 
-  // Get available categories
-  getCategories: async (): Promise<string[]> => {
-    const response = await apiClient.get("/budgets/categories");
-    return response.data;
-  },
-
-  // Get pending budget items
-  getPending: async (): Promise<Budget[]> => {
+  // Fetch pending budget items
+  fetchPending: async (): Promise<Budget[]> => {
     const response = await apiClient.get("/budgets/pending");
     return response.data;
   },
 
-  // Get paid budget items
-  getPaid: async (): Promise<Budget[]> => {
+  // Fetch paid budget items
+  fetchPaid: async (): Promise<Budget[]> => {
     const response = await apiClient.get("/budgets/paid");
     return response.data;
   },

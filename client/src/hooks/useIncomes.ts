@@ -18,7 +18,7 @@ export function useIncomes() {
   const fetchIncomes = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await incomesApi.getAll();
+      const data = await incomesApi.fetchAll();
       setIncomes(data);
 
       // Filter pending and received incomes

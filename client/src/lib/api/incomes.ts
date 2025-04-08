@@ -2,14 +2,14 @@ import { apiClient } from "./client";
 import { Income, CreateIncomeData, UpdateIncomeData } from "../types/incomes";
 
 export const incomesApi = {
-  // Get all incomes
-  getAll: async (): Promise<Income[]> => {
+  // Fetch all incomes
+  fetchAll: async (): Promise<Income[]> => {
     const response = await apiClient.get("/incomes");
     return response.data;
   },
 
-  // Get a single income by ID
-  getById: async (id: string): Promise<Income> => {
+  // Fetch a single income by ID
+  fetchById: async (id: string): Promise<Income> => {
     const response = await apiClient.get(`/incomes/${id}`);
     return response.data;
   },
@@ -31,14 +31,14 @@ export const incomesApi = {
     await apiClient.delete(`/incomes/${id}`);
   },
 
-  // Get pending incomes
-  getPending: async (): Promise<Income[]> => {
+  // Fetch pending incomes
+  fetchPending: async (): Promise<Income[]> => {
     const response = await apiClient.get("/incomes/pending");
     return response.data;
   },
 
-  // Get received incomes
-  getReceived: async (): Promise<Income[]> => {
+  // Fetch received incomes
+  fetchReceived: async (): Promise<Income[]> => {
     const response = await apiClient.get("/incomes/received");
     return response.data;
   },

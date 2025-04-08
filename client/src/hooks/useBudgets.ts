@@ -21,7 +21,7 @@ export function useBudgets() {
 
   const fetchBudgets = async () => {
     try {
-      const data = await budgetsApi.getAll();
+      const data = await budgetsApi.fetchAll();
       setBudgets(data);
     } catch (error) {
       ui.notify({

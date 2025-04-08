@@ -5,10 +5,9 @@ import type {
   TransactionsFilterParams,
   CreateTransactionData,
 } from "../types/transactions";
-import type { TransactionCategory } from "../types/transaction_categories";
 
 export const transactionsApi = {
-  getAll: async (params?: TransactionsFilterParams): Promise<Transaction[]> => {
+  fetchAll: async (params?: TransactionsFilterParams): Promise<Transaction[]> => {
     const queryParams = new URLSearchParams();
 
     if (params) {
@@ -25,7 +24,7 @@ export const transactionsApi = {
     return response.data || [];
   },
 
-  getById: async (id: string): Promise<Transaction> => {
+  fetchById: async (id: string): Promise<Transaction> => {
     const response = await apiClient.get(`/transactions/${id}`);
     return response;
   },
@@ -41,13 +40,8 @@ export const transactionsApi = {
     await apiClient.delete(`/transactions/${id}`);
   },
 
-  getTypes: async (): Promise<TransactionType[]> => {
+  fetchTypes: async (): Promise<TransactionType[]> => {
     const response = await apiClient.get("/transactions/types");
     return response.types || [];
-  },
-
-  getCategories: async (): Promise<TransactionCategory[]> => {
-    const response = await apiClient.get("/transactions/categories");
-    return response.categories || [];
   },
 };

@@ -22,9 +22,9 @@ export function useAccounts() {
     const fetchData = async () => {
       try {
         const [accountsData, typesData, currenciesData] = await Promise.all([
-          accountsApi.getAll(),
-          accountsApi.getAccountTypes(),
-          accountsApi.getCurrencies(),
+          accountsApi.fetchAll(),
+          accountsApi.fetchAccountTypes(),
+          accountsApi.fetchCurrencies(),
         ]);
         setAccounts(accountsData);
         setAccountTypes(typesData);
