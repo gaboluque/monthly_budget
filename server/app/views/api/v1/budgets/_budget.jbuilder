@@ -1,6 +1,6 @@
 json.id budget.id
 json.name budget.name
-json.amount budget.amount
+json.amount budget.amount.to_f
 json.nature budget.nature
 json.last_paid_at budget.last_paid_at
 json.is_paid budget.paid_this_month?

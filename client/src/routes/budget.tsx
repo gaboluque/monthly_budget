@@ -9,6 +9,7 @@ import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
 import { formatCurrency } from "../lib/utils/currency"
 import { Spinner } from "../components/ui/Spinner"
+import { BudgetSummary } from "../components/budgets/BudgetSummary"
 
 export default function Budgets() {
   const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
@@ -75,6 +76,11 @@ export default function Budgets() {
         buttonText="Add Budget"
         buttonColor="blue"
         onAction={() => handleAddBudget()}
+      />
+
+      <BudgetSummary
+        budgets={budgets}
+        isLoading={isBudgetsLoading}
       />
 
       <div className="mt-6 bg-white shadow-sm-xs rounded-lg divide-y divide-gray-200">

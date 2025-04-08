@@ -6,6 +6,7 @@ import { TransactionForm } from "./TransactionForm"
 import { CreateTransactionData } from "../../lib/types/transactions"
 import { Category } from "../../lib/types/categories"
 import { TransactionTypeBadge } from "./TransactionTypeBadge"
+
 interface TransactionModalProps {
     isOpen: boolean
     onClose: () => void

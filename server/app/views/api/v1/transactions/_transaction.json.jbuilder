@@ -1,5 +1,5 @@
 json.id transaction.id
-json.amount transaction.amount
+json.amount transaction.amount.to_f
 json.category do
     json.partial! 'api/v1/categories/category', category: transaction.category
 end

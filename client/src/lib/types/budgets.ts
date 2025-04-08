@@ -7,7 +7,7 @@ export interface Budget {
   updated_at: string;
   is_paid: boolean;
   is_pending: boolean;
-  nature?: string;
+  nature: string;
 }
 
 export interface CreateBudgetData {
@@ -30,7 +30,7 @@ export const NATURE_COLORS: Record<string, string> = {
   want: "red", // Red
   debt: "purple", // Purple
   saving: "green", // Green
-  investment: "amber", // Amber
+  investment: "orange", // Orange
   income: "black", // Black
   other: "gray", // Gray
 };

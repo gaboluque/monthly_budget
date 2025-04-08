@@ -100,20 +100,39 @@ class Seeds
     @rent = create_budget(
       name: 'Rent',
       amount: 1200.00,
-      frequency: 'monthly'
+      frequency: 'monthly',
+      nature: 'need'
     )
     
     @groceries = create_budget(
       name: 'Groceries',
       amount: 400.00,
-      frequency: 'monthly'
+      frequency: 'monthly',
+      nature: 'need'
     )
     
     @going_out = create_budget(
       name: 'Eating Out',
       amount: 200.00,
-      frequency: 'monthly'
+      frequency: 'monthly',
+      nature: 'want'
     )
+
+    @entertainment = create_budget(
+      name: 'Entertainment',
+      amount: 100.00,
+      frequency: 'monthly',
+      nature: 'want'
+    )
+
+    @stocks = create_budget(
+      name: 'Stocks',
+      amount: 1000.00,
+      frequency: 'monthly',
+      nature: 'investment'
+    )
+    
+    
     
     puts "✅ All budget items created successfully\n\n"
   end

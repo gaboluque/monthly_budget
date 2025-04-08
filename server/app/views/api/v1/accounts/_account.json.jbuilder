@@ -1,6 +1,6 @@
 json.id account.id
 json.name account.name
-json.balance account.balance
+json.balance account.balance.to_f
 json.account_type account.account_type
 json.currency account.currency
 json.description account.description
