@@ -39,6 +39,7 @@ FactoryBot.define do
     transaction_type { Transaction.transaction_types[:expense] }
     description { Faker::Lorem.sentence }
     executed_at { DateTime.current }
+    category { create(:category) }
 
     trait :transfer do
       transaction_type { Transaction.transaction_types[:transfer] }

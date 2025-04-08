@@ -43,4 +43,16 @@ class Income < ApplicationRecord
     current_month_end = Time.current.end_of_month
     where('last_received_at BETWEEN ? AND ?', current_month_start, current_month_end)
   }
+
+  def pending?
+    return true if last_received_at.nil?
+
+    last_received_at < Time.current.beginning_of_month
+  end
+
+  def paid?
+    return false if last_received_at.nil?
+
+    last_received_at >= Time.current.beginning_of_month
+  end
 end

@@ -139,7 +139,6 @@ module Insights
         {
           name: budget.name,
           amount: budget.amount,
-          category: budget.category,
           frequency: budget.frequency,
           last_paid_at: budget.last_paid_at,
           is_pending: budget.pending?,
@@ -152,7 +151,7 @@ module Insights
       @transactions_data ||= @transactions.map do |transaction|
         {
           amount: transaction.amount,
-          category: transaction.category,
+          category: transaction.category.name,
           frequency: transaction.frequency,
           executed_at: transaction.executed_at,
           transaction_type: transaction.transaction_type,

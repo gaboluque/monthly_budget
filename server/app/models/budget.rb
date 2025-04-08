@@ -61,4 +61,8 @@ class Budget < ApplicationRecord
   def pending?
     !paid_this_month?
   end
+
+  def paid?
+    paid_this_month?
+  end
 end

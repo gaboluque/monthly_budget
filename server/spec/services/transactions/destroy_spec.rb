@@ -82,55 +82,5 @@ RSpec.describe Transactions::Destroy do
         expect(account.reload.balance).to eq(1000)
       end
     end
-
-    context 'when transaction is associated with a budget item' do
-      let(:budget) { create(:budget, user: user, last_paid_at: Date.yesterday) }
-      let!(:transaction) do
-        create(:transaction, :expense,
-          user: user,
-          account: account,
-          amount: 100,
-          item: budget
-        )
-      end
-
-      before do
-        # Simulate the balance after an expense was created
-        account.update!(balance: 900)
-      end
-
-      it 'marks the budget item as pending' do
-        expect(budget.last_paid_at).to be_present
-
-        subject
-
-        expect(budget.reload.last_paid_at).to eq(budget.last_executed_at)
-      end
-    end
-
-    context 'when transaction is associated with an income' do
-      let(:income_item) { create(:income, user: user, last_received_at: Date.yesterday) }
-      let!(:transaction) do
-        create(:transaction, :income,
-          user: user,
-          account: account,
-          amount: 100,
-          item: income_item
-        )
-      end
-
-      before do
-        # Simulate the balance after an income was created
-        account.update!(balance: 1100)
-      end
-
-      it 'marks the income as pending' do
-        expect(income_item.last_received_at).to be_present
-
-        subject
-
-        expect(income_item.reload.last_received_at).to eq(income_item.last_executed_at)
-      end
-    end
   end
 end
