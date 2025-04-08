@@ -6,7 +6,7 @@ import { Spinner } from '../ui/Spinner';
 import { formatCurrency } from '../../lib/utils/currency';
 import { formatISODate, formatLabel } from '../../lib/utils/formatters';
 import { FormActions } from '../ui/FormActions';
-import { TransactionCategory } from '../../lib/types/transaction_categories';
+import { Category } from '../../lib/types/categories';
 
 interface TransactionFormProps {
     onSubmit: (data: CreateTransactionData) => Promise<void>;
@@ -15,7 +15,7 @@ interface TransactionFormProps {
     transactionTypes: string[];
     transaction?: Transaction | null;
     isSubmitting: boolean;
-    categories: TransactionCategory[];
+    categories: Category[];
 }
 
 const FORM_ID = 'transaction-form';
@@ -48,7 +48,11 @@ export function TransactionForm({
     const categoryOptions = useMemo(() => {
         return categories.map(category => ({
             value: category.id.toString(),
-            label: `${category.icon} ${category.name}`
+            label: `${category.icon} ${category.name}`,
+            children: category.children.map(child => ({
+                value: child.id.toString(),
+                label: `${child.icon} ${child.name}`
+            }))
         }));
     }, [categories]);
 

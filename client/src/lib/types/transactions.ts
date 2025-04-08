@@ -1,5 +1,5 @@
 import { Account } from "./accounts";
-import { TransactionCategory } from "./transaction_categories";
+import { TransactionCategory } from "./categories";
 export interface Transaction {
   id: string;
   account_id: string;

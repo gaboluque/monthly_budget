@@ -75,6 +75,18 @@ class Seeds
           name: 'Vehicle',
           color: '#33A1A1',
           icon: '🚙',
+          children: [
+            {
+              name: 'Fuel',
+              color: '#33A1A1',
+              icon: '⛽️',
+            },
+            {
+              name: 'Maintenance',
+              color: '#33A1A1',
+              icon: '🔧',
+            }
+          ]
         },
         {
           name: 'Investments',
@@ -99,8 +111,23 @@ class Seeds
       ]
 
       categories.each do |category|
+        children = category.delete(:children)
         result = ::Categories::Create.call(nil, category)
         puts "  • #{category[:name]}: #{result[:success] ? '✅' : '❌'}"
+
+        if result[:success]
+          category_id = result[:category].id
+
+          if children.present?
+            children.each do |child|
+              child_result = ::Categories::Create.call(nil, child.merge(parent_id: category_id))
+              puts "    • #{child[:name]}: #{child_result[:success] ? '✅' : '❌'}"
+
+              puts "    Child #{child[:name]} Errors: #{child_result[:errors]}" if child_result[:success] == false
+            end
+          end
+        end
+
         puts "    Errors: #{result[:errors]}" if result[:success] == false
       end
     end

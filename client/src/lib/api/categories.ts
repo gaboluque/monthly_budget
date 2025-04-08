@@ -1,5 +1,5 @@
 import { apiClient } from "./client";
-import type { TransactionCategory } from "../types/transaction_categories";
+import type { TransactionCategory } from "../types/categories";
 
 export const categoriesApi = {
   fetchAll: async (): Promise<TransactionCategory[]> => {

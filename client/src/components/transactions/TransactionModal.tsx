@@ -4,14 +4,14 @@ import type { Account } from "../../lib/types/accounts"
 import { formatCurrency } from "../../lib/utils/formatters"
 import { TransactionForm } from "./TransactionForm"
 import { CreateTransactionData } from "../../lib/types/transactions"
-import { TransactionCategory } from "../../lib/types/transaction_categories"
+import { Category } from "../../lib/types/categories"
 import { TransactionTypeBadge } from "./TransactionTypeBadge"
 interface TransactionModalProps {
     isOpen: boolean
     onClose: () => void
     accounts: Account[]
     transactionTypes: string[]
-    categories: TransactionCategory[]
+    categories: Category[]
     transaction: Transaction | undefined
     isSubmitting: boolean
     title: string

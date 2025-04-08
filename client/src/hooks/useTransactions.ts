@@ -11,7 +11,7 @@ import {
 } from "../lib/types/transactions";
 import { Account } from "../lib/types/accounts";
 import { ui } from "../lib/ui/manager";
-import { TransactionCategory } from "../lib/types/transaction_categories";
+import { TransactionCategory } from "../lib/types/categories";
 import { categoriesApi } from "../lib/api/categories";
 
 
