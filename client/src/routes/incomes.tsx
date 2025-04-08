@@ -33,6 +33,17 @@ export default function Incomes() {
     }
   }
 
+  const handleDeleteIncome = async (id: string) => {
+    ui.confirm({
+      title: "Delete Income",
+      message: "Are you sure you want to delete this income?",
+      confirmVariant: "danger",
+      onConfirm: async () => {
+        await deleteIncome(id)
+      }
+    })
+  }
+
   const handleAddIncome = () => {
     setSelectedIncome({
       name: "",
@@ -83,7 +94,7 @@ export default function Incomes() {
               onEdit={(income) => {
                 setSelectedIncome({ ...income, account_id: income.account?.id } as CreateIncomeData)
               }}
-              onDelete={deleteIncome}
+              onDelete={handleDeleteIncome}
               onReceive={handleMarkAsReceived}
             />
           ))}

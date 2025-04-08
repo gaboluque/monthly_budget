@@ -36,7 +36,7 @@ export function Modal({ isOpen, onClose, title, children, zIndex, type = 'standa
   return (
       <div className={`fixed inset-0 z-${calculatedZIndex} overflow-y-auto`}>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
+        className="fixed inset-0 bg-black/50 cursor-default"
         onClick={onClose}
         tabIndex={0}
         role="button"

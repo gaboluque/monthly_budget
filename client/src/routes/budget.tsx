@@ -87,13 +87,13 @@ export default function Budgets() {
             No budgets found. Get started by adding your first budget.
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <ul className="divide-y divide-gray-200 grid grid-cols-1 gap-6">
             {budgets.map((budget) => (
               <li key={budget.id} className="p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300 shadow-sm-xs">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">{budget.name}</h3>
-                    <span className={`inline-block px-3 py-1 text-sm font-semibold text-white rounded-full bg-[${NATURE_COLORS[budget.nature || 'other']}]`}>{budget.nature}</span>
+                    <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full text-${NATURE_COLORS[budget.nature || 'other']}-600`}>{budget.nature}</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-xl font-semibold text-gray-900">

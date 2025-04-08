@@ -79,7 +79,8 @@ module Api
           :name, 
           :amount, 
           :frequency, 
-          :last_paid_at
+          :last_paid_at,
+          :nature
         )
       end
     end

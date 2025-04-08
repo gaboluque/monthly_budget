@@ -59,7 +59,7 @@ export function Notification({
         <div className={`flex-1 ${styles.text}`}>{message}</div>
         <button
           onClick={onClose}
-          className={`${styles.icon} hover:opacity-70 transition-opacity`}
+          className={`${styles.icon}`}
           aria-label="Close notification"
         >
           <X className="w-5 h-5" />

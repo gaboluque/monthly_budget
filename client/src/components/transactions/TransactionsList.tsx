@@ -42,7 +42,10 @@ export function TransactionsList({ transactions, isLoading, onOpen }: Transactio
                                 {transaction.account?.name}
                                 {transaction.recipient_account?.name && (<span> → {transaction.recipient_account?.name}</span>)}
                             </div>
-                            <div className="text-xs text-gray-500">{formatDate(transaction.executed_at)}</div>
+                            <div className="flex flex-col items-start gap-1">
+                                <div className="text-xs text-gray-500">{formatDate(transaction.executed_at)}</div>
+                                <div className="text-xs text-gray-500">{transaction.category?.icon} {transaction.category?.name}</div>
+                            </div>
                         </div>
                         <div className="flex flex-col items-end space-x-3">
                             <span className={`text-${transactionTypeColor(transaction.transaction_type)}-600 font-medium`}>
