@@ -54,6 +54,12 @@ export const budgetsApi = {
     return response.data;
   },
 
+  // Fetch natures of budget items
+  fetchNatures: async (): Promise<string[]> => {
+    const response = await apiClient.get("/budgets/natures");
+    return response.data;
+  },
+
   // Mark budget item as paid
   markAsPaid: async (id: string): Promise<Budget> => {
     const response = await apiClient.put(`/budgets/${id}/mark_as_paid`);

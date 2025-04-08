@@ -11,7 +11,7 @@ interface BudgetProps {
 export function Budget({ budget, onEdit, onDelete }: BudgetProps) {
 
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-sm transition-shadow">
+    <div className="bg-gray-50 border border-gray-100 rounded-lg p-4 hover:shadow-sm-xs transition-shadow-sm">
       <div className="flex flex-row justify-between gap-4 items-center">
         <div className="flex flex-row items-center gap-4">
           <h4 className="text-base font-medium text-gray-900 truncate w-32 truncate md:w-40">{budget.name}</h4>

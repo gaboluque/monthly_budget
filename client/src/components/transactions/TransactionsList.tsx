@@ -30,10 +30,10 @@ export function TransactionsList({ transactions, isLoading, onOpen }: Transactio
             {transactions.map((transaction) => (
                 <div
                     key={transaction.id}
-                    className="bg-white rounded-lg shadow overflow-hidden"
+                    className="bg-white rounded-lg shadow-sm overflow-hidden"
                 >
                     <button
-                        className="w-full p-4 flex justify-between items-center text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-4 flex justify-between items-center text-left cursor-pointer focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                         onClick={() => onOpen(transaction)}
                     >
                         <div className="flex-grow flex flex-col gap-1">

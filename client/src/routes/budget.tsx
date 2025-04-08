@@ -4,6 +4,7 @@ import { Modal } from "../components/ui/Modal"
 import { BudgetForm } from "../components/budgets/BudgetForm"
 import { useBudgets } from "../hooks/useBudgets"
 import type { Budget, CreateBudgetData } from "../lib/types/budgets"
+import { NATURE_COLORS } from "../lib/types/budgets"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
 import { formatCurrency } from "../lib/utils/currency"
@@ -11,13 +12,14 @@ import { Spinner } from "../components/ui/Spinner"
 
 export default function Budgets() {
   const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
-  const { budgets, createBudget, updateBudget, deleteBudget, isLoading: isBudgetsLoading } = useBudgets()
+  const { budgets, createBudget, updateBudget, deleteBudget, isLoading: isBudgetsLoading, natures } = useBudgets()
 
 
   const handleAddBudget = () => {
     setSelectedBudget({
       name: "",
       amount: 0,
+      nature: "need",
     })
   }
 
@@ -75,7 +77,7 @@ export default function Budgets() {
         onAction={() => handleAddBudget()}
       />
 
-      <div className="mt-6 bg-white shadow-sm rounded-lg divide-y divide-gray-200">
+      <div className="mt-6 bg-white shadow-sm-xs rounded-lg divide-y divide-gray-200">
         {isBudgetsLoading ? (
           <div className="p-6 text-center text-gray-500">
             <Spinner />
@@ -87,10 +89,11 @@ export default function Budgets() {
         ) : (
           <ul className="divide-y divide-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
             {budgets.map((budget) => (
-              <li key={budget.id} className="p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300 shadow-sm">
+              <li key={budget.id} className="p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300 shadow-sm-xs">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-medium text-gray-900">{budget.name}</h3>
+                    <span className={`inline-block px-3 py-1 text-sm font-semibold text-white rounded-full bg-[${NATURE_COLORS[budget.nature || 'other']}]`}>{budget.nature}</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-xl font-semibold text-gray-900">
@@ -126,6 +129,7 @@ export default function Budgets() {
         title={selectedBudget?.id ? "Edit Budget" : "Add Budget"}
       >
         <BudgetForm
+          natures={natures}
           initialData={selectedBudget}
           onSubmit={handleSubmit}
           onCancel={() => {

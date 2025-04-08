@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router';
 import { LoginForm } from '../components/LoginForm';
 import { isAuthenticated, setToken } from '../lib/utils/auth';
 import { authApi } from '../lib/api/auth';
@@ -43,7 +43,7 @@ export default function Login() {
       <div className="mt-8">
 
         <div className="w-full max-w-md mx-auto">
-          <div className="bg-white p-8 rounded-lg shadow-md">
+          <div className="bg-white p-8 rounded-lg shadow-sm-md">
             <LoginForm onSubmit={handleSubmit} />
           </div>
         </div>

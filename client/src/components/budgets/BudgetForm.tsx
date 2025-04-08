@@ -7,18 +7,25 @@ interface BudgetFormProps {
   onSubmit: (data: CreateBudgetData) => Promise<void>;
   onCancel: () => void;
   initialData?: Budget | CreateBudgetData | null;
+  natures: string[];
 }
 
 const FORM_ID = 'budget-form';
 
-export function BudgetForm({ onSubmit, onCancel, initialData }: BudgetFormProps) {
+export function BudgetForm({ onSubmit, onCancel, initialData, natures }: BudgetFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const defaultValues: CreateBudgetData = {
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
+    nature: initialData?.nature ?? "need",
   };
+
+  const natureOptions = natures.map((nature: string) => ({
+    label: nature,
+    value: nature,
+  }));
 
   const handleSubmit: SubmitHandler<CreateBudgetData> = async (data: CreateBudgetData) => {
     setIsSubmitting(true);
@@ -58,6 +65,13 @@ export function BudgetForm({ onSubmit, onCancel, initialData }: BudgetFormProps)
         }
       }
     },
+    {
+      name: 'nature',
+      label: 'Nature',
+      type: 'select',
+      options: natureOptions,
+      required: true,
+    }
   ];
 
   return (

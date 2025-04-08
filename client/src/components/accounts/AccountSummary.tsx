@@ -49,7 +49,7 @@ export function AccountSummary({
           icon={Wallet}
           variant="blue"
         />
-        <div className="col-span-2 bg-white rounded-lg shadow p-4">
+        <div className="col-span-2 bg-white rounded-lg shadow-sm p-4">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Account Distribution</h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {Object.entries(typeBalances).map(([type, amount]) => (

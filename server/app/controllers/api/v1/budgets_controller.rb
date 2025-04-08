@@ -62,6 +62,12 @@ module Api
         render :index
       end
 
+      # GET /api/v1/budgets/natures
+      def natures
+        @natures = Budget.natures.keys
+        render json: { data: @natures }
+      end
+
       private
 
       def set_budget

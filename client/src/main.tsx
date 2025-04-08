@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './styles/main.css'
 import { registerSW } from 'virtual:pwa-register'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 
 // Register service worker
 const updateSW = registerSW({

@@ -8,6 +8,7 @@ import { budgetsApi } from "../lib/api/budgets";
 
 export function useBudgets() {
   const [budgets, setBudgets] = useState<Budget[]>([]);
+  const [natures, setNatures] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const totalBudgets = useMemo(() => {
@@ -18,6 +19,18 @@ export function useBudgets() {
     );
   }, [budgets]);
 
+  const fetchNatures = async () => {
+    try {
+      const data = await budgetsApi.fetchNatures();
+      setNatures(data);
+    } catch (error) {
+      ui.notify({
+        message: "Failed to fetch natures",
+        type: "error",
+        error: error as Error,
+      });
+    }
+  };
 
   const fetchBudgets = async () => {
     try {
@@ -93,12 +106,14 @@ export function useBudgets() {
 
   useEffect(() => {
     fetchBudgets();
+    fetchNatures();
   }, []);
 
   return {
     budgets,
     isLoading,
     totalBudgets,
+    natures,
     createBudget,
     updateBudget,
     deleteBudget,

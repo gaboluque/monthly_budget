@@ -17,14 +17,14 @@ export const PasswordField = <T extends FieldValues>({
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center flex-row gap-2">
+        <div className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500 flex items-center flex-row gap-2">
             <input
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
                 id={name.toString()}
                 placeholder={placeholder}
                 {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                className="w-full focus:outline-none"
+                className="w-full focus:outline-hidden"
             />
             <button
                 type="button"

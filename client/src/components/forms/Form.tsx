@@ -125,7 +125,7 @@ export const Form = <T extends FieldValues>({
                     <select
                         id={name.toString()}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     >
                         <option value="">-</option>
                         {options?.map((option) => (
@@ -169,7 +169,7 @@ export const Form = <T extends FieldValues>({
                         id={name.toString()}
                         placeholder={placeholder}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     />
                 );
 
@@ -180,7 +180,7 @@ export const Form = <T extends FieldValues>({
                             type="checkbox"
                             id={name.toString()}
                             {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors cursor-pointer"
+                            className="h-5 w-5 text-blue-600 focus:ring-3-blue-500 border-gray-300 rounded-sm transition-colors cursor-pointer"
                         />
                         <label
                             htmlFor={name.toString()}
@@ -200,7 +200,7 @@ export const Form = <T extends FieldValues>({
                         id={name.toString()}
                         placeholder={placeholder}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     />
                 );
         }

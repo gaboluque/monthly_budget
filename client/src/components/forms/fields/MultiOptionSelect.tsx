@@ -92,7 +92,7 @@ export function MultiOptionSelect<T extends FieldValues>({
         readOnly
         value={getSelectedCategoriesText()}
         placeholder={placeholder}
-        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500 cursor-pointer"
         onClick={() => setIsModalOpen(true)}
       />
       
@@ -106,7 +106,7 @@ export function MultiOptionSelect<T extends FieldValues>({
           {options.map((option) => (
             <div key={option.value} className="space-y-1">
               <div 
-                className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
+                className={`p-2 border rounded-sm cursor-pointer hover:bg-gray-100 ${
                   selectedValues.includes(Number(option.value)) ? 'bg-blue-100 border-blue-500' : ''
                 }`}
                 onClick={() => handleToggleCategory(option.value)}
@@ -121,7 +121,7 @@ export function MultiOptionSelect<T extends FieldValues>({
                   {option.children.map((child) => (
                     <div 
                       key={child.value} 
-                      className={`p-2 border rounded cursor-pointer hover:bg-gray-100 ${
+                      className={`p-2 border rounded-sm cursor-pointer hover:bg-gray-100 ${
                         selectedValues.includes(Number(child.value)) ? 'bg-blue-100 border-blue-500' : ''
                       }`}
                       onClick={() => handleToggleCategory(child.value)}
@@ -140,7 +140,7 @@ export function MultiOptionSelect<T extends FieldValues>({
         <div className="mt-4 flex justify-end">
           <button
             type="button"
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-blue-500 text-white rounded-sm hover:bg-blue-600"
             onClick={handleSave}
           >
             Done

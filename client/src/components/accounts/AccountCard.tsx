@@ -46,7 +46,7 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps) {
   }, [account.account_type]);
 
   return (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gray-200">
+    <div className="bg-white rounded-xl shadow-sm-xs hover:shadow-sm-md transition-all duration-300 overflow-hidden border border-gray-100 hover:border-gray-200">
       <div className="p-5">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-3">

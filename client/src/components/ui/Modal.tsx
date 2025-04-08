@@ -48,7 +48,7 @@ export function Modal({ isOpen, onClose, title, children, zIndex, type = 'standa
       />
 
       <div className={`flex min-h-full ${isModal ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
-        <div className={`relative bg-white shadow-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-[90%]' : ''}`}>
+        <div className={`relative bg-white shadow-sm-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-[90%]' : ''}`}>
           <div className="flex items-center justify-between mb-8 align-center">
 
             <h3 className="text-lg font-semibold text-gray-900">

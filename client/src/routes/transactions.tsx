@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router";
 
 import { Layout } from "../components/ui/Layout";
 import { TransactionsList } from "../components/transactions/TransactionsList";

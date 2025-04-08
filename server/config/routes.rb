@@ -21,6 +21,7 @@ Rails.application.routes.draw do
         collection do
           get :pending
           get :paid
+          get :natures
         end
         member do
           put :mark_as_paid

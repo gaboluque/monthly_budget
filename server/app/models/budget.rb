@@ -33,11 +33,12 @@ class Budget < ApplicationRecord
   }, default: :monthly
 
   enum :nature, {
-    want: 'want',
     need: 'need',
+    want: 'want',
     debt: 'debt',
-    savings: 'savings',
+    saving: 'saving',
     investment: 'investment',
+    income: 'income',
     other: 'other'
   }, default: :other
 

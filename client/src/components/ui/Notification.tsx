@@ -52,7 +52,7 @@ export function Notification({
 
   return (
     <div
-      className={`fixed top-4 right-4 left-4 md:left-auto md:w-96 p-4 rounded-lg border shadow-lg transform transition-all duration-300 ease-in-out z-50 ${styles.bg}`}
+      className={`fixed top-4 right-4 left-4 md:left-auto md:w-96 p-4 rounded-lg border shadow-sm-lg transform transition-all duration-300 ease-in-out z-50 ${styles.bg}`}
       role="alert"
     >
       <div className="flex items-start gap-3">
