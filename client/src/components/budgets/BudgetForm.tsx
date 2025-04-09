@@ -3,6 +3,8 @@ import type { CreateBudgetData, Budget } from '../../lib/types/budgets';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { FormActions } from '../ui/FormActions';
 import { Button } from '../ui/Button';
+import type { Category } from '../../lib/types/categories';
+import { formatCategoriesToOptions } from '../../lib/utils/formatters';
 
 interface BudgetFormProps {
   onSubmit: (data: CreateBudgetData) => Promise<void>;
@@ -10,11 +12,12 @@ interface BudgetFormProps {
   onDelete: () => void;
   initialData?: Budget | CreateBudgetData | null;
   natures: string[];
+  categories: Category[];
 }
 
 const FORM_ID = 'budget-form';
 
-export function BudgetForm({ onSubmit, onCancel, initialData, natures, onDelete }: BudgetFormProps) {
+export function BudgetForm({ onSubmit, onCancel, initialData, natures, onDelete, categories }: BudgetFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +25,7 @@ export function BudgetForm({ onSubmit, onCancel, initialData, natures, onDelete 
     name: initialData?.name ?? undefined,
     amount: initialData?.amount ?? undefined,
     nature: initialData?.nature ?? "need",
+    category_ids: initialData?.categories?.map((category: Category) => category.id) ?? [],
   };
 
   const natureOptions = natures.map((nature: string) => ({
@@ -66,6 +70,13 @@ export function BudgetForm({ onSubmit, onCancel, initialData, natures, onDelete 
           message: 'Amount must be greater than 0'
         }
       }
+    },
+    {
+      name: 'category_ids',
+      label: 'Categories',
+      type: 'multi-select',
+      options: formatCategoriesToOptions(categories),
+      required: true,
     },
     {
       name: 'nature',

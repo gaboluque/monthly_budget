@@ -28,7 +28,7 @@ export interface TransactionsFilterParams {
   frequency?: string;
   category?: string;
   page?: number;
-  per_page?: number;
+  limit?: number;
 }
 
 export interface CreateTransactionData {

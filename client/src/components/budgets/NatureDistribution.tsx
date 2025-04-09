@@ -11,28 +11,14 @@ export function NatureDistribution({ budgetsByNature, total, className = "" }: N
   return (
     <div className={`space-y-2 ${className}`}>
       {Object.entries(budgetsByNature).map(([nature, budgets]) => {
-        console.log({
-          nature,
-          budgets,
-          total,
-        })
-
-
         const amount = budgets.reduce((acc, budget) => Number(acc) + Number(budget.amount), 0)
         const percentage = total > 0 ? (amount / total) * 100 : 0
         const natureColor = NATURE_COLORS[nature.toLowerCase()] || NATURE_COLORS.other
 
-        console.log({
-          nature,
-          amount,
-          percentage,
-          natureColor,
-        })
-
         return (
           <div key={nature} className="flex items-center gap-2">
             <div className="w-24 text-sm font-medium" style={{ color: natureColor }}>
-              {nature}
+              {nature.charAt(0).toUpperCase() + nature.slice(1)}
             </div>
             <div className="flex-1">
               <div className="h-2 rounded-full bg-gray-100">

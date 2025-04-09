@@ -1,4 +1,3 @@
-
 # == Schema Information
 #
 # Table name: categories
@@ -27,6 +26,9 @@ class Category < ApplicationRecord
     belongs_to :parent, class_name: 'Category', optional: true
 
     has_many :children, class_name: 'Category', foreign_key: :parent_id, dependent: :destroy, inverse_of: :parent
+
+    has_many :budget_categories, dependent: :destroy
+    has_many :budgets, through: :budget_categories
 
     validates :name, presence: true, uniqueness: { scope: :user }
 

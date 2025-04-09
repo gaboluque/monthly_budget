@@ -1,3 +1,5 @@
+import type { Category } from "./categories";
+
 export interface Budget {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export interface Budget {
   is_paid: boolean;
   is_pending: boolean;
   nature: string;
+  categories: Category[];
 }
 
 export interface CreateBudgetData {
@@ -15,6 +18,8 @@ export interface CreateBudgetData {
   name?: string;
   amount?: number;
   nature?: string;
+  category_ids?: string[] | number[];
+  categories?: Category[];
 }
 
 // Define explicit fields for clarity even though it's a partial
@@ -23,6 +28,8 @@ export interface UpdateBudgetData {
   name?: string;
   amount?: number;
   nature?: string;
+  category_ids?: string[] | number[];
+  categories?: Category[];
 }
 
 export const NATURE_COLORS: Record<string, string> = {

@@ -80,7 +80,8 @@ module Api
           :amount, 
           :frequency, 
           :last_paid_at,
-          :nature
+          :nature,
+          :category_ids => []
         )
       end
     end

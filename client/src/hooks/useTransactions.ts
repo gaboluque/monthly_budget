@@ -11,7 +11,7 @@ import {
 } from "../lib/types/transactions";
 import { Account } from "../lib/types/accounts";
 import { ui } from "../lib/ui/manager";
-import { TransactionCategory } from "../lib/types/categories";
+import { Category } from "../lib/types/categories";
 import { categoriesApi } from "../lib/api/categories";
 
 
@@ -21,7 +21,7 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
     []
   );
-  const [categories, setCategories] = useState<TransactionCategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filterParams, setFilterParams] = useState<TransactionsFilterParams>(

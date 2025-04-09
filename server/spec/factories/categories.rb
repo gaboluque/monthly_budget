@@ -11,6 +11,16 @@
 #  parent_id  :bigint
 #  user_id    :bigint
 #
+# Indexes
+#
+#  index_categories_on_parent_id  (parent_id)
+#  index_categories_on_user_id    (user_id)
+#
+# Foreign Keys
+#
+#  fk_rails_...  (parent_id => categories.id)
+#  fk_rails_...  (user_id => users.id)
+#
 FactoryBot.define do
   factory :category do
     name { Faker::Commerce.unique.department }

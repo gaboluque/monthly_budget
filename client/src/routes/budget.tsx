@@ -11,10 +11,12 @@ import { formatCurrency } from "../lib/utils/currency"
 import { Spinner } from "../components/ui/Spinner"
 import { BudgetSummary } from "../components/budgets/BudgetSummary"
 import { ListCard } from "../components/ui/ListCard"
+import { useCategories } from "../hooks/useCategories"
 
 export default function Budgets() {
   const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
   const { budgets, createBudget, updateBudget, deleteBudget, isLoading: isBudgetsLoading, natures } = useBudgets()
+  const { categories, isLoading: isCategoriesLoading } = useCategories()
 
 
   const handleAddBudget = () => {
@@ -83,7 +85,7 @@ export default function Budgets() {
       />
 
       <div className="mt-6 bg-white shadow-sm-xs rounded-lg divide-y divide-gray-200">
-        {isBudgetsLoading ? (
+        {isBudgetsLoading || isCategoriesLoading ? (
           <div className="p-6 text-center text-gray-500">
             <Spinner />
           </div>
@@ -114,6 +116,7 @@ export default function Budgets() {
       >
         <BudgetForm
           natures={natures}
+          categories={categories}
           initialData={selectedBudget}
           onSubmit={handleSubmit}
           onCancel={() => {

@@ -6,7 +6,13 @@ module Api
 
       # GET /api/v1/transactions
       def index
-        @transactions = current_user.transactions.order(created_at: :desc)
+        scope = current_user.transactions.order(executed_at: :desc)
+
+        if params[:limit].present?
+          scope = scope.limit(params[:limit])
+        end
+
+        @transactions = scope
       end
 
       # POST /api/v1/transactions

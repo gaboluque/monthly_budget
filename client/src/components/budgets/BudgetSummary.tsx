@@ -26,10 +26,6 @@ export function BudgetSummary({
     return budgets.reduce((acc, budget) => acc + budget.amount, 0)
   }, [budgets])
 
-  console.log({
-    budgets,
-  })
-
   if (isLoading) {
     return (
       <div className="mb-8">
@@ -40,12 +36,12 @@ export function BudgetSummary({
 
 
   return (
-    <div className="mb-8">
+    <div className="mb-6">
       <h3 className="text-sm font-medium text-gray-500 mb-3 flex items-center gap-2">
         <PieChart className="w-4 h-4" />
         Budget Summary
       </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
         <StatCard
           title="Total Budget Items"
           amount={totalBudgetAmount}
@@ -54,7 +50,6 @@ export function BudgetSummary({
           variant="blue"
         />
       </div>
-
       <div className="col-span-2 bg-white rounded-lg shadow p-4">
         <h4 className="text-sm font-medium text-gray-700 mb-3">Nature Distribution</h4>
         <NatureDistribution budgetsByNature={budgetsByNature} total={totalBudgetAmount} />

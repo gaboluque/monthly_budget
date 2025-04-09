@@ -2,11 +2,11 @@ import { Path, FieldValues, UseFormRegister } from 'react-hook-form';
 import { useState, useEffect } from 'react';
 import { Modal } from '../../ui/Modal';
 
-interface OptionSelectProps<T extends FieldValues> {
+export interface OptionSelectProps<T extends FieldValues> {
   name: Path<T>;
   label: string;
   placeholder?: string;
-  options: { value: string; label: string, children?: { value: string; label: string }[] }[]; // For select fields
+  options: { value: string | number; label: string, children?: { value: string | number; label: string }[] }[]; // For select fields
   value?: string | number[];
   isMulti?: boolean;
   register: UseFormRegister<T>;

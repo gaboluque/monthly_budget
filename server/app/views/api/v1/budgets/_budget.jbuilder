@@ -7,3 +7,6 @@ json.is_paid budget.paid_this_month?
 json.is_pending budget.pending?
 json.created_at budget.created_at
 json.updated_at budget.updated_at
+json.categories budget.categories do |category|
+  json.partial! 'api/v1/categories/category', category: category
+end

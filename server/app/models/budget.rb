@@ -24,6 +24,9 @@
 #
 class Budget < ApplicationRecord
   belongs_to :user
+
+  has_many :budget_categories, dependent: :destroy
+  has_many :categories, through: :budget_categories
   
   validates :name, presence: true
   validates :amount, presence: true, numericality: { greater_than_or_equal_to: 0 }

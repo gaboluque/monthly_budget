@@ -17,7 +17,7 @@ export interface FormField<T extends FieldValues> {
     type: FormFieldType;
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string, children?: { value: string; label: string }[] }[]; // For select fields
+    options?: { value: string | number; label: string, children?: { value: string | number; label: string }[] }[]; // For select fields
     validation?: Omit<RegisterOptions<T, Path<T>>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
     showWhen?: ConditionalRule<T>[];
 }
