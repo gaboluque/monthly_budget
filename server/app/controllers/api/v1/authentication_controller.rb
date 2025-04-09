@@ -4,10 +4,14 @@ module Api
         skip_before_action :authenticate_user!
 
         def login
-          user = User.find_by(email: user_params[:email])
+          @user = User.find_by(email: user_params[:email])
 
-          if user&.authenticate(user_params[:password])
-            render json: { jwt: generate_jwt(user) }, status: :ok
+          puts "User: #{@user.inspect}"
+          puts "User params: #{user_params.inspect}"
+          puts "User authenticate: #{@user&.authenticate(user_params[:password])}"
+
+          if @user&.authenticate(user_params[:password])
+            @jwt = generate_jwt(@user)
           else
             render_error("Invalid credentials", :unauthorized)
           end
@@ -16,7 +20,7 @@ module Api
         def signup
           @user = User.new(user_params)
           if @user.save
-            render json: { jwt: generate_jwt(@user) }, status: :created
+            @jwt = generate_jwt(@user)
           else
             render_error(@user.errors.full_messages, :unprocessable_entity)
           end
