@@ -84,7 +84,7 @@ export default function Budgets() {
         isLoading={isBudgetsLoading}
       />
 
-      <div className="mt-6 bg-white shadow-sm-xs rounded-lg divide-y divide-gray-200">
+      <div className="mt-6 shadow-sm-xs rounded-lg divide-y divide-gray-200">
         {isBudgetsLoading || isCategoriesLoading ? (
           <div className="p-6 text-center text-gray-500">
             <Spinner />

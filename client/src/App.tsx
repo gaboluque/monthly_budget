@@ -6,7 +6,7 @@ import { UIRoot } from './lib/ui'
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="bg-gray-50 min-h-screen flex flex-col">
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
