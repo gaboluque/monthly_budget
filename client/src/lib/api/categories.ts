@@ -1,8 +1,8 @@
 import { apiClient } from "./client";
-import type { TransactionCategory } from "../types/categories";
+import type { Category } from "../types/categories";
 
 export const categoriesApi = {
-  fetchAll: async (): Promise<TransactionCategory[]> => {
+  fetchAll: async (): Promise<Category[]> => {
     const response = await apiClient.get("/categories");
     return response.data || [];
   },

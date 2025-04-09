@@ -24,7 +24,7 @@
     }
 }
 
-@theme {
+@theme default {
     --default-ring-width: 3px;
     --default-ring-color: var(--color-blue-500);
 

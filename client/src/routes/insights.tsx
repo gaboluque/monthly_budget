@@ -11,7 +11,7 @@ export default function Insights() {
     useEffect(() => {
         const fetchInsights = async () => {
             setLoading(true)
-            const response = await insightsApi.fetchAll()
+            const response = await insightsApi.fetchInsights()
             setInsights(response)
             setLoading(false)
         }
