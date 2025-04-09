@@ -8,7 +8,7 @@ module Budgets
     end
 
     def call
-      category_ids = params.delete(:category_ids)
+      category_ids = params.delete(:category_ids) || []
       budget = user.budgets.build(params)
 
       ActiveRecord::Base.transaction do
