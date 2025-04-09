@@ -34,12 +34,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }, [navigate, redirectTo, location.pathname, isClient]);
 
   // During server-side rendering or before client-side hydration, render a loading state or null
-  if (!isClient) {
-    return <div className="min-h-screen bg-gray-50" />;
-  }
-
-  // If not authenticated on the client side, render nothing while redirecting
-  if (!isAuthenticated()) {
+  if (!isClient || !isAuthenticated()) {
     return <div className="min-h-screen bg-gray-50" />;
   }
 

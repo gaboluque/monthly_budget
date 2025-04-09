@@ -60,3 +60,9 @@ export function formatCategoriesToOptions(categories: Category[]): OptionSelectP
     })),
   }));
 }
+
+export function percentageToColor(percentage: number): string {
+  if (percentage < 50) return "limegreen";
+  if (percentage < 75) return "yellow";
+  return "red";
+}

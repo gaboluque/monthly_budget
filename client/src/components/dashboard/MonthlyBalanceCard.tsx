@@ -13,7 +13,7 @@ export function MonthlyBalanceCard({
   expensesTotal = 0,
 }: MonthlyBalanceCardProps) {
   return (
-    <div className="rounded-xl shadow-sm-lg p-6 col-span-1 md:col-span-3 border border-blue-100 transition-all duration-300 hover:shadow-sm-xl">
+    <div className="bg-white rounded-xl shadow-sm-lg p-6 col-span-1 md:col-span-3 border border-blue-100 transition-all duration-300 hover:shadow-sm-xl">
       <div className="flex items-center mb-4">
         <div className="bg-blue-100 p-2 rounded-full mr-3">
           <TrendingUp className="h-5 w-5 text-blue-600" />

@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       resources :insights, only: [ :index ] do
         collection do
           get :monthly_balance
+          get :budget_usage
         end
       end
     end
