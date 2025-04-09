@@ -6,7 +6,13 @@ module Api
 
       # GET /api/v1/transactions
       def index
-        @transactions = current_user.transactions.order(created_at: :desc)
+        scope = current_user.transactions.order(executed_at: :desc)
+
+        if params[:limit].present?
+          scope = scope.limit(params[:limit])
+        end
+
+        @transactions = scope
       end
 
       # POST /api/v1/transactions
@@ -53,11 +59,6 @@ module Api
         render json: { frequencies: Transaction.frequencies.keys }
       end
 
-      # GET /api/v1/transactions/categories
-      def categories
-        render json: { categories: BudgetItem::DEFAULT_CATEGORIES }
-      end
-
       private
 
       def set_transaction
@@ -75,8 +76,7 @@ module Api
           :description,
           :executed_at,
           :frequency,
-          :category,
-          :budget_item_id
+          :category_id
         )
       end
 

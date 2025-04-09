@@ -1,7 +1,9 @@
 import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
 import { useEffect, useMemo } from "react";
+import { OptionSelect } from "./fields/OptionSelect";
+import { PasswordField } from "./fields/PasswordField";
 
-export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'textarea' | 'checkbox' | 'date' | 'radio';
+export type FormFieldType = 'text' | 'number' | 'email' | 'password' | 'select' | 'multi-select' | 'textarea' | 'checkbox' | 'date' | 'radio' | 'optionSelect';
 
 export type ConditionalRule<T extends FieldValues> = {
     field: Path<T>;
@@ -15,7 +17,7 @@ export interface FormField<T extends FieldValues> {
     type: FormFieldType;
     placeholder?: string;
     required?: boolean;
-    options?: { value: string; label: string }[]; // For select fields
+    options?: { value: string | number; label: string, children?: { value: string | number; label: string }[] }[]; // For select fields
     validation?: Omit<RegisterOptions<T, Path<T>>, 'valueAsNumber' | 'valueAsDate' | 'setValueAs'>;
     showWhen?: ConditionalRule<T>[];
 }
@@ -90,12 +92,40 @@ export const Form = <T extends FieldValues>({
         const { name, type, placeholder, options, validation } = field;
 
         switch (type) {
+            case 'password':
+                return (
+                    <PasswordField
+                        name={name}
+                        placeholder={placeholder}
+                        validation={validation}
+                        register={register}
+                    />
+                );
+            case 'optionSelect':
+            case 'multi-select':
+                return (
+                    <OptionSelect
+                        name={name}
+                        label={field.label}
+                        placeholder={placeholder}
+                        options={options || []}
+                        value={values?.[name as string]}
+                        isMulti={type === 'multi-select'}
+                        register={register}
+                        onChange={(value) => {
+                            if (onFieldChange) {
+                                onFieldChange(name, value);
+                            }
+                        }}
+                    />
+                );
+            
             case 'select':
                 return (
                     <select
                         id={name.toString()}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     >
                         <option value="">-</option>
                         {options?.map((option) => (
@@ -139,7 +169,7 @@ export const Form = <T extends FieldValues>({
                         id={name.toString()}
                         placeholder={placeholder}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     />
                 );
 
@@ -150,7 +180,7 @@ export const Form = <T extends FieldValues>({
                             type="checkbox"
                             id={name.toString()}
                             {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                            className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors cursor-pointer"
+                            className="h-5 w-5 text-blue-600 focus:ring-3-blue-500 border-gray-300 rounded-sm transition-colors cursor-pointer"
                         />
                         <label
                             htmlFor={name.toString()}
@@ -170,7 +200,7 @@ export const Form = <T extends FieldValues>({
                         id={name.toString()}
                         placeholder={placeholder}
                         {...register(name, validation as RegisterOptions<T, Path<T>>)}
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-2 border rounded-sm focus:outline-hidden focus:ring-3-2 focus:ring-3-blue-500"
                     />
                 );
         }

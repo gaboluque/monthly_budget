@@ -1,6 +1,6 @@
-# Monthly Budget PWA
+# PLUTO - Budget PWA
 
-A Progressive Web App (PWA) for monthly budget tracking. This application is built with React, TypeScript, and Vite, designed to work offline and provide a native-like experience on both mobile and desktop devices.
+Pluto is a Progressive Web App (PWA) for monthly budget tracking. This application is built with React, TypeScript, and Vite, designed to work offline and provide a native-like experience on both mobile and desktop devices.
 
 ## Features
 

@@ -1,6 +1,6 @@
 json.id income.id
 json.name income.name
-json.amount income.amount
+json.amount income.amount.to_f
 json.frequency income.frequency
 json.created_at income.created_at
 json.updated_at income.updated_at

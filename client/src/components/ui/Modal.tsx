@@ -6,12 +6,14 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   type?: 'standard' | 'popup';
+  zIndex?: number;
 }
 
-export function Modal({ isOpen, onClose, title, children, type = 'standard' }: ModalProps) {
+export function Modal({ isOpen, onClose, title, children, zIndex, type = 'standard' }: ModalProps) {
 
   const isModal = type === 'standard';
   const isPopup = type === 'popup';
+  const calculatedZIndex = zIndex || (isPopup ? 50 : 30);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -32,9 +34,9 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 ${isPopup ? "z-50" : "z-20"} overflow-y-auto`}>
+      <div className={`fixed inset-0 z-${calculatedZIndex} overflow-y-auto`}>
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity cursor-default"
+        className="fixed inset-0 bg-black/50 cursor-default"
         onClick={onClose}
         tabIndex={0}
         role="button"
@@ -46,7 +48,7 @@ export function Modal({ isOpen, onClose, title, children, type = 'standard' }: M
       />
 
       <div className={`flex min-h-full ${isModal ? 'items-stretch sm:items-center' : 'items-center'} justify-center p-0 sm:p-4`}>
-        <div className={`relative bg-white shadow-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-[90%]' : ''}`}>
+        <div className={`relative bg-white shadow-sm-xl ${isModal ? 'w-full min-h-screen sm:min-h-0' : ''} sm:h-auto sm:max-w-lg sm:rounded-lg p-4 sm:p-6 ${isPopup ? 'rounded-lg max-w-lg w-[90%]' : ''}`}>
           <div className="flex items-center justify-between mb-8 align-center">
 
             <h3 className="text-lg font-semibold text-gray-900">

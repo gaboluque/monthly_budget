@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import {
   transactionsApi,
-  CreateTransactionData,
 } from "../lib/api/transactions";
 import { accountsApi } from "../lib/api/accounts";
 import {
   Transaction,
   TransactionType,
   TransactionsFilterParams,
+  CreateTransactionData,
 } from "../lib/types/transactions";
 import { Account } from "../lib/types/accounts";
 import { ui } from "../lib/ui/manager";
+import { Category } from "../lib/types/categories";
+import { categoriesApi } from "../lib/api/categories";
+
 
 export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -18,7 +21,7 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
   const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
     []
   );
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filterParams, setFilterParams] = useState<TransactionsFilterParams>(
@@ -31,10 +34,10 @@ export function useTransactions(initialParams?: TransactionsFilterParams) {
       try {
         const [transactionData, accountsData, typesData, categoriesData] =
           await Promise.all([
-            transactionsApi.getAll(filterParams),
-            accountsApi.getAll(),
-            transactionsApi.getTypes(),
-            transactionsApi.getCategories(),
+            transactionsApi.fetchAll(filterParams),
+            accountsApi.fetchAll(),
+            transactionsApi.fetchTypes(),
+            categoriesApi.fetchAll(),
           ]);
         setTransactions(transactionData);
         setAccounts(accountsData);

@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './routes/login'
 import { routes } from './routes/_index'
@@ -6,7 +6,7 @@ import { UIRoot } from './lib/ui'
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col">
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />

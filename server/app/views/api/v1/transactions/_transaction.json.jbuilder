@@ -1,6 +1,8 @@
 json.id transaction.id
-json.amount transaction.amount
-json.category transaction.category
+json.amount transaction.amount.to_f
+json.category do
+    json.partial! 'api/v1/categories/category', category: transaction.category
+end
 json.description transaction.description
 json.executed_at transaction.executed_at
 json.frequency transaction.frequency

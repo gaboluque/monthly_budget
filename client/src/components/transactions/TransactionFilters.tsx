@@ -43,7 +43,7 @@ export function TransactionFilters({
     const hasActiveFilters = Object.values(currentFilters).some(value => value !== undefined && value !== "");
 
     return (
-        <div className="bg-white shadow sm:rounded-lg mb-6">
+        <div className="bg-white shadow-sm sm:rounded-lg mb-6">
             <div className="px-4 py-5 sm:p-6">
                 <div className="flex justify-between items-center">
                     <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center">
@@ -78,7 +78,7 @@ export function TransactionFilters({
                                     name="account_id"
                                     value={filters.account_id || ""}
                                     onChange={handleInputChange}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-3-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                                 >
                                     <option value="">All Accounts</option>
                                     {accounts.map((account) => (
@@ -98,7 +98,7 @@ export function TransactionFilters({
                                     name="transaction_type"
                                     value={filters.transaction_type || ""}
                                     onChange={handleInputChange}
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-hidden focus:ring-3-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                                 >
                                     <option value="">All Types</option>
                                     {transactionTypes.map((type) => (
@@ -119,7 +119,7 @@ export function TransactionFilters({
                                     id="search"
                                     value={filters.search || ""}
                                     onChange={handleInputChange}
-                                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                    className="mt-1 focus:ring-3-blue-500 focus:border-blue-500 block w-full shadow-sm-xs sm:text-sm border-gray-300 rounded-md"
                                     placeholder="Search description..."
                                 />
                             </div>
@@ -134,7 +134,7 @@ export function TransactionFilters({
                                     id="start_date"
                                     value={filters.start_date || ""}
                                     onChange={handleInputChange}
-                                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                    className="mt-1 focus:ring-3-blue-500 focus:border-blue-500 block w-full shadow-sm-xs sm:text-sm border-gray-300 rounded-md"
                                 />
                             </div>
 
@@ -148,7 +148,7 @@ export function TransactionFilters({
                                     id="end_date"
                                     value={filters.end_date || ""}
                                     onChange={handleInputChange}
-                                    className="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                    className="mt-1 focus:ring-3-blue-500 focus:border-blue-500 block w-full shadow-sm-xs sm:text-sm border-gray-300 rounded-md"
                                 />
                             </div>
                         </div>

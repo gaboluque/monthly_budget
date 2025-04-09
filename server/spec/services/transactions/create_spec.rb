@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Transactions::Create do
+  let!(:category) { create(:category, id: 0) }
   let(:user) { create(:user) }
   let(:account) { create(:account, user: user, balance: 1000) }
   let(:recipient_account) { create(:account, user: user, balance: 500) }
@@ -118,27 +119,6 @@ RSpec.describe Transactions::Create do
         expect {
           described_class.call(user, invalid_params)
         }.not_to change { account.reload.balance }
-      end
-    end
-
-    context 'with a budget item' do
-      let(:budget_item) { create(:budget_item, user: user, amount: 100.50) }
-      let(:expense_with_item_params) {
-        {
-          account_id: account.id,
-          amount: 100.50,
-          transaction_type: Transaction.transaction_types[:expense],
-          description: 'Budget item expense',
-          item_type: 'BudgetItem',
-          item_id: budget_item.id
-        }
-      }
-
-      it 'associates the transaction with the budget item' do
-        result = described_class.call(user, expense_with_item_params)
-
-        expect(result[:success]).to be true
-        expect(result[:transaction].item).to eq(budget_item)
       end
     end
   end

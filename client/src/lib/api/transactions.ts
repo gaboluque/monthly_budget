@@ -3,22 +3,11 @@ import type {
   Transaction,
   TransactionType,
   TransactionsFilterParams,
+  CreateTransactionData,
 } from "../types/transactions";
 
-// Interface for creating a new transaction
-export interface CreateTransactionData {
-  account_id: string;
-  recipient_account_id?: string;
-  amount: number;
-  transaction_type: string;
-  description?: string;
-  executed_at?: string;
-  frequency?: string;
-  budget_item_id?: string;
-}
-
 export const transactionsApi = {
-  getAll: async (params?: TransactionsFilterParams): Promise<Transaction[]> => {
+  fetchAll: async (params?: TransactionsFilterParams): Promise<Transaction[]> => {
     const queryParams = new URLSearchParams();
 
     if (params) {
@@ -35,7 +24,7 @@ export const transactionsApi = {
     return response.data || [];
   },
 
-  getById: async (id: string): Promise<Transaction> => {
+  fetchById: async (id: string): Promise<Transaction> => {
     const response = await apiClient.get(`/transactions/${id}`);
     return response;
   },
@@ -51,13 +40,8 @@ export const transactionsApi = {
     await apiClient.delete(`/transactions/${id}`);
   },
 
-  getTypes: async (): Promise<TransactionType[]> => {
+  fetchTypes: async (): Promise<TransactionType[]> => {
     const response = await apiClient.get("/transactions/types");
     return response.types || [];
-  },
-
-  getCategories: async (): Promise<string[]> => {
-    const response = await apiClient.get("/transactions/categories");
-    return response.categories || [];
   },
 };

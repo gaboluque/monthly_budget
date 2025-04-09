@@ -12,32 +12,6 @@ module Api
       def monthly_balance
         incomes = current_user.transactions.incomes.current_month
         expenses = current_user.transactions.expenses.current_month
-        budget_items = current_user.budget_items
-
-        balance_by_category = BudgetItem::DEFAULT_CATEGORIES.each_with_object({}) do |category, acc|
-          budget_amount = budget_items.where(category: category).sum(:amount)
-          monthly_expenses = expenses.joins(:budget_item).where(budget_items: { category: category }).sum(:amount)
-          remaining = budget_amount - monthly_expenses
-          percentage_used = budget_amount.zero? ? 0 : (monthly_expenses / budget_amount * 100).round(1)
-          
-          status = if budget_amount.zero?
-                    'no_budget'
-                  elsif percentage_used > 100
-                    'over_budget'
-                  elsif percentage_used >= 80
-                    'warning'
-                  else
-                    'on_track'
-                  end
-          
-          acc[category] = {
-            budget_amount: budget_amount,
-            monthly_expenses: monthly_expenses,
-            remaining: remaining,
-            percentage_used: percentage_used,
-            status: status
-          }
-        end
 
         total_income = incomes.sum(:amount)
         total_expenses = expenses.sum(:amount)
@@ -45,17 +19,60 @@ module Api
 
         render json: {
           data: {
+            monthly_balance: monthly_balance,
             incomes: {
               total: total_income,
-              transactions: incomes
             },
             expenses: {
               total: total_expenses,
-              transactions: expenses
             },
-            monthly_balance: monthly_balance,
-            balance_by_category: balance_by_category
           }
+        }
+      end
+      
+      def budget_usage
+        # Calculate budget usage based on transactions
+        budgets = current_user.budgets.includes(:categories)
+        transactions = current_user.transactions.current_month.includes(:category)
+        
+        # Create a hash to store budget usage
+        budgets_usage = {}
+        
+        budgets.each do |budget|
+          # Initialize usage for each budget
+          budgets_usage[budget.name] = {
+            id: budget.id,
+            name: budget.name,
+            amount: budget.amount.to_f,
+            usage_amount: 0,
+            nature: budget.nature,
+            percentage: 0
+          }
+          
+          # Calculate usage based on transactions for categories in this budget
+          budget.categories.each do |category|
+            # Find transactions for this category and add amounts to budget usage
+            category_transactions = transactions.select { |transaction| transaction.category_id == category.id }
+            
+            if category_transactions.any?
+              category_transactions.each do |transaction|
+                budgets_usage[budget.name][:usage_amount] += transaction.amount.to_f if transaction.expense?
+              end
+            end
+          end
+          
+          # Calculate percentage
+
+          if budget.amount > 0
+            budgets_usage[budget.name][:percentage] = (budgets_usage[budget.name][:usage_amount] / budget.amount) * 100
+            puts "budget.amount: #{budget.amount}"
+            puts "budgets_usage[budget.name][:usage_amount]: #{budgets_usage[budget.name][:usage_amount]}"
+            puts "budgets_usage[budget.name][:percentage]: #{budgets_usage[budget.name][:percentage]}"
+          end
+        end
+        
+        render json: {
+          data: budgets_usage
         }
       end
     end

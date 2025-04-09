@@ -43,7 +43,7 @@ export function FinancialItem({
     const currentActionText = isPending ? actionText.pending : actionText.completed
 
     return (
-        <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-shadow">
+        <div className="border border-gray-200 rounded-lg p-4 hover:shadow-sm-xs transition-shadow-sm">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                 <div className="flex items-center gap-3 mb-3 md:mb-0">
                     <div className={`hidden sm:flex flex-shrink-0 w-10 h-10 ${iconBgColor} rounded-full flex items-center justify-center`}>

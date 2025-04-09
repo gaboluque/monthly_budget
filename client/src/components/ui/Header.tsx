@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router"
 import { Button } from "./Button"
 import { logout } from "../../lib/utils/auth"
 import { LogOut } from "lucide-react"

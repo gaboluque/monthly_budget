@@ -1,88 +1,69 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Layout } from "../components/ui/Layout"
-import { Button } from "../components/ui/Button"
 import { Modal } from "../components/ui/Modal"
-import { BudgetItemForm } from "../components/budget_items/BudgetItemForm"
-import { BudgetSummary } from "../components/budget_items/BudgetSummary"
-import { BudgetItemCategory } from "../components/budget_items/BudgetItemCategory"
-import { useBudgetItems } from "../hooks/useBudgetItems"
-import type { BudgetItem, CreateBudgetItemData } from "../lib/types/budget_items"
-import { PlusCircle } from "lucide-react"
+import { BudgetForm } from "../components/budgets/BudgetForm"
+import { useBudgets } from "../hooks/useBudgets"
+import type { Budget, CreateBudgetData } from "../lib/types/budgets"
+import { NATURE_COLORS } from "../lib/types/budgets"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
+import { formatCurrency } from "../lib/utils/currency"
 import { Spinner } from "../components/ui/Spinner"
+import { BudgetSummary } from "../components/budgets/BudgetSummary"
+import { ListCard } from "../components/ui/ListCard"
+import { useCategories } from "../hooks/useCategories"
 
-export default function BudgetItems() {
-  const [selectedBudgetItem, setSelectedBudgetItem] = useState<BudgetItem | CreateBudgetItemData | null>(null)
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({})
-  const { budgetItems, categories, isLoading, totalBudgetItems, budgetItemsByCategory, createBudgetItem, updateBudgetItem, deleteBudgetItem } = useBudgetItems()
+export default function Budgets() {
+  const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
+  const { budgets, createBudget, updateBudget, deleteBudget, isLoading: isBudgetsLoading, natures } = useBudgets()
+  const { categories, isLoading: isCategoriesLoading } = useCategories()
 
-  // Initialize all categories as collapsed when they're loaded
-  useEffect(() => {
-    if (categories.length > 0) {
-      const initialExpandState = categories.reduce(
-        (acc, category) => {
-          acc[category] = false // Start with all categories collapsed
-          return acc
-        },
-        {} as Record<string, boolean>,
-      )
-      setExpandedCategories(initialExpandState)
-    }
-  }, [categories])
 
-  const handleSubmit = async (data: CreateBudgetItemData) => {
+  const handleAddBudget = () => {
+    setSelectedBudget({
+      name: "",
+      amount: 0,
+      nature: "need",
+    })
+  }
+
+  const handleSubmit = async (data: CreateBudgetData) => {
     try {
-      let budgetItem: BudgetItem | null = null;
-      if (data?.id || selectedBudgetItem?.id) {
-        const id = data?.id || selectedBudgetItem?.id;
-        if (!id) throw new Error("BudgetItem ID is required");
-
-        budgetItem = await updateBudgetItem(id, data);
+      let budget: Budget | null = null;
+      if (data?.id || selectedBudget?.id) {
+        const id = data?.id || selectedBudget?.id;
+        if (!id) throw new Error("Budget ID is required");
+        
+        budget = await updateBudget(id, data);
       } else {
-        budgetItem = await createBudgetItem(data);
+        budget = await createBudget(data);
       }
 
-      if (budgetItem) setSelectedBudgetItem(null);
+      if (budget) setSelectedBudget(null);
     } catch (error) {
       ui.notify({
-        message: "Failed to save budget item",
+        message: "Failed to save budget",
         type: "error",
         error: error as Error,
       });
     }
   }
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }))
-  }
-
-  const handleAddBudgetItem = (category?: string) => {
-    setSelectedBudgetItem({
-      category: category || undefined,
-    })
-  }
-
-  const handleDeleteBudgetItem = (id: string) => {
-    console.log("id", id)
-    const budgetItem = budgetItems.find(e => e.id === id)
-    console.log("budgetItem", budgetItem)
-    if (!budgetItem) return
+  const handleDeleteBudget = (id: string) => {
+    const budget = budgets.find(e => e.id === id)
+    if (!budget) return
 
     ui.confirm({
-      title: "Delete Budget Item",
-      message: `Are you sure you want to delete "${budgetItem.name}"? This action cannot be undone.`,
+      title: "Delete Budget",
+      message: `Are you sure you want to delete "${budget.name}"? This action cannot be undone.`,
       confirmText: "Delete",
       cancelText: "Cancel",
       confirmVariant: "danger",
       onConfirm: async () => {
-        await deleteBudgetItem(id)
+        await deleteBudget(id)
         ui.notify({
           type: "success",
-          message: `"${budgetItem.name}" has been deleted successfully`
+          message: `"${budget.name}" has been deleted successfully`
         })
       }
     })
@@ -92,64 +73,56 @@ export default function BudgetItems() {
     <Layout>
       <PageHeader
         title="Monthly Budget"
-        description="A list of all your budget items organized by category."
-        buttonText="Add Budget Item"
+        description="A list of all your budgets."
+        buttonText="Add Budget"
         buttonColor="blue"
-        onAction={() => handleAddBudgetItem()}
+        onAction={() => handleAddBudget()}
       />
 
-      {!isLoading && budgetItems.length > 0 && (
-        <BudgetSummary
-          totalBudgetItems={totalBudgetItems}
-          budgetItemCount={budgetItems.length}
-          budgetItemsByCategory={budgetItemsByCategory}
-        />
-      )}
+      <BudgetSummary
+        budgets={budgets}
+        isLoading={isBudgetsLoading}
+      />
 
-      {isLoading ? (
-        <div className="py-12 flex justify-center items-center text-gray-500">
-          <Spinner />
-        </div>
-      ) : budgetItems.length === 0 ? (
-        <div className="py-12 text-center">
-          <div className="inline-flex justify-center items-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-            <PlusCircle className="w-8 h-8 text-gray-400" />
+      <div className="mt-6 bg-white shadow-sm-xs rounded-lg divide-y divide-gray-200">
+        {isBudgetsLoading || isCategoriesLoading ? (
+          <div className="p-6 text-center text-gray-500">
+            <Spinner />
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-1">No budget items yet</h3>
-          <p className="text-gray-500 mb-4">Get started by adding your first budget item</p>
-          <Button onClick={() => handleAddBudgetItem()} className="inline-flex items-center justify-center gap-2">
-            <PlusCircle className="w-4 h-4" />
-            <span>Add Budget Item</span>
-          </Button>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {categories.map((category) => (
-            <BudgetItemCategory
-              key={category}
-              category={category}
-              budgetItems={budgetItemsByCategory[category] || []}
-              isExpanded={expandedCategories[category]}
-              onToggle={toggleCategory}
-              onAddBudgetItem={handleAddBudgetItem}
-              onEditBudgetItem={setSelectedBudgetItem}
-              onDeleteBudgetItem={handleDeleteBudgetItem}
-            />
-          ))}
-        </div>
-      )}
+        ) : budgets.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">
+            No budgets found. Get started by adding your first budget.
+          </div>
+        ) : (
+          <div className="grid gap-2">
+            {budgets.map((budget) => (
+              <ListCard
+                key={budget.id}
+                icon={<div className={`w-full h-full rounded-full bg-${NATURE_COLORS[budget.nature || 'other']}-500`}></div>}
+                title={budget.name}
+                description={budget.nature}
+                amount={formatCurrency(budget.amount)}
+                onClick={() => setSelectedBudget(budget)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
 
       <Modal
-        isOpen={!!selectedBudgetItem}
-        onClose={() => { setSelectedBudgetItem(null) }}
-        title={selectedBudgetItem?.id ? "Edit Budget Item" : "Add Budget Item"}
+        isOpen={!!selectedBudget}
+        onClose={() => { setSelectedBudget(null) }}
+        title={selectedBudget?.id ? "Edit Budget" : "Add Budget"}
       >
-        <BudgetItemForm
-          initialData={selectedBudgetItem}
+        <BudgetForm
+          natures={natures}
+          categories={categories}
+          initialData={selectedBudget}
           onSubmit={handleSubmit}
           onCancel={() => {
-            setSelectedBudgetItem(null)
+            setSelectedBudget(null)
           }}
+          onDelete={() => handleDeleteBudget(selectedBudget?.id || "")}
         />
       </Modal>
     </Layout>

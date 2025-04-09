@@ -13,7 +13,7 @@ interface IncomeItemProps {
 export function IncomeItem({ income, onEdit, onDelete, onReceive }: IncomeItemProps) {
 
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-lg p-5 hover:shadow-sm transition-shadow">
+    <div className="bg-gray-50 border border-gray-100 rounded-lg p-5 hover:shadow-sm-xs transition-shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-3">

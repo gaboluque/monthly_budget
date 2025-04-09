@@ -8,14 +8,14 @@ import {
 } from "../types/accounts";
 
 export const accountsApi = {
-  // Get all accounts
-  getAll: async (): Promise<Account[]> => {
+  // Fetch all accounts
+  fetchAll: async (): Promise<Account[]> => {
     const response = await apiClient.get("/accounts");
     return response.data;
   },
 
-  // Get a single account by ID
-  getById: async (id: string): Promise<Account> => {
+  // Fetch a single account by ID
+  fetchById: async (id: string): Promise<Account> => {
     const response = await apiClient.get(`/accounts/${id}`);
     return response;
   },
@@ -39,14 +39,14 @@ export const accountsApi = {
     await apiClient.delete(`/accounts/${id}`);
   },
 
-  // Get available account types
-  getAccountTypes: async (): Promise<AccountType[]> => {
+  // Fetch available account types
+  fetchAccountTypes: async (): Promise<AccountType[]> => {
     const response = await apiClient.get("/accounts/types");
     return response.data;
   },
 
-  // Get available currencies
-  getCurrencies: async (): Promise<Currency[]> => {
+  // Fetch available currencies
+  fetchCurrencies: async (): Promise<Currency[]> => {
     const response = await apiClient.get("/accounts/currencies");
     return response.data;
   },

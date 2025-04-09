@@ -1,17 +1,17 @@
-name: monthly-budget-dev
+name: pluto-dev
 region: nyc
 alerts:
 - rule: DEPLOYMENT_FAILED
 - rule: DOMAIN_FAILED
 databases:
 - engine: PG
-  name: db-monthly-budget-dev
+  name: db-pluto-dev
 features:
 - buildpack-stack=ubuntu-22
 ingress:
   rules:
   - component:
-      name: monthly-budget-server
+      name: pluto-server
     match:
       path:
         prefix: /
@@ -45,4 +45,4 @@ services:
   http_port: 80
   instance_count: 1
   instance_size_slug: apps-s-1vcpu-1gb
-  name: monthly-budget-server
+  name: pluto-server

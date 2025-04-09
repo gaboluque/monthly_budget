@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_09_023426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,24 +21,45 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
     t.string "account_type", null: false
     t.string "currency", default: "COP", null: false
     t.text "description"
+    t.boolean "is_owned", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "is_owned", default: true, null: false
     t.index ["user_id"], name: "index_accounts_on_user_id"
   end
 
-  create_table "budget_items", force: :cascade do |t|
+  create_table "budget_categories", force: :cascade do |t|
+    t.bigint "budget_id", null: false
+    t.bigint "category_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_id"], name: "index_budget_categories_on_budget_id"
+    t.index ["category_id"], name: "index_budget_categories_on_category_id"
+  end
+
+  create_table "budgets", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.decimal "amount", precision: 15, scale: 2, null: false
-    t.string "category", null: false
-    t.string "frequency", null: false
+    t.string "frequency", default: "monthly", null: false
+    t.string "nature", default: "other", null: false
+    t.datetime "last_paid_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_paid_at"
-    t.index ["category"], name: "index_budget_items_on_category"
-    t.index ["frequency"], name: "index_budget_items_on_frequency"
-    t.index ["user_id"], name: "index_budget_items_on_user_id"
+    t.index ["frequency"], name: "index_budgets_on_frequency"
+    t.index ["nature"], name: "index_budgets_on_nature"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.string "color"
+    t.bigint "user_id"
+    t.bigint "parent_id"
+    t.string "icon"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_categories_on_parent_id"
+    t.index ["user_id"], name: "index_categories_on_user_id"
   end
 
   create_table "incomes", force: :cascade do |t|
@@ -47,9 +68,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
     t.decimal "amount", precision: 15, scale: 2, null: false
     t.string "frequency", null: false
     t.bigint "account_id", null: false
+    t.datetime "last_received_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_received_at"
     t.index ["account_id"], name: "index_incomes_on_account_id"
     t.index ["user_id"], name: "index_incomes_on_user_id"
   end
@@ -58,22 +79,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
     t.bigint "user_id", null: false
     t.bigint "account_id", null: false
     t.bigint "recipient_account_id"
+    t.bigint "category_id", default: 0, null: false
     t.decimal "amount", precision: 10, scale: 2, null: false
-    t.string "transaction_type", null: false
+    t.string "transaction_type", default: "expense", null: false
     t.text "description"
     t.datetime "executed_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "frequency", default: "one_time", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "item_type"
-    t.bigint "item_id"
-    t.string "frequency", default: "one_time"
-    t.string "category"
-    t.bigint "budget_item_id", null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
-    t.index ["budget_item_id"], name: "index_transactions_on_budget_item_id"
-    t.index ["category"], name: "index_transactions_on_category"
+    t.index ["category_id"], name: "index_transactions_on_category_id"
     t.index ["frequency"], name: "index_transactions_on_frequency"
-    t.index ["item_type", "item_id"], name: "index_transactions_on_item"
     t.index ["recipient_account_id"], name: "index_transactions_on_recipient_account_id"
     t.index ["transaction_type"], name: "index_transactions_on_transaction_type"
     t.index ["user_id"], name: "index_transactions_on_user_id"
@@ -88,11 +104,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_25_155948) do
   end
 
   add_foreign_key "accounts", "users"
-  add_foreign_key "budget_items", "users"
+  add_foreign_key "budget_categories", "budgets"
+  add_foreign_key "budget_categories", "categories"
+  add_foreign_key "budgets", "users"
+  add_foreign_key "categories", "categories", column: "parent_id"
+  add_foreign_key "categories", "users"
   add_foreign_key "incomes", "accounts"
   add_foreign_key "incomes", "users"
   add_foreign_key "transactions", "accounts"
   add_foreign_key "transactions", "accounts", column: "recipient_account_id"
-  add_foreign_key "transactions", "budget_items"
+  add_foreign_key "transactions", "categories"
   add_foreign_key "transactions", "users"
 end

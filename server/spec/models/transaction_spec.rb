@@ -4,27 +4,22 @@
 #
 #  id                   :bigint           not null, primary key
 #  amount               :decimal(10, 2)   not null
-#  category             :string
 #  description          :text
 #  executed_at          :datetime         not null
-#  frequency            :string           default("one_time")
-#  item_type            :string
-#  transaction_type     :string           not null
+#  frequency            :string           default("one_time"), not null
+#  transaction_type     :string           default("expense"), not null
 #  created_at           :datetime         not null
 #  updated_at           :datetime         not null
 #  account_id           :bigint           not null
-#  budget_item_id       :bigint           not null
-#  item_id              :bigint
+#  category_id          :bigint           default(0), not null
 #  recipient_account_id :bigint
 #  user_id              :bigint           not null
 #
 # Indexes
 #
 #  index_transactions_on_account_id            (account_id)
-#  index_transactions_on_budget_item_id        (budget_item_id)
-#  index_transactions_on_category              (category)
+#  index_transactions_on_category_id           (category_id)
 #  index_transactions_on_frequency             (frequency)
-#  index_transactions_on_item                  (item_type,item_id)
 #  index_transactions_on_recipient_account_id  (recipient_account_id)
 #  index_transactions_on_transaction_type      (transaction_type)
 #  index_transactions_on_user_id               (user_id)
@@ -32,7 +27,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (account_id => accounts.id)
-#  fk_rails_...  (budget_item_id => budget_items.id)
+#  fk_rails_...  (category_id => categories.id)
 #  fk_rails_...  (recipient_account_id => accounts.id)
 #  fk_rails_...  (user_id => users.id)
 #
@@ -43,7 +38,7 @@ RSpec.describe Transaction, type: :model do
   let(:account) { create(:account, user: user) }
   let(:recipient_account) { create(:account, user: user) }
   let(:income) { create(:income, user: user, account: account) }
-  let(:budget_item) { create(:budget_item, user: user, account: account) }
+  let(:budget) { create(:budget, user: user, account: account) }
 
   describe 'validations' do
     it { should validate_presence_of(:amount) }

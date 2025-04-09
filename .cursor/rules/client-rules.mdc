@@ -14,10 +14,11 @@ Code Style and Structure
   - Co-locate component logic (e.g., CSS modules, hooks) where appropriate.
   - Organize code by feature or domain rather than by type (e.g., feature folders).
   - Prefer modular CSS or utility-first frameworks like Tailwind (if used).
+  - Use Tailwind version 4+
   - Use consistent file structure (e.g., `components/`, `hooks/`, `pages/`, `utils/`).
 
 React and Routing
-  - Use `react-router-dom` (v6+) features like `<Routes>`, nested routing, and `useNavigate`.
+  - Use `react-router` (v7.5+) features like `<Routes>`, nested routing, and `useNavigate`.
   - Prefer declarative routing over imperative history manipulation.
   - Handle loading and error states for route-based components gracefully (e.g., suspense boundaries).
   - Use lazy loading for route-based code splitting.

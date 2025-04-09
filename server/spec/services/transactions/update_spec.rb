@@ -66,11 +66,12 @@ RSpec.describe Transactions::Update do
       end
 
       it 'updates category correctly' do
-        params = { category: Transaction.categories[:needs] }
+        category = create(:category)
+        params = { category_id: category.id }
         result = described_class.call(transaction, params)
 
         expect(result[:success]).to be true
-        expect(transaction.reload.category).to eq(Transaction.categories[:needs])
+        expect(transaction.reload.category).to eq(category)
       end
     end
 

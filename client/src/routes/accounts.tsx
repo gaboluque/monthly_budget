@@ -22,7 +22,6 @@ export default function AccountsPage() {
     currencies,
     isLoading,
     totalBalance,
-    accountsByType,
     createAccount,
     updateAccount,
     deleteAccount
@@ -74,7 +73,6 @@ export default function AccountsPage() {
         <AccountSummary
           totalBalance={totalBalance}
           accountCount={accounts.length}
-          accountsByType={accountsByType}
         />
       )}
 

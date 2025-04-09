@@ -16,15 +16,14 @@ export function useAccounts() {
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [totalBalance, setTotalBalance] = useState(0);
-  const [accountsByType, setAccountsByType] = useState<AccountsByType>({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [accountsData, typesData, currenciesData] = await Promise.all([
-          accountsApi.getAll(),
-          accountsApi.getAccountTypes(),
-          accountsApi.getCurrencies(),
+          accountsApi.fetchAll(),
+          accountsApi.fetchAccountTypes(),
+          accountsApi.fetchCurrencies(),
         ]);
         setAccounts(accountsData);
         setAccountTypes(typesData);
@@ -50,15 +49,6 @@ export function useAccounts() {
       return sum + Number(account.balance || 0);
     }, 0);
     setTotalBalance(total);
-
-    // Group accounts by type
-    const byType: AccountsByType = {};
-    accounts.forEach((account) => {
-      if (!byType[account.account_type]) byType[account.account_type] = [];
-
-      byType[account.account_type].push(account);
-    });
-    setAccountsByType(byType);
   }, [accounts]);
 
   const createAccount = async (data: CreateAccountData) => {
@@ -127,7 +117,6 @@ export function useAccounts() {
     currencies,
     isLoading,
     totalBalance,
-    accountsByType,
     createAccount,
     updateAccount,
     deleteAccount,

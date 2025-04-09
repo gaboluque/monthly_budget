@@ -60,11 +60,7 @@ export function FormActions({
                 </Button>
             </div>
 
-            {additionalActions && (
-                <div className="flex flex-row md:justify-end md:space-y-0 md:space-x-2 gap-2">
-                    {additionalActions}
-                </div>
-            )}
+            {additionalActions && additionalActions}
         </div>
     );
 } 
