@@ -2,7 +2,7 @@ import { Wallet } from "lucide-react"
 import { StatCard } from "../ui/StatCard"
 import { formatCurrency } from "../../lib/utils/currency"
 import type { AccountsByType } from "../../hooks/useAccounts"
-
+import { formatAccountType } from "../../lib/utils/formatters"
 const accountTypeColors: Record<string, string> = {
   checking: "bg-blue-500",
   savings: "bg-green-500",
@@ -56,7 +56,7 @@ export function AccountSummary({
               <div key={type} className="flex items-center gap-2">
                 <div className={`w-3 h-3 rounded-full ${getAccountTypeColor(type)}`}></div>
                 <div className="flex-1">
-                  <div className="text-sm font-medium">{type}</div>
+                  <div className="text-sm font-medium">{formatAccountType(type)}</div>
                   <div className="text-xs text-gray-500">{formatCurrency(amount, false)}</div>
                 </div>
               </div>

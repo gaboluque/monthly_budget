@@ -1,5 +1,5 @@
 import { Account } from "./accounts";
-import { TransactionCategory } from "./categories";
+import { Category } from "./categories";
 export interface Transaction {
   id: string;
   account_id: string;
@@ -14,7 +14,7 @@ export interface Transaction {
   updated_at: string;
   recipient_account_name?: string;
   recipient_account?: Account;
-  category?: TransactionCategory;
+  category?: Category;
 }
 
 export type TransactionType = string;

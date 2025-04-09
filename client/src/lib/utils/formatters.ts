@@ -1,3 +1,5 @@
+import { Transaction } from "../types/transactions";
+
 export function formatCurrency(
   amount: number,
   currency: string = "USD"
@@ -34,4 +36,13 @@ export function formatLabel(label: string): string {
 
 export function formatISODate(dateString: string): string {
   return new Date(dateString).toISOString().split("T")[0];
+}
+
+export function formatTransaction(transaction: Transaction): string {
+  const sign = transaction.transaction_type === "income" ? "+" : transaction.transaction_type === "expense" ? "-" : "";
+  return `${sign}${formatCurrency(transaction.amount)}`;
+}
+
+export function formatAccountType(accountType: string): string {
+  return accountType.split("_").join(" ").charAt(0).toUpperCase() + accountType.split("_").join(" ").slice(1);
 }

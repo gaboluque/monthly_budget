@@ -2,17 +2,19 @@ import { useState } from 'react';
 import type { CreateBudgetData, Budget } from '../../lib/types/budgets';
 import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { FormActions } from '../ui/FormActions';
+import { Button } from '../ui/Button';
 
 interface BudgetFormProps {
   onSubmit: (data: CreateBudgetData) => Promise<void>;
   onCancel: () => void;
+  onDelete: () => void;
   initialData?: Budget | CreateBudgetData | null;
   natures: string[];
 }
 
 const FORM_ID = 'budget-form';
 
-export function BudgetForm({ onSubmit, onCancel, initialData, natures }: BudgetFormProps) {
+export function BudgetForm({ onSubmit, onCancel, initialData, natures, onDelete }: BudgetFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -95,6 +97,19 @@ export function BudgetForm({ onSubmit, onCancel, initialData, natures }: BudgetF
         onCancel={onCancel}
         formId={FORM_ID}
         isEditing={!!initialData?.id}
+        additionalActions={
+          <div className="flex flex-row justify-end gap-2">
+            {initialData?.id ? (
+              <Button
+                type="button"
+                variant="danger"
+                onClick={onDelete}
+              >
+                Delete
+              </Button>
+            ) : null}
+          </div>
+        }
       />
     </div>
   );

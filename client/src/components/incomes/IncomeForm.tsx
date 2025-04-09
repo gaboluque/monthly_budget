@@ -4,11 +4,13 @@ import { Form, FormField, SubmitHandler } from '../forms/Form';
 import { useAccounts } from '../../hooks/useAccounts';
 import { FormActions } from '../ui/FormActions';
 import { Spinner } from '../ui/Spinner';
+import { Button } from '../ui/Button';
 
 interface IncomeFormProps {
   onSubmit: (data: CreateIncomeData) => Promise<void>;
   onCancel: () => void;
   initialData?: Income;
+  onDelete: (id: string) => void;
 }
 
 const FREQUENCY_OPTIONS = [
@@ -22,7 +24,7 @@ const FREQUENCY_OPTIONS = [
 
 const FORM_ID = 'income-form';
 
-export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps) {
+export function IncomeForm({ onSubmit, onCancel, initialData, onDelete }: IncomeFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { accounts, isLoading: isAccountsLoading } = useAccounts();
@@ -125,6 +127,19 @@ export function IncomeForm({ onSubmit, onCancel, initialData }: IncomeFormProps)
         onCancel={onCancel}
         formId={FORM_ID}
         isEditing={!!initialData?.id}
+        additionalActions={
+          <div className="flex flex-row justify-end gap-2">
+            {initialData?.id ? (
+              <Button
+                type="button"
+                variant="danger"
+                onClick={() => onDelete(initialData?.id || "")}
+              >
+                Delete
+              </Button>
+            ) : null}
+          </div>
+        }
       />
     </div>
   );

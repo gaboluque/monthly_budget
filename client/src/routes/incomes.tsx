@@ -3,7 +3,6 @@ import { Layout } from "../components/ui/Layout"
 import { Modal } from "../components/ui/Modal"
 import { IncomeForm } from "../components/incomes/IncomeForm"
 import { IncomeSummary } from "../components/incomes/IncomeSummary"
-import { IncomeItem } from "../components/incomes/IncomeItem"
 import { useIncomes } from "../hooks/useIncomes"
 import type { Income, CreateIncomeData } from "../lib/types/incomes"
 import { DollarSign, PlusCircle } from "lucide-react"
@@ -11,10 +10,12 @@ import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
 import { Spinner } from "../components/ui/Spinner"
+import { ListCard } from "../components/ui/ListCard"
+import { formatCurrency } from "../lib/utils/currency"
 
 export default function Incomes() {
   const [selectedIncome, setSelectedIncome] = useState<Income | CreateIncomeData | null>(null)
-  const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome, handleMarkAsReceived } = useIncomes()
+  const { incomes, isLoading, totalIncome, createIncome, updateIncome, deleteIncome } = useIncomes()
 
   const handleSubmit = async (data: CreateIncomeData) => {
     try {
@@ -34,6 +35,10 @@ export default function Incomes() {
   }
 
   const handleDeleteIncome = async (id: string) => {
+    if (!id || id === "") {
+      return
+    }
+
     ui.confirm({
       title: "Delete Income",
       message: "Are you sure you want to delete this income?",
@@ -86,16 +91,21 @@ export default function Incomes() {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-4 sm:gap-6">
+        <div className="grid gap-2">
           {incomes.map((income) => (
-            <IncomeItem
+            <ListCard
               key={income.id}
-              income={income}
-              onEdit={(income) => {
+              icon={
+                <div className={`p-1w-full h-full rounded-full bg-green-100 flex items-center justify-center`}>
+                  <DollarSign className=" text-green-500" />
+                </div>
+              }
+              title={income.name}
+              description={income.account?.name}
+              amount={formatCurrency(income.amount)}
+              onClick={() => {
                 setSelectedIncome({ ...income, account_id: income.account?.id } as CreateIncomeData)
               }}
-              onDelete={handleDeleteIncome}
-              onReceive={handleMarkAsReceived}
             />
           ))}
         </div>
@@ -114,6 +124,7 @@ export default function Incomes() {
           onCancel={() => {
             setSelectedIncome(null)
           }}
+          onDelete={handleDeleteIncome}
         />
       </Modal>
     </Layout>

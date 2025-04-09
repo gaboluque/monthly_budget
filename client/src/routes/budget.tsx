@@ -10,6 +10,7 @@ import { PageHeader } from "../components/ui/PageHeader"
 import { formatCurrency } from "../lib/utils/currency"
 import { Spinner } from "../components/ui/Spinner"
 import { BudgetSummary } from "../components/budgets/BudgetSummary"
+import { ListCard } from "../components/ui/ListCard"
 
 export default function Budgets() {
   const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
@@ -47,9 +48,7 @@ export default function Budgets() {
   }
 
   const handleDeleteBudget = (id: string) => {
-    console.log("id", id)
     const budget = budgets.find(e => e.id === id)
-    console.log("budget", budget)
     if (!budget) return
 
     ui.confirm({
@@ -93,39 +92,18 @@ export default function Budgets() {
             No budgets found. Get started by adding your first budget.
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200 grid grid-cols-1 gap-6">
+          <div className="grid gap-2">
             {budgets.map((budget) => (
-              <li key={budget.id} className="p-4 hover:bg-gray-50 cursor-pointer transition-all duration-300 shadow-sm-xs">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium text-gray-900">{budget.name}</h3>
-                    <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full text-${NATURE_COLORS[budget.nature || 'other']}-600`}>{budget.nature}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="text-xl font-semibold text-gray-900">
-                      {formatCurrency(budget.amount)}
-                    </span>
-                    <div className="ml-4 flex-shrink-0 flex">
-                      <button
-                        type="button"
-                        className="mr-2 text-blue-600 hover:text-blue-900"
-                        onClick={() => setSelectedBudget(budget)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="text-red-600 hover:text-red-900"
-                        onClick={() => handleDeleteBudget(budget.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </li>
+              <ListCard
+                key={budget.id}
+                icon={<div className={`w-full h-full rounded-full bg-${NATURE_COLORS[budget.nature || 'other']}-500`}></div>}
+                title={budget.name}
+                description={budget.nature}
+                amount={formatCurrency(budget.amount)}
+                onClick={() => setSelectedBudget(budget)}
+              />
             ))}
-          </ul>
+          </div>
         )}
       </div>
 
@@ -141,6 +119,7 @@ export default function Budgets() {
           onCancel={() => {
             setSelectedBudget(null)
           }}
+          onDelete={() => handleDeleteBudget(selectedBudget?.id || "")}
         />
       </Modal>
     </Layout>
