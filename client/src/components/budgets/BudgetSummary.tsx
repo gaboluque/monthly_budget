@@ -2,18 +2,13 @@ import { PieChart } from "lucide-react"
 import { StatCard } from "../ui/StatCard"
 import { NatureDistribution } from "./NatureDistribution"
 import { Budget } from "../../lib/types/budgets"
-import { Spinner } from "../ui/Spinner"
 import { useMemo } from "react"
 
 interface BudgetSummaryProps {
   budgets: Budget[]
-  isLoading: boolean
 }
 
-export function BudgetSummary({
-  budgets,
-  isLoading,
-}: BudgetSummaryProps) {
+export function BudgetSummary({ budgets }: BudgetSummaryProps) {
 
   const budgetsByNature = useMemo(() => {
     return budgets.reduce((acc, budget) => {
@@ -25,15 +20,6 @@ export function BudgetSummary({
   const totalBudgetAmount = useMemo(() => {
     return budgets.reduce((acc, budget) => acc + budget.amount, 0)
   }, [budgets])
-
-  if (isLoading) {
-    return (
-      <div className="mb-8">
-        <Spinner />
-      </div>
-    )
-  }
-
 
   return (
     <div className="mb-6">

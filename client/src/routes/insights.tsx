@@ -27,17 +27,17 @@ export default function Insights() {
                 buttonColor="blue"
             />
             <div className="space-y-6">
-                <div className="bg-white shadow-sm rounded-lg p-6 text-black">
-                    {loading ? (
-                        <div className="flex justify-center items-center h-full">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                        </div>
-                    ) : (
+                {loading ? (
+                    <div className="flex justify-center items-center h-full">
+                        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    </div>
+                ) : (
+                    <div className="bg-white shadow-sm rounded-lg p-6 text-black">
                         <div className="markdown">
                             <Markdown>{insights}</Markdown>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </Layout>
     )

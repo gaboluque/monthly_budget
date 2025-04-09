@@ -33,7 +33,7 @@ export default function Budgets() {
       if (data?.id || selectedBudget?.id) {
         const id = data?.id || selectedBudget?.id;
         if (!id) throw new Error("Budget ID is required");
-        
+
         budget = await updateBudget(id, data);
       } else {
         budget = await createBudget(data);
@@ -79,10 +79,6 @@ export default function Budgets() {
         onAction={() => handleAddBudget()}
       />
 
-      <BudgetSummary
-        budgets={budgets}
-        isLoading={isBudgetsLoading}
-      />
 
       <div className="mt-6 shadow-sm-xs rounded-lg divide-y divide-gray-200">
         {isBudgetsLoading || isCategoriesLoading ? (
@@ -94,17 +90,20 @@ export default function Budgets() {
             No budgets found. Get started by adding your first budget.
           </div>
         ) : (
-          <div className="grid gap-2">
-            {budgets.map((budget) => (
-              <ListCard
-                key={budget.id}
-                icon={<div className={`w-full h-full rounded-full bg-${NATURE_COLORS[budget.nature || 'other']}-500`}></div>}
-                title={budget.name}
-                description={budget.nature}
-                amount={formatCurrency(budget.amount)}
-                onClick={() => setSelectedBudget(budget)}
-              />
-            ))}
+          <div>
+            <BudgetSummary budgets={budgets} />
+            <div className="grid gap-2">
+              {budgets.map((budget) => (
+                <ListCard
+                  key={budget.id}
+                  icon={<div className={`w-full h-full rounded-full bg-${NATURE_COLORS[budget.nature || 'other']}-500`}></div>}
+                  title={budget.name}
+                  description={budget.nature}
+                  amount={formatCurrency(budget.amount)}
+                  onClick={() => setSelectedBudget(budget)}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>
