@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router";
-import { navigationLinks } from "./routes";
+import { navigationLinks } from "../../routes/_routes";
 
 export function MobileNavigation() {
     const location = useLocation();
@@ -13,17 +13,17 @@ export function MobileNavigation() {
 
     return (
         <div className="sticky-footer md:hidden fixed left-0 right-0 bg-white border-t border-gray-200 z-20">
-            <div className="grid grid-cols-5 h-16 w-full">
-                {navigationLinks.slice(0, 5).map(({ path, label, icon: Icon, activeClass }) => (
+            <div className="flex justify-center gap-6 items-center h-16 w-full">
+                {navigationLinks.slice(0, 5).map(({ path, label, icon: Icon, color }) => (
                     <Link
                         key={path}
                         to={path}
                         className={`flex flex-col items-center justify-center text-xs font-medium ${isActive(path)
-                            ? activeClass
+                            ? `text-${color}-700`
                             : "text-gray-600"
                             }`}
                     >
-                        <Icon className={`w-5 h-5 mb-1 ${isActive(path) ? "" : "text-gray-500"}`} />
+                        <Icon className={`w-5 h-5 mb-1 ${isActive(path) ? `text-${color}-700` : "text-gray-500"}`} />
                         <span>{label}</span>
                     </Link>
                 ))}

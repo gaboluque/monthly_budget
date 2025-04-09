@@ -66,11 +66,15 @@ const BudgetOverview = ({ budgetsUsage, isLoading }: { budgetsUsage: Record<stri
     <div className="border border-gray-100 shadow-sm bg-white p-4 rounded-lg">
       {isLoading ? (
         <LoadingState />
-      ) : (
+      ) : Object.entries(budgetsUsage).length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {Object.entries(budgetsUsage).map(([budgetName, budgetUsage]) => (
             <BudgetItem key={budgetName} budgetName={budgetName} usage={budgetUsage} />
           ))}
+        </div>
+      ) : (
+        <div className="text-center text-gray-500">
+          No budgets found
         </div>
       )}
     </div>

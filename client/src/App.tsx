@@ -10,20 +10,24 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
-        
+
         {/* Protected routes */}
         {routes.map((route) => (
           <Route
             key={route.path}
             path={route.path}
-            element={
-              <ProtectedRoute>
-                {route.Element}
-              </ProtectedRoute>
-            }
-          />
+            element={<ProtectedRoute>{route.Element}</ProtectedRoute>}
+          >
+            {route.children?.map((child) => (
+              <Route
+                key={`${route.path}-${child.path}`}
+                path={`${route.path}/${child.path}`}
+                element={<ProtectedRoute>{child.Element}</ProtectedRoute>}
+              />
+            ))}
+          </Route>
         ))}
-        
+
         {/* Catch all redirect */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

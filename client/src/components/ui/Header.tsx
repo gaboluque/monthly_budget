@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router"
 import { Button } from "./Button"
 import { logout } from "../../lib/utils/auth"
 import { LogOut } from "lucide-react"
-import { navigationLinks } from "./routes"
+import { navigationLinks } from "../../routes/_routes"
 
 export function Header() {
   const location = useLocation()
@@ -24,12 +24,12 @@ export function Header() {
             </Link>
 
             <nav className="hidden md:flex ml-10 space-x-1">
-              {navigationLinks.map(({ path, label, icon: Icon, activeClass }) => (
+              {navigationLinks.map(({ path, label, icon: Icon, color }) => (
                 <Link
                   key={path}
                   to={path}
                   className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive(path)
-                    ? activeClass
+                    ? `text-${color}-700`
                     : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                     }`}
                 >
