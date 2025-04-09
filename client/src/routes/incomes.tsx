@@ -5,13 +5,14 @@ import { IncomeForm } from "../components/incomes/IncomeForm"
 import { IncomeSummary } from "../components/incomes/IncomeSummary"
 import { useIncomes } from "../hooks/useIncomes"
 import type { Income, CreateIncomeData } from "../lib/types/incomes"
-import { DollarSign, PlusCircle } from "lucide-react"
+import { ChevronLeft, DollarSign, PlusCircle } from "lucide-react"
 import { Button } from "../components/ui/Button"
 import { ui } from "../lib/ui/manager"
 import { PageHeader } from "../components/ui/PageHeader"
 import { Spinner } from "../components/ui/Spinner"
 import { ListCard } from "../components/ui/ListCard"
 import { formatCurrency } from "../lib/utils/currency"
+import { Link } from "react-router"
 
 export default function Incomes() {
   const [selectedIncome, setSelectedIncome] = useState<Income | CreateIncomeData | null>(null)
@@ -59,6 +60,13 @@ export default function Incomes() {
 
   return (
     <Layout>
+      <div className="mb-4">
+        <Link to="/account" className="text-blue-600 hover:text-blue-800 inline-flex items-center">
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Back to Accounts
+        </Link>
+      </div>
+      
       <PageHeader
         title="Income Sources"
         description="A list of all your income sources."

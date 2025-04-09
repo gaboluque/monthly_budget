@@ -7,13 +7,9 @@ import { navigationLinks } from "./routes"
 export function Header() {
   const location = useLocation()
 
-  const handleLogout = () => {
-    logout()
-  }
+  const handleLogout = () => logout()
 
-  const isActive = (path: string) => {
-    return location.pathname === path
-  }
+  const isActive = (path: string) => location.pathname.startsWith(path)
 
   return (
     <header className="hidden md:block bg-white border-b border-gray-200 sticky top-0 z-10">

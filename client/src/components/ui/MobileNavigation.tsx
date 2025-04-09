@@ -5,6 +5,9 @@ export function MobileNavigation() {
     const location = useLocation();
 
     const isActive = (path: string) => {
+        if (path === '/account') {
+            return location.pathname === '/account' || location.pathname.startsWith('/account/');
+        }
         return location.pathname === path;
     };
 

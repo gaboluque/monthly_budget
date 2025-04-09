@@ -5,11 +5,20 @@ import Incomes from "./incomes";
 import Transactions from "./transactions";
 import Insights from "./insights";
 import Login from "./login";
+import AccountSection from "./account";
 
 export const routes = [
     {
-        path: "/accounts",
+        path: "/account",
+        Element: <AccountSection />,
+    },
+    {
+        path: "/account/accounts",
         Element: <Accounts />,
+    },
+    {
+        path: "/account/incomes",
+        Element: <Incomes />,
     },
     {
         path: "/budget", 
@@ -18,10 +27,6 @@ export const routes = [
     {
         path: "/dashboard",
         Element: <Dashboard />,
-    },
-    {
-        path: "/incomes",
-        Element: <Incomes />,
     },
     {
         path: "/insights",

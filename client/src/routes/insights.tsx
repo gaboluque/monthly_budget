@@ -20,25 +20,23 @@ export default function Insights() {
 
     return (
         <Layout>
-            <div className="bg-white rounded-lg shadow-sm-lg p-4 md:p-6">
-                <PageHeader
-                    title="Financial Insights"
-                    description="Analyze your financial data with detailed insights and trends."
-                    buttonText="Generate Report"
-                    buttonColor="blue"
-                />
-                <div className="space-y-6">
-                    <div className="bg-white shadow-sm rounded-lg p-6 text-black">
-                        {loading ? (
-                            <div className="flex justify-center items-center h-full">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-                            </div>
-                        ) : (
-                            <div className="markdown">
-                                <Markdown>{insights}</Markdown>
-                            </div>
-                        )}
-                    </div>
+            <PageHeader
+                title="Financial Insights"
+                description="Analyze your financial data with detailed insights and trends."
+                buttonText="Generate Report"
+                buttonColor="blue"
+            />
+            <div className="space-y-6">
+                <div className="bg-white shadow-sm rounded-lg p-6 text-black">
+                    {loading ? (
+                        <div className="flex justify-center items-center h-full">
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                        </div>
+                    ) : (
+                        <div className="markdown">
+                            <Markdown>{insights}</Markdown>
+                        </div>
+                    )}
                 </div>
             </div>
         </Layout>

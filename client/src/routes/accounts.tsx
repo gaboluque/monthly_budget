@@ -10,6 +10,8 @@ import { ui } from "../lib/ui/manager";
 import type { Account, CreateAccountData } from "../lib/types/accounts";
 import { PageHeader } from "../components/ui/PageHeader";
 import { Spinner } from "../components/ui/Spinner";
+import { Link } from "react-router";
+import { ChevronLeft } from "lucide-react";
 
 export default function AccountsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -60,6 +62,13 @@ export default function AccountsPage() {
 
   return (
     <Layout>
+      <div className="mb-4">
+        <Link to="/account" className="text-blue-600 hover:text-blue-800 inline-flex items-center">
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Back to Accounts
+        </Link>
+      </div>
+      
       <PageHeader
         title="Accounts"
         description="Manage your financial accounts and track your balances."
