@@ -51,11 +51,8 @@ const BudgetItem = ({ budgetName, usage }: BudgetItemProps) => {
       <div className="flex-1">
         <div className="h-2 rounded-full bg-gray-100">
           <div
-            className="h-full rounded-full transition-all duration-500"
-            style={{
-              width: `${Math.min(percentage, 100)}%`,
-              backgroundColor: percentageToColor(percentage)
-            }}
+            className={`h-full rounded-full transition-all duration-500 bg-${percentageToColor(percentage)}-500`}
+            style={{ width: `${Math.min(percentage, 100)}%` }}
           />
         </div>
       </div>
