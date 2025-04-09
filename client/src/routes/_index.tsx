@@ -11,18 +11,20 @@ export const routes = [
     {
         path: "/account",
         Element: <AccountSection />,
-    },
-    {
-        path: "/account/accounts",
-        Element: <Accounts />,
-    },
-    {
-        path: "/account/incomes",
-        Element: <Incomes />,
-    },
-    {
-        path: "/budget", 
-        Element: <Budget />,
+        children: [
+            {
+                path: "/account/accounts",
+                Element: <Accounts />,
+            },
+            {
+                path: "/account/incomes",
+                Element: <Incomes />,
+            },
+            {
+                path: "/account/budget",
+                Element: <Budget />,
+            },
+        ]
     },
     {
         path: "/dashboard",
@@ -33,11 +35,11 @@ export const routes = [
         Element: <Insights />,
     },
     {
-        path: "/login",
-        Element: <Login />,
-    },
-    {
         path: "/transactions",
         Element: <Transactions />,
+    },
+    {
+        path: "/login",
+        Element: <Login />,
     },
 ]
