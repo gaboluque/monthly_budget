@@ -1,4 +1,4 @@
-import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch } from "react-hook-form"
+import { useForm, SubmitHandler, RegisterOptions, FieldValues, Path, DefaultValues, useWatch, FieldErrors } from "react-hook-form"
 import { useEffect, useMemo } from "react";
 import { OptionSelect } from "./fields/OptionSelect";
 import { PasswordField } from "./fields/PasswordField";
@@ -87,6 +87,7 @@ export const Form = <T extends FieldValues>({
     const visibleFields = useMemo(() => {
         return fields.filter(evaluateVisibility);
     }, [fields, values]);
+
 
     const renderField = (field: FormField<T>) => {
         const { name, type, placeholder, options, validation } = field;
@@ -187,7 +188,7 @@ export const Form = <T extends FieldValues>({
                             className="ml-2 text-sm text-gray-700 cursor-pointer"
                         >
                             {field.label}
-                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                            {(field.required || field.validation?.required) && <span className="text-red-500 ml-1">*</span>}
                         </label>
                     </div>
                 );
@@ -206,6 +207,16 @@ export const Form = <T extends FieldValues>({
         }
     };
 
+    const getFieldError = (field: FormField<T>) => {
+        const nameParts = field.name.toString().split('.');
+
+        const error = nameParts.reduce<FieldErrors<T>>((acc, part) => {
+            return acc?.[part] as FieldErrors<T>;
+        }, errors);
+
+        return error?.message || undefined;
+    }
+
     return (
         <form id={id} onSubmit={handleSubmit(onSubmit)} className={className}>
             {visibleFields.map((field) => (
@@ -216,15 +227,15 @@ export const Form = <T extends FieldValues>({
                             className="block text-sm font-medium text-gray-700 mb-1"
                         >
                             {field.label}
-                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                            {(field.required || field.validation?.required) && <span className="text-red-500 ml-1">*</span>}
                         </label>
                     )}
 
                     {renderField(field)}
 
-                    {errors[field.name] && (
+                    {getFieldError(field) && (
                         <p className="mt-1 text-sm text-red-600">
-                            {errors[field.name]?.message as string}
+                            {getFieldError(field)?.toString()}
                         </p>
                     )}
                 </div>

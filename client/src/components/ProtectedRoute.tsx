@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { isAuthenticated } from '../lib/utils/auth';
+import { getUser, isAuthenticated } from '../lib/utils/auth';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,24 +17,27 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  useEffect(() => {
-    if (isClient && !isAuthenticated()) {
+    if (!isAuthenticated()) {
       // Redirect to login page with the return url
       navigate(
         `${redirectTo}?returnUrl=${encodeURIComponent(location.pathname)}`,
         { replace: true }
       );
     }
-  }, [navigate, redirectTo, location.pathname, isClient]);
+  }, [navigate, redirectTo, location.pathname]);
+
+  useEffect(() => {
+    const user = getUser();
+
+    if (isAuthenticated() && !user?.onboarding_completed_at) {
+      navigate('/onboarding');
+    }
+  }, [navigate]);
 
   // During server-side rendering or before client-side hydration, render a loading state or null
-  if (!isClient || !isAuthenticated()) {
+  if (!isAuthenticated()) {
     return <div className="min-h-screen bg-gray-50" />;
   }
 

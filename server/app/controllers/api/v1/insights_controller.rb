@@ -65,9 +65,6 @@ module Api
 
           if budget.amount > 0
             budgets_usage[budget.name][:percentage] = (budgets_usage[budget.name][:usage_amount] / budget.amount) * 100
-            puts "budget.amount: #{budget.amount}"
-            puts "budgets_usage[budget.name][:usage_amount]: #{budgets_usage[budget.name][:usage_amount]}"
-            puts "budgets_usage[budget.name][:percentage]: #{budgets_usage[budget.name][:percentage]}"
           end
         end
         

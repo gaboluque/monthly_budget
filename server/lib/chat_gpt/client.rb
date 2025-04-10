@@ -30,6 +30,29 @@ module ChatGpt
       handle_response(response)
     end
 
+    def get_response(messages, model: "gpt-4o", response_format: nil)
+      response = self.class.post(
+        "/responses",
+        body: {
+          model: model,
+          input: messages,
+          text: {
+            format: response_format
+          }
+        }.to_json
+      )
+
+      handle_response_response(response)
+    end
+
+    def get_json_response(messages, schema, model: "gpt-4o")
+      response = get_response(messages, model: model, response_format: {
+        type: "json_schema",
+        name: "response",
+        schema: schema
+      })
+    end
+
     private
 
     def handle_response(response)
@@ -37,6 +60,20 @@ module ChatGpt
       when 200
         parsed_response = JSON.parse(response.body)
         parsed_response.dig("choices", 0, "message", "content")
+      when 401
+        raise "Invalid API key"
+      when 429
+        raise "Rate limit exceeded"
+      else
+        raise "OpenAI API error: #{response.code} - #{response.body}"
+      end
+    end
+
+    def handle_response_response(response)
+      case response.code
+      when 200
+        parsed_response = JSON.parse(response.body)
+        parsed_response.dig("output", 0, "content", 0, "text")
       when 401
         raise "Invalid API key"
       when 429

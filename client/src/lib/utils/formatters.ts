@@ -1,6 +1,7 @@
 import { OptionSelectProps } from "../../components/forms/fields/OptionSelect";
 import { Category } from "../types/categories";
 import { Transaction } from "../types/transactions";
+import { sentenceCase } from "./utils";
 
 export function formatCurrency(
   amount: number,
@@ -58,6 +59,13 @@ export function formatCategoriesToOptions(categories: Category[]): OptionSelectP
       label: `${child.icon} ${child.name}`,
       value: child.id,
     })),
+  }));
+}
+
+export function formatStringArrayToOptions(strings: string[]): { value: string; label: string }[] {
+  return strings.map((string: string) => ({
+    label: sentenceCase(string),
+    value: string.toString(),
   }));
 }
 

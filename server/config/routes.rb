@@ -47,6 +47,12 @@ Rails.application.routes.draw do
           get :budget_usage
         end
       end
+      resources :users do
+        collection do
+          post :onboarding
+          get :me
+        end
+      end
     end
   end
 
