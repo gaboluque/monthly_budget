@@ -2,9 +2,11 @@
  * Authentication utility functions for handling JWT tokens and user authentication
  */
 
+import { Session } from "../types/session";
+
 // Token storage key in localStorage
 export const TOKEN_KEY = 'auth_token';
-
+export const USER_KEY = 'auth_user';
 /**
  * Check if the user is authenticated by verifying a token exists
  */
@@ -24,6 +26,21 @@ export function getToken(): string | null {
  */
 export function setToken(token: string): void {
   localStorage.setItem(TOKEN_KEY, token);
+}
+
+/**
+ * Set the user in localStorage
+ */
+export function setUser(user: Session['user']): void {
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
+/**
+ * Get the user from localStorage
+ */
+export function getUser(): Session['user'] | null {
+  const user = localStorage.getItem(USER_KEY);
+  return user ? JSON.parse(user) : null;
 }
 
 /**

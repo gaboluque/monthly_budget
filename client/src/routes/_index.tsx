@@ -6,23 +6,32 @@ import Transactions from "./transactions";
 import Insights from "./insights";
 import Login from "./login";
 import AccountSection from "./account";
+import Onboarding from "./onboarding";
 
-export const routes = [
+type Route = {
+    path: string;
+    Element: React.ReactNode;
+    children?: Route[];
+}
+
+export const routes: Route[] = [
     {
         path: "/account",
         Element: <AccountSection />,
-    },
-    {
-        path: "/account/accounts",
-        Element: <Accounts />,
-    },
-    {
-        path: "/account/incomes",
-        Element: <Incomes />,
-    },
-    {
-        path: "/budget", 
-        Element: <Budget />,
+        children: [
+            {
+                path: "/accounts",
+                Element: <Accounts />,
+            },
+            {
+                path: "/incomes",
+                Element: <Incomes />,
+            },
+            {
+                path: "/budget",
+                Element: <Budget />,
+            },
+        ],
     },
     {
         path: "/dashboard",
@@ -39,5 +48,9 @@ export const routes = [
     {
         path: "/transactions",
         Element: <Transactions />,
+    },
+    {
+        path: "/onboarding",
+        Element: <Onboarding />,
     },
 ]

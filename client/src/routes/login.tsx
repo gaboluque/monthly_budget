@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { LoginForm } from '../components/LoginForm';
-import { isAuthenticated, setToken } from '../lib/utils/auth';
+import { isAuthenticated, setToken, setUser } from '../lib/utils/auth';
 import { authApi } from '../lib/api/auth';
 import { ui } from '../lib/ui/manager';
 
@@ -23,6 +23,7 @@ export default function Login() {
 
     if (data.jwt) {
       setToken(data.jwt);
+      setUser(data.user); 
       navigate(returnUrl);
     } else {
       ui.notify({
