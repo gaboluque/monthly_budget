@@ -30,6 +30,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   useEffect(() => {
     const user = getUser();
+
     if (isAuthenticated() && !user?.onboarding_completed_at) {
       navigate('/onboarding');
     }

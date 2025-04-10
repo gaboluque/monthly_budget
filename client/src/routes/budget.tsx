@@ -12,6 +12,8 @@ import { Spinner } from "../components/ui/Spinner"
 import { BudgetSummary } from "../components/budgets/BudgetSummary"
 import { ListCard } from "../components/ui/ListCard"
 import { useCategories } from "../hooks/useCategories"
+import { ChevronLeft } from "lucide-react"
+import { Link } from "react-router"
 
 export default function Budgets() {
   const [selectedBudget, setSelectedBudget] = useState<Budget | CreateBudgetData | null>(null)
@@ -71,8 +73,14 @@ export default function Budgets() {
 
   return (
     <Layout>
+      <div className="mb-4">
+        <Link to="/account" className="text-blue-600 hover:text-blue-800 inline-flex items-center">
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Back to Accounts
+        </Link>
+      </div>
       <PageHeader
-        title="Monthly Budgets"
+        title="Monthly Budget"
         description="A list of all your budgets."
         buttonText="Add Budget"
         buttonColor="blue"

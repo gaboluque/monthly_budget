@@ -3,12 +3,9 @@ module Api
       class AuthenticationController < ApplicationController
         skip_before_action :authenticate_user!
 
+        # POST /api/v1/authentication/login
         def login
           @user = User.find_by(email: user_params[:email])
-
-          puts "User: #{@user.inspect}"
-          puts "User params: #{user_params.inspect}"
-          puts "User authenticate: #{@user&.authenticate(user_params[:password])}"
 
           if @user&.authenticate(user_params[:password])
             @jwt = generate_jwt(@user)
@@ -17,6 +14,7 @@ module Api
           end
         end
 
+        # POST /api/v1/authentication/signup
         def signup
           @user = User.new(user_params)
           if @user.save

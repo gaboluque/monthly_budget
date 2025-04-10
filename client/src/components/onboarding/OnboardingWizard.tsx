@@ -12,9 +12,10 @@ import {
 export interface OnboardingWizardProps {
     onComplete: (formData: OnboardingFormData) => void;
     accountTypes: string[];
+    onboardingSubmitting: boolean;
 } 
 
-export default function OnboardingWizard({ onComplete, accountTypes }: OnboardingWizardProps) {
+export default function OnboardingWizard({ onComplete, accountTypes, onboardingSubmitting }: OnboardingWizardProps) {
     const [step, setStep] = useState(1)
     const [totalSteps] = useState(5)
     const [formData, setFormData] = useState<OnboardingFormData>({
@@ -104,6 +105,7 @@ export default function OnboardingWizard({ onComplete, accountTypes }: Onboardin
                     onCancel={step > 1 ? prevStep : undefined}
                     cancelLabel={step > 1 ? "Back" : undefined}
                     submitLabel={step < totalSteps ? "Next" : "Complete Setup"}
+                    isSubmitting={onboardingSubmitting}
                 />
             </div>
         </div>
