@@ -20,9 +20,9 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['icons/favicon.ico'],
         manifest: {
-          name: 'Monthly Budget App',
-          short_name: 'Budget',
-          description: 'Monthly Budget Progressive Web App',
+          name: 'Pluto',
+          short_name: 'Pluto',
+          description: 'Pluto is a budget app that helps you manage your money.',
           theme_color: '#ffffff',
           icons: [
             {

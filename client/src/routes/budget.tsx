@@ -72,7 +72,7 @@ export default function Budgets() {
   return (
     <Layout>
       <PageHeader
-        title="Monthly Budget"
+        title="Monthly Budgets"
         description="A list of all your budgets."
         buttonText="Add Budget"
         buttonColor="blue"

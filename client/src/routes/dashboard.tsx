@@ -100,7 +100,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <PageHeader title="Dashboard" description="Your Monthly Budget Dashboard" />
+      <PageHeader title="Pluto" description="Your Monthly Budget Dashboard" />
       {
         budgetsLoading || budgetUsageLoading || monthlyBalanceLoading ? (
           <LoadingState />
